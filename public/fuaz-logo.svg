@@ -1,0 +1,164 @@
+<svg width="500" height="580" viewBox="0 0 500 580" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#056839" />
+      <stop offset="50%" stop-color="#0D8A4E" />
+      <stop offset="100%" stop-color="#04522B" />
+    </linearGradient>
+
+    <linearGradient id="wheatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2BD68" />
+      <stop offset="50%" stop-color="#C89D3C" />
+      <stop offset="100%" stop-color="#9E7624" />
+    </linearGradient>
+
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#061A35" />
+      <stop offset="50%" stop-color="#0B2A56" />
+      <stop offset="100%" stop-color="#061A35" />
+    </linearGradient>
+
+    <filter id="logoShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Outer Laurel Wheat Wreath -->
+  <g id="laurel-wreath" fill="url(#wheatGrad)" stroke="#8A671B" stroke-width="1.5">
+    <path d="M 72 65 C 50 110 40 180 48 270 C 55 350 95 410 160 450 C 135 435 90 380 75 300 C 65 220 72 130 98 75 Z" />
+    <ellipse cx="75" cy="85" rx="14" ry="24" transform="rotate(-30 75 85)" />
+    <ellipse cx="62" cy="135" rx="15" ry="26" transform="rotate(-24 62 135)" />
+    <ellipse cx="54" cy="190" rx="16" ry="27" transform="rotate(-15 54 190)" />
+    <ellipse cx="52" cy="245" rx="16" ry="27" transform="rotate(-5 52 245)" />
+    <ellipse cx="58" cy="300" rx="16" ry="26" transform="rotate(8 58 300)" />
+    <ellipse cx="72" cy="355" rx="17" ry="26" transform="rotate(22 72 355)" />
+    <ellipse cx="98" cy="405" rx="18" ry="25" transform="rotate(38 98 405)" />
+    <ellipse cx="135" cy="442" rx="19" ry="24" transform="rotate(52 135 442)" />
+    <ellipse cx="180" cy="465" rx="20" ry="22" transform="rotate(65 180 465)" />
+
+    <path d="M 428 65 C 450 110 460 180 452 270 C 445 350 405 410 340 450 C 365 435 410 380 425 300 C 435 220 428 130 402 75 Z" />
+    <ellipse cx="425" cy="85" rx="14" ry="24" transform="rotate(30 425 85)" />
+    <ellipse cx="438" cy="135" rx="15" ry="26" transform="rotate(24 438 135)" />
+    <ellipse cx="446" cy="190" rx="16" ry="27" transform="rotate(15 446 190)" />
+    <ellipse cx="448" cy="245" rx="16" ry="27" transform="rotate(5 448 245)" />
+    <ellipse cx="442" cy="300" rx="16" ry="26" transform="rotate(-8 442 300)" />
+    <ellipse cx="428" cy="355" rx="17" ry="26" transform="rotate(-22 428 355)" />
+    <ellipse cx="402" cy="405" rx="18" ry="25" transform="rotate(-38 402 405)" />
+    <ellipse cx="365" cy="442" rx="19" ry="24" transform="rotate(-52 365 442)" />
+    <ellipse cx="320" cy="465" rx="20" ry="22" transform="rotate(-65 320 465)" />
+  </g>
+
+  <!-- Central Shield -->
+  <g id="shield-body" filter="url(#logoShadow)">
+    <path
+      d="M 250 16 C 330 16 385 45 405 78 C 412 170 412 280 375 360 C 335 428 265 470 250 482 C 235 470 165 428 125 360 C 88 280 88 170 95 78 C 115 45 170 16 250 16 Z"
+      fill="#FFFFFF"
+      stroke="url(#shieldBorderGrad)"
+      stroke-width="16"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M 250 30 C 322 30 372 56 390 85 C 396 170 396 270 362 346 C 326 410 262 450 250 460 C 238 450 174 410 138 346 C 104 270 104 170 110 85 C 128 56 178 30 250 30 Z"
+      fill="none"
+      stroke="#0D8A4E"
+      stroke-width="2.5"
+      stroke-opacity="0.4"
+    />
+  </g>
+
+  <!-- Water Waves & Leaping Fish -->
+  <g id="water-and-fish">
+    <clipPath id="shieldWaterClip">
+      <path d="M 250 16 C 330 16 385 45 405 78 C 412 170 412 280 375 360 C 335 428 265 470 250 482 C 235 470 165 428 125 360 C 88 280 88 170 95 78 C 115 45 170 16 250 16 Z" />
+    </clipPath>
+
+    <g clip-path="url(#shieldWaterClip)">
+      <path d="M 90 320 Q 150 295 210 320 T 330 320 T 415 315 L 415 480 L 85 480 Z" fill="url(#waterGrad)" />
+      <path d="M 90 340 C 130 325 170 345 210 330 C 250 315 290 345 330 330 C 370 315 400 335 415 325" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+      <path d="M 100 375 C 140 360 180 380 220 365 C 260 350 300 380 340 365 C 380 350 405 370 415 360" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" />
+      <path d="M 115 410 C 155 395 195 415 235 400 C 275 385 315 415 355 400 C 385 390 400 405 405 400" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+
+      <g id="fish" fill="#061A35" stroke="#FFFFFF" stroke-width="1.5">
+        <path d="M 230 385 C 240 372 265 370 285 380 C 295 385 305 380 315 375 L 305 388 L 316 398 C 304 394 295 390 284 394 C 262 402 240 398 230 385 Z" />
+        <path d="M 260 374 L 270 366 L 272 374 Z" fill="#0B2A56" />
+        <path d="M 265 396 L 272 404 L 275 396 Z" fill="#0B2A56" />
+        <circle cx="240" cy="382" r="2" fill="#FFFFFF" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Farm Tractor -->
+  <g id="farm-tractor" transform="translate(132, 125)">
+    <path d="M 20 65 L 68 65 L 72 42 L 20 42 Z" fill="#D1D5DB" stroke="#1F2937" stroke-width="3" />
+    <rect x="22" y="45" width="12" height="18" fill="#9CA3AF" />
+    <line x1="38" y1="46" x2="38" y2="62" stroke="#374151" stroke-width="2" />
+    <line x1="44" y1="46" x2="44" y2="62" stroke="#374151" stroke-width="2" />
+    <line x1="50" y1="46" x2="50" y2="62" stroke="#374151" stroke-width="2" />
+
+    <line x1="62" y1="42" x2="62" y2="10" stroke="#1F2937" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M 59 10 L 65 10 L 63 6 L 61 6 Z" fill="#1F2937" />
+
+    <line x1="74" y1="46" x2="84" y2="34" stroke="#1F2937" stroke-width="3" />
+    <ellipse cx="85" cy="32" rx="6" ry="2" transform="rotate(-20 85 32)" fill="#111827" />
+    <path d="M 88 50 C 88 42 98 42 98 52 L 98 68 L 88 68 Z" fill="#1F2937" />
+
+    <g id="front-wheel">
+      <circle cx="30" cy="92" r="16" fill="#111827" stroke="#374151" stroke-width="2" />
+      <circle cx="30" cy="92" r="9" fill="#F9FAFB" stroke="#4B5563" stroke-width="1.5" />
+      <circle cx="30" cy="92" r="3.5" fill="#1F2937" />
+      <line x1="30" y1="76" x2="30" y2="83" stroke="#9CA3AF" stroke-width="2" />
+      <line x1="30" y1="101" x2="30" y2="108" stroke="#9CA3AF" stroke-width="2" />
+      <line x1="14" y1="92" x2="21" y2="92" stroke="#9CA3AF" stroke-width="2" />
+      <line x1="39" y1="92" x2="46" y2="92" stroke="#9CA3AF" stroke-width="2" />
+    </g>
+
+    <g id="rear-wheel">
+      <circle cx="106" cy="80" r="28" fill="#111827" stroke="#374151" stroke-width="3" />
+      <circle cx="106" cy="80" r="16" fill="#F9FAFB" stroke="#4B5563" stroke-width="2" />
+      <circle cx="106" cy="80" r="6" fill="#1F2937" />
+      <path d="M 106 52 L 106 64 M 106 96 L 106 108 M 78 80 L 90 80 M 122 80 L 134 80 M 86 60 L 95 69 M 117 91 L 126 100 M 86 100 L 95 91 M 117 69 L 126 60" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round" />
+    </g>
+  </g>
+
+  <!-- Dairy Cow -->
+  <g id="dairy-cow" transform="translate(262, 175)">
+    <path
+      d="M 18 24 C 28 15 62 16 75 22 C 80 25 84 32 82 45 C 80 55 76 58 72 58 L 70 82 L 64 82 L 65 58 L 55 58 L 56 82 L 50 82 L 49 58 L 32 58 L 31 82 L 25 82 L 27 58 L 18 58 L 16 82 L 10 82 L 14 46 C 8 44 4 36 2 30 C 0 24 4 20 10 21 Z"
+      fill="#FFFFFF"
+      stroke="#111827"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+    <path d="M 32 20 C 42 18 45 28 38 35 C 32 40 25 36 26 28 Z" fill="#111827" />
+    <path d="M 52 24 C 65 22 68 34 60 42 C 54 46 48 38 49 30 Z" fill="#111827" />
+    <path d="M 12 28 C 16 26 18 34 14 38 C 10 40 8 34 10 30 Z" fill="#111827" />
+    <path d="M 68 45 C 76 46 78 54 72 56 C 68 56 66 50 68 45 Z" fill="#111827" />
+    <path d="M 8 20 C 6 15 2 16 0 19 C 2 24 6 25 8 20 Z" fill="#111827" />
+    <circle cx="5" cy="24" r="1.5" fill="#111827" />
+    <path d="M 76 26 Q 86 36 82 50" fill="none" stroke="#111827" stroke-width="1.5" />
+    <circle cx="82" cy="51" r="2" fill="#111827" />
+  </g>
+
+  <!-- Ribbon Banner -->
+  <g id="ribbon-banner" filter="url(#logoShadow)">
+    <path d="M 15 480 L 80 470 L 80 540 L 15 550 L 35 515 Z" fill="#06152B" stroke="#020914" stroke-width="1.5" />
+    <path d="M 485 480 L 420 470 L 420 540 L 485 550 L 465 515 Z" fill="#06152B" stroke="#020914" stroke-width="1.5" />
+    <path d="M 35 482 C 120 460 380 460 465 482 L 475 538 C 380 514 120 514 25 538 Z" fill="url(#ribbonGrad)" stroke="#061224" stroke-width="2" />
+
+    <text x="250" y="498" fill="#059669" font-size="15" font-weight="900" font-family="system-ui, -apple-system, sans-serif" text-anchor="middle" letter-spacing="1.2">
+      FEDERAL UNIVERSITY OF AGRICULTURE,
+    </text>
+    <text x="250" y="515" fill="#10B981" font-size="16" font-weight="900" font-family="system-ui, -apple-system, sans-serif" text-anchor="middle" letter-spacing="3">
+      ZURU
+    </text>
+    <text x="250" y="530" fill="#FFFFFF" font-size="11.5" font-weight="700" font-style="italic" font-family="Georgia, serif" text-anchor="middle" letter-spacing="0.8">
+      Agricultural Entrepreneurship
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,6 @@
+{
+  "name": "FUAZ SRMS Portal",
+  "description": "Student Results Management System for the Federal University of Agriculture, Zuru.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
