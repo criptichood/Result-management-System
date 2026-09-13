@@ -81,7 +81,7 @@ class MockDB {
         lecturerViewEmail: false,
         lecturerViewPhone: false,
         courseRegistrationOpen: true,
-        currentSession: '2023/2024',
+        currentSession: '2025/2026',
         currentSemester: 1,
       }
     );
@@ -93,15 +93,73 @@ class MockDB {
   }
 
   allocateCourseLecturer(courseId: string, lecturerId?: string) {
-    this.from('courses').update(courseId, { lecturerId: lecturerId || undefined });
+    const course = this.from('courses').selectById(courseId);
+    if (!course) return;
+    if (!lecturerId) {
+      this.from('courses').update(courseId, {
+        lecturerId: undefined,
+        lecturerIds: [],
+        instructors: [],
+      });
+    } else {
+      const existingInstructors = course.instructors || [];
+      const isAlreadyIn = existingInstructors.some((i) => i.lecturerId === lecturerId);
+      const updatedInstructors = isAlreadyIn
+        ? existingInstructors
+        : [
+            {
+              lecturerId,
+              role: 'Lead Instructor' as const,
+              assignedAt: new Date().toISOString(),
+            },
+            ...existingInstructors,
+          ];
+      const allIds = Array.from(new Set([lecturerId, ...(course.lecturerIds || [])]));
+      this.from('courses').update(courseId, {
+        lecturerId,
+        lecturerIds: allIds,
+        instructors: updatedInstructors,
+      });
+    }
     this.saveState();
   }
 
-  batchAllocateCourses(allocations: { courseId: string; lecturerId?: string }[]) {
-    allocations.forEach(({ courseId, lecturerId }) => {
+  updateCourseInstructors(courseId: string, instructors: any[]) {
+    const course = this.from('courses').selectById(courseId);
+    if (!course) return;
+    const lecturerIds = instructors.map((i) => i.lecturerId);
+    const primary =
+      instructors.find((i) => i.role === 'Lead Instructor') || instructors[0];
+    this.from('courses').update(courseId, {
+      instructors,
+      lecturerIds,
+      lecturerId: primary ? primary.lecturerId : undefined,
+    });
+    this.saveState();
+  }
+
+  batchAllocateCourses(
+    allocations: {
+      courseId: string;
+      lecturerId?: string;
+      instructors?: any[];
+    }[]
+  ) {
+    allocations.forEach(({ courseId, lecturerId, instructors }) => {
       const course = this.from('courses').selectById(courseId);
       if (course) {
-        this.from('courses').update(courseId, { lecturerId: lecturerId || undefined });
+        if (instructors && instructors.length > 0) {
+          const lecturerIds = instructors.map((i) => i.lecturerId);
+          const primary =
+            instructors.find((i) => i.role === 'Lead Instructor') || instructors[0];
+          this.from('courses').update(courseId, {
+            instructors,
+            lecturerIds,
+            lecturerId: primary.lecturerId,
+          });
+        } else {
+          this.allocateCourseLecturer(courseId, lecturerId);
+        }
       }
     });
     this.saveState();

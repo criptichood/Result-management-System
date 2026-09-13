@@ -14,4 +14,7 @@ export { AdminResetDatabaseModal } from './AdminResetDatabaseModal';
 export { AdminSenateAnalyticsTab } from './AdminSenateAnalyticsTab';
 export { SenateBroadsheetModal } from './SenateBroadsheetModal';
 export { SenateStudentProfileModal } from './SenateStudentProfileModal';
-export { AcademicAnomalyModal } from './AcademicAnomalyModal';
+export { CourseRegistrationConfirmModal } from './CourseRegistrationConfirmModal';
+export { CourseLecturerAssignmentModal } from './CourseLecturerAssignmentModal';
+export { AutoAssignPreviewModal } from './AutoAssignPreviewModal';
+export { LecturerCourseWorkloadModal } from './LecturerCourseWorkloadModal';

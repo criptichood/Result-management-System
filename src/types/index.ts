@@ -24,6 +24,19 @@ export interface Department {
   description?: string;
 }
 
+export type InstructorRole = 
+  | 'Lead Instructor'
+  | 'Co-Lecturer'
+  | 'Practical / Lab Instructor'
+  | 'Tutorial Assistant';
+
+export interface CourseInstructor {
+  lecturerId: string;
+  role: InstructorRole;
+  notes?: string;
+  assignedAt?: string;
+}
+
 export interface Course {
   id: string;
   code: string;
@@ -33,7 +46,9 @@ export interface Course {
   college: string;
   level: number;
   semester: 1 | 2;
-  lecturerId?: string;
+  lecturerId?: string; // Primary / Lead lecturer
+  lecturerIds?: string[]; // All assigned lecturers
+  instructors?: CourseInstructor[]; // Detailed role assignment
   description?: string;
 }
 

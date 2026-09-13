@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Calendar, ArrowRight, CheckCircle2, AlertTriangle, GraduationCap, Clock, ShieldCheck } from 'lucide-react';
+import { 
+  Calendar, 
+  ArrowRight, 
+  CheckCircle2, 
+  Sparkles, 
+  GraduationCap, 
+  ShieldCheck, 
+  Check, 
+  CalendarDays,
+  Layers,
+  ChevronRight,
+  Info
+} from 'lucide-react';
 import { User } from '../../types';
+import { 
+  getNextSequentialTerm, 
+  getAcademicSessionOptions, 
+  parseAcademicSession,
+  formatAcademicSession,
+  formatTermDisplay 
+} from '../../lib/academicSessionUtils';
 
 interface AdminSessionTransitionModalProps {
   isOpen: boolean;
@@ -11,7 +30,11 @@ interface AdminSessionTransitionModalProps {
   currentSession: string;
   currentSemester: 1 | 2;
   students: User[];
-  onConfirmTransition: (newSession: string, newSemester: 1 | 2, options: { promoteStudents: boolean; openRegistration: boolean }) => void;
+  onConfirmTransition: (
+    newSession: string,
+    newSemester: 1 | 2,
+    options: { promoteStudents: boolean; openRegistration: boolean }
+  ) => void;
 }
 
 export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalProps> = ({
@@ -19,29 +42,66 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
   onOpenChange,
   currentSession,
   currentSemester,
-  students,
+  students = [],
   onConfirmTransition,
 }) => {
-  // Determine default next session/semester
-  const isCurrentlySecondSemester = currentSemester === 2;
-  const parseSessionYear = parseInt(currentSession.split('/')[0]) || 2024;
-  const nextSessionString = isCurrentlySecondSemester 
-    ? `${parseSessionYear + 1}/${parseSessionYear + 2}` 
-    : currentSession;
-  const nextSemesterVal = isCurrentlySecondSemester ? 1 : 2;
+  // Compute automated next sequential progression
+  const nextTerm = getNextSequentialTerm(currentSession, currentSemester);
+  const sessionOptions = getAcademicSessionOptions(currentSession);
 
-  const [targetSession, setTargetSession] = useState<string>(nextSessionString);
-  const [targetSemester, setTargetSemester] = useState<1 | 2>(nextSemesterVal as 1 | 2);
-  const [promoteStudents, setPromoteStudents] = useState<boolean>(isCurrentlySecondSemester);
+  // Mode: 'preset-next-semester' | 'preset-new-session' | 'custom'
+  const [selectedPreset, setSelectedPreset] = useState<'next-semester' | 'new-session' | 'custom'>(
+    currentSemester === 1 ? 'next-semester' : 'new-session'
+  );
+
+  const [targetSession, setTargetSession] = useState<string>(nextTerm.session);
+  const [targetSemester, setTargetSemester] = useState<1 | 2>(nextTerm.semester);
+  const [promoteStudents, setPromoteStudents] = useState<boolean>(nextTerm.isNewSession);
   const [openRegistration, setOpenRegistration] = useState<boolean>(true);
-  const [confirmKeyword, setConfirmKeyword] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  // Calculate promotion stats
-  const level100Count = students.filter(s => s.level === 100).length;
-  const level200Count = students.filter(s => s.level === 200).length;
-  const level300Count = students.filter(s => s.level === 300).length;
-  const level400Count = students.filter(s => s.level === 400).length;
+  // Sync state whenever modal opens or currentSession/Semester changes
+  useEffect(() => {
+    if (isOpen) {
+      const computed = getNextSequentialTerm(currentSession, currentSemester);
+      if (currentSemester === 1) {
+        setSelectedPreset('next-semester');
+        setTargetSession(currentSession);
+        setTargetSemester(2);
+        setPromoteStudents(false);
+      } else {
+        setSelectedPreset('new-session');
+        setTargetSession(computed.session);
+        setTargetSemester(1);
+        setPromoteStudents(true);
+      }
+      setOpenRegistration(true);
+    }
+  }, [isOpen, currentSession, currentSemester]);
+
+  // Handle Preset Selection
+  const handleSelectPreset = (preset: 'next-semester' | 'new-session' | 'custom') => {
+    setSelectedPreset(preset);
+    const { startYear } = parseAcademicSession(currentSession);
+
+    if (preset === 'next-semester') {
+      setTargetSession(currentSession);
+      setTargetSemester(2);
+      setPromoteStudents(false);
+    } else if (preset === 'new-session') {
+      const nextSession = formatAcademicSession(startYear + 1);
+      setTargetSession(nextSession);
+      setTargetSemester(1);
+      setPromoteStudents(true);
+    }
+  };
+
+  // Calculate student promotion metrics
+  const level100Count = (students || []).filter((s) => s.level === 100).length;
+  const level200Count = (students || []).filter((s) => s.level === 200).length;
+  const level300Count = (students || []).filter((s) => s.level === 300).length;
+  const level400Count = (students || []).filter((s) => s.level === 400).length;
+  const totalStudents = students?.length || 0;
 
   const handleExecute = () => {
     setIsProcessing(true);
@@ -52,97 +112,201 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
       });
       setIsProcessing(false);
       onOpenChange(false);
-    }, 600);
+    }, 450);
   };
+
+  const isTargetNewSession = targetSession !== currentSession;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 font-semibold text-xs tracking-wider uppercase mb-1">
+          <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 font-bold text-xs tracking-wider uppercase mb-1">
             <Calendar className="w-4 h-4 text-emerald-600" />
             Institutional Calendar Management
           </div>
           <DialogTitle className="text-xl text-slate-900 dark:text-white flex items-center gap-2">
             Academic Session & Semester Transition Wizard
           </DialogTitle>
-          <DialogDescription className="text-xs">
-            Safely transition the university to a new semester or session, advance student cohorts, and configure course registration.
+          <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
+            Advance the university academic calendar seamlessly. Sessions, semesters, and student promotions are calculated automatically.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 py-2">
-          {/* Current vs Target Comparison Card */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-850">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Current Active Term</span>
-              <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>{currentSession}</span>
-                <span className="text-slate-400">•</span>
-                <span>{currentSemester === 1 ? '1st Semester' : '2nd Semester'}</span>
-              </p>
-              <Badge variant="outline" className="text-[10px]">Active Now</Badge>
-            </div>
+          {/* Active vs Target Visual Timeline Comparison */}
+          <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-gradient-to-r from-emerald-50/70 via-slate-50 to-emerald-50/40 dark:from-emerald-950/30 dark:via-slate-900 dark:to-emerald-950/20">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr] items-center gap-4">
+              {/* Current Active Term */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Current Active Term</span>
+                  <Badge variant="outline" className="text-[10px] bg-white dark:bg-slate-800">Active</Badge>
+                </div>
+                <p className="text-base font-extrabold text-slate-900 dark:text-white">
+                  {formatTermDisplay(currentSession, currentSemester)}
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  {totalStudents} registered students across all levels
+                </p>
+              </div>
 
-            <div className="space-y-1 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 pt-3 md:pt-0 md:pl-4">
-              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Target Term</span>
-              <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
-                <span>{targetSession}</span>
-                <span className="text-emerald-400">•</span>
-                <span>{targetSemester === 1 ? '1st Semester' : '2nd Semester'}</span>
-              </p>
-              <Badge variant="success" className="text-[10px]">Upcoming Term</Badge>
+              {/* Arrow Indicator */}
+              <div className="hidden sm:flex flex-col items-center justify-center px-2">
+                <div className="p-2 rounded-full bg-emerald-600 text-white shadow-xs">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+
+              {/* Target Upcoming Term */}
+              <div className="space-y-1 sm:border-l sm:border-slate-200 dark:sm:border-slate-800 sm:pl-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Target Term</span>
+                  <Badge variant="success" className="text-[10px]">Upcoming Target</Badge>
+                </div>
+                <p className="text-base font-extrabold text-emerald-800 dark:text-emerald-300">
+                  {formatTermDisplay(targetSession, targetSemester)}
+                </p>
+                <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400">
+                  {isTargetNewSession ? '✨ New Session Progression' : 'Semester Advancement'}
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Target Term Selection */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-              1. Select Target Session & Semester
+          {/* Quick-Action Presets: One-Click Automatic Term Selection */}
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              1. Choose Transition Pathway
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                  Academic Session
-                </label>
-                <select
-                  value={targetSession}
-                  onChange={(e) => setTargetSession(e.target.value)}
-                  className="w-full h-9 px-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                >
-                  <option value="2024/2025">2024/2025 Academic Session</option>
-                  <option value="2025/2026">2025/2026 Academic Session</option>
-                  <option value="2026/2027">2026/2027 Academic Session</option>
-                </select>
-              </div>
 
-              <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                  Semester
-                </label>
-                <div className="flex gap-2">
-                  {[1, 2].map((sem) => (
-                    <button
-                      key={sem}
-                      type="button"
-                      onClick={() => setTargetSemester(sem as 1 | 2)}
-                      className={`flex-1 h-9 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
-                        targetSemester === sem
-                          ? 'bg-[#064e3b] text-white border-[#064e3b]'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50'
-                      }`}
-                    >
-                      {sem === 1 ? '1st Semester' : '2nd Semester'}
-                    </button>
-                  ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Preset 1: Next Semester */}
+              <button
+                type="button"
+                onClick={() => handleSelectPreset('next-semester')}
+                className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer relative ${
+                  selectedPreset === 'next-semester'
+                    ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-950/40 ring-2 ring-emerald-500/20'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <CalendarDays className="w-4 h-4 text-emerald-600" />
+                    <span>Advance to 2nd Semester</span>
+                  </div>
+                  {selectedPreset === 'next-semester' && (
+                    <div className="p-0.5 rounded-full bg-emerald-600 text-white">
+                      <Check className="w-3 h-3" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Keep <span className="font-semibold text-slate-700 dark:text-slate-300">{currentSession}</span>, transition to 2nd Semester. Student levels are maintained.
+                </p>
+              </button>
+
+              {/* Preset 2: New Academic Session */}
+              <button
+                type="button"
+                onClick={() => handleSelectPreset('new-session')}
+                className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer relative ${
+                  selectedPreset === 'new-session'
+                    ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-950/40 ring-2 ring-emerald-500/20'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <GraduationCap className="w-4 h-4 text-emerald-600" />
+                    <span>Inaugurate Next Session</span>
+                  </div>
+                  {selectedPreset === 'new-session' && (
+                    <div className="p-0.5 rounded-full bg-emerald-600 text-white">
+                      <Check className="w-3 h-3" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Commence <span className="font-semibold text-slate-700 dark:text-slate-300">{formatAcademicSession(parseAcademicSession(currentSession).startYear + 1)} (Sem 1)</span> with student level promotions.
+                </p>
+              </button>
+            </div>
+
+            {/* Custom Option Button Toggle */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => handleSelectPreset('custom')}
+                className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  selectedPreset === 'custom'
+                    ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300'
+                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Specify Custom Session / Semester</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Custom Term Controls (Shows when Custom is selected) */}
+          {selectedPreset === 'custom' && (
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                    Academic Session
+                  </label>
+                  <select
+                    value={targetSession}
+                    onChange={(e) => {
+                      setTargetSession(e.target.value);
+                      if (e.target.value !== currentSession) {
+                        setPromoteStudents(true);
+                      }
+                    }}
+                    className="w-full h-9 px-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  >
+                    {sessionOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label} {opt.isCurrent ? '★ (Calendar Current)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                    Semester
+                  </label>
+                  <div className="flex gap-2">
+                    {[1, 2].map((sem) => (
+                      <button
+                        key={sem}
+                        type="button"
+                        onClick={() => setTargetSemester(sem as 1 | 2)}
+                        className={`flex-1 h-9 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                          targetSemester === sem
+                            ? 'bg-[#064e3b] text-white border-[#064e3b]'
+                            : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        {sem === 1 ? '1st Semester' : '2nd Semester'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Student Cohort Promotion Configuration */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
               2. Student Cohort Level Progression
             </h4>
             <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-3">
@@ -155,11 +319,12 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
                 />
                 <div>
                   <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <GraduationCap className="w-4 h-4 text-emerald-600" />
                     Promote Active Undergraduates to Next Academic Level
                   </span>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    Recommended when transitioning into a new Academic Session (e.g., 2024/2025 to 2025/2026).
+                    {isTargetNewSession 
+                      ? 'Recommended: Automatically advances 100L ➔ 200L, 200L ➔ 300L, 300L ➔ 400L, and clears graduating students.'
+                      : 'Disabled for same-session semester transitions (students remain in their current academic level).'}
                   </p>
                 </div>
               </label>
@@ -167,19 +332,19 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
               {promoteStudents && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-center">
-                    <span className="text-[10px] text-slate-500 block">100L ➔ 200L</span>
+                    <span className="text-[10px] text-slate-500 block font-medium">100L ➔ 200L</span>
                     <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">{level100Count} Students</span>
                   </div>
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-center">
-                    <span className="text-[10px] text-slate-500 block">200L ➔ 300L</span>
+                    <span className="text-[10px] text-slate-500 block font-medium">200L ➔ 300L</span>
                     <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">{level200Count} Students</span>
                   </div>
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-center">
-                    <span className="text-[10px] text-slate-500 block">300L ➔ 400L</span>
+                    <span className="text-[10px] text-slate-500 block font-medium">300L ➔ 400L</span>
                     <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">{level300Count} Students</span>
                   </div>
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-center">
-                    <span className="text-[10px] text-slate-500 block">400L ➔ Graduated</span>
+                    <span className="text-[10px] text-slate-500 block font-medium">400L ➔ Graduated</span>
                     <span className="text-xs font-bold text-blue-700 dark:text-blue-400">{level400Count} Students</span>
                   </div>
                 </div>
@@ -187,7 +352,7 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
             </div>
           </div>
 
-          {/* Registration Window */}
+          {/* Registration Portal Window Switch */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
               3. Course Registration Window
@@ -195,10 +360,10 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
             <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-white">
-                  Automatically Open Registration Portal
+                  Automatically Open Registration Portal for New Term
                 </span>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Allows students to immediately register courses for {targetSession} (Semester {targetSemester}).
+                  Allows students to immediately register courses for {targetSession} ({targetSemester === 1 ? '1st' : '2nd'} Semester).
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -213,19 +378,16 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
             </div>
           </div>
 
-          {/* Safety Verification Box */}
-          <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 space-y-2">
-            <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold text-xs">
-              <ShieldCheck className="w-4 h-4 text-amber-600" />
-              <span>Historical Integrity Assurance</span>
-            </div>
-            <p className="text-[11px] text-amber-900/80 dark:text-amber-300/80 leading-relaxed">
-              All previously published semester results and approved grades from prior terms remain permanently preserved in SQLite database snapshots and student academic transcripts.
+          {/* Historical Integrity Guarantee */}
+          <div className="p-3.5 rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/20 flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <p className="text-[11px] text-blue-900 dark:text-blue-200 leading-relaxed">
+              <span className="font-bold">Historical Snapshot Integrity:</span> All previously published student GPA/CGPA results, semester scores, and senate broadsheets from prior terms are permanently preserved in the database.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <DialogFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isProcessing}>
             Cancel
           </Button>
@@ -233,9 +395,16 @@ export const AdminSessionTransitionModal: React.FC<AdminSessionTransitionModalPr
             type="button"
             onClick={handleExecute}
             disabled={isProcessing}
-            className="bg-[#064e3b] hover:bg-[#065f46] text-white text-xs gap-1.5"
+            className="bg-[#064e3b] hover:bg-[#065f46] text-white text-xs gap-1.5 font-bold"
           >
-            {isProcessing ? 'Executing Transition...' : 'Confirm & Execute Term Transition'}
+            {isProcessing ? (
+              'Executing Transition...'
+            ) : (
+              <>
+                <span>Confirm & Advance to {targetSession} ({targetSemester === 1 ? '1st' : '2nd'} Sem)</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

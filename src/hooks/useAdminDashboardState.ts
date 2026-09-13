@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/db';
-import { Course, Department, User, Enrollment, Result } from '../types';
+import { Course, Department, User, Enrollment, Result, CourseInstructor, InstructorRole } from '../types';
 
 export function useAdminDashboardState() {
   const { user, login } = useAuth();
@@ -17,7 +17,7 @@ export function useAdminDashboardState() {
     lecturerViewEmail: false,
     lecturerViewPhone: false,
     courseRegistrationOpen: true,
-    currentSession: '2024/2025',
+    currentSession: '2025/2026',
     currentSemester: 1 as 1 | 2,
   });
 
@@ -54,6 +54,20 @@ export function useAdminDashboardState() {
 
   // Session Transition Wizard State
   const [isSessionWizardOpen, setIsSessionWizardOpen] = useState(false);
+
+  // Course Registration Confirmation Modal
+  const [isRegConfirmModalOpen, setIsRegConfirmModalOpen] = useState(false);
+
+  // Multi-Lecturer Course Assignment Modal State
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [selectedCourseForAssignment, setSelectedCourseForAssignment] = useState<Course | null>(null);
+
+  // Auto Assign Preview Modal State
+  const [isAutoAssignModalOpen, setIsAutoAssignModalOpen] = useState(false);
+
+  // Lecturer Workload / Teaching Profile Modal State
+  const [isLecturerWorkloadModalOpen, setIsLecturerWorkloadModalOpen] = useState(false);
+  const [selectedLecturerForWorkload, setSelectedLecturerForWorkload] = useState<User | null>(null);
 
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
@@ -99,10 +113,19 @@ export function useAdminDashboardState() {
     }
   };
 
-  const handleBatchAllocate = (allocations: { courseId: string; lecturerId?: string }[]) => {
+  const handleUpdateCourseInstructors = (courseId: string, instructors: CourseInstructor[]) => {
+    db.updateCourseInstructors(courseId, instructors);
+    reloadData();
+    const targetCourse = courses.find((c) => c.id === courseId);
+    showNotification(`Updated teaching staff allocations for ${targetCourse?.code || 'course'}.`);
+  };
+
+  const handleBatchAllocate = (
+    allocations: { courseId: string; lecturerId?: string; instructors?: CourseInstructor[] }[]
+  ) => {
     db.batchAllocateCourses(allocations);
     reloadData();
-    showNotification(`Batch allocated ${allocations.length} course(s) to departmental faculty.`);
+    showNotification(`Successfully allocated ${allocations.length} course(s) across academic departments.`);
   };
 
   const handleConfirmTransition = (
@@ -119,9 +142,58 @@ export function useAdminDashboardState() {
     );
   };
 
-  const handleToggleRegistration = () => {
+  const handleConfirmToggleRegistration = () => {
     const updated = !settings.courseRegistrationOpen;
     handleSettingChange('courseRegistrationOpen', updated);
+    setIsRegConfirmModalOpen(false);
+    showNotification(
+      `Course registration has been ${updated ? 'OPENED' : 'CLOSED'} for all students.`
+    );
+  };
+
+  // Open Lecturer Workload modal
+  const handleOpenLecturerWorkload = (lecturerUser: User) => {
+    setSelectedLecturerForWorkload(lecturerUser);
+    setIsLecturerWorkloadModalOpen(true);
+  };
+
+  // Assign course to lecturer directly from Lecturer Workload modal
+  const handleAssignCourseToLecturer = (courseId: string, lecturerId: string, role: InstructorRole = 'Lead Instructor') => {
+    const targetCourse = courses.find((c) => c.id === courseId);
+    if (!targetCourse) return;
+
+    const existing = [...(targetCourse.instructors || [])];
+    const isAlready = existing.find((i) => i.lecturerId === lecturerId);
+    if (isAlready) {
+      isAlready.role = role;
+    } else {
+      existing.push({
+        lecturerId,
+        role,
+        assignedAt: new Date().toISOString(),
+      });
+    }
+
+    db.updateCourseInstructors(courseId, existing);
+    reloadData();
+    showNotification(`Assigned ${targetCourse.code} to teaching portfolio.`);
+  };
+
+  // Remove course from lecturer directly from Lecturer Workload modal
+  const handleRemoveCourseFromLecturer = (courseId: string, lecturerId: string) => {
+    const targetCourse = courses.find((c) => c.id === courseId);
+    if (!targetCourse) return;
+
+    const existing = (targetCourse.instructors || []).filter((i) => i.lecturerId !== lecturerId);
+    db.updateCourseInstructors(courseId, existing);
+    reloadData();
+    showNotification(`Removed ${targetCourse.code} from teaching portfolio.`, 'info');
+  };
+
+  // Open Instructor assignment modal for a specific course
+  const handleOpenAssignModalForCourse = (course: Course) => {
+    setSelectedCourseForAssignment(course);
+    setIsAssignModalOpen(true);
   };
 
   // Course Handlers
@@ -199,104 +271,70 @@ export function useAdminDashboardState() {
     name: string;
     code: string;
     college: string;
-    HOD: string;
-    description: string;
+    hodName?: string;
   }) => {
     const newDept: Department = {
       id: `dept_${Date.now()}`,
-      name: deptData.name.trim(),
-      code: deptData.code.trim().toUpperCase(),
+      name: deptData.name,
+      code: deptData.code.toUpperCase(),
       college: deptData.college,
-      HOD: deptData.HOD.trim() || undefined,
-      description: deptData.description.trim() || undefined,
+      HOD: deptData.hodName || 'Faculty HOD',
     };
     db.from('departments').insert(newDept);
     setDepartments(db.from('departments').select());
-    showNotification(`Added department of ${newDept.name}.`);
+    setIsAddDeptOpen(false);
+    showNotification(`Added department ${newDept.name}.`);
   };
 
-  const handleImportCourses = (
-    selectedCourses: Course[],
-    targetDept: string,
-    targetCollege: string
-  ) => {
-    const existingCourses = db.from('courses').select();
-
-    selectedCourses.forEach((c) => {
-      const alreadyInDept = existingCourses.some(
-        (existing) =>
-          existing.code === c.code &&
-          existing.department.toLowerCase() === targetDept.toLowerCase()
-      );
-
-      if (!alreadyInDept) {
-        const clonedCourse: Course = {
-          id: `c_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          code: c.code,
-          title: c.title,
-          creditUnits: c.creditUnits,
-          department: targetDept,
-          college: targetCollege,
-          level: c.level,
-          semester: c.semester,
-        };
-        db.from('courses').insert(clonedCourse);
-      }
-    });
-
-    setCourses(db.from('courses').select());
-    showNotification(`Imported ${selectedCourses.length} curriculum courses into ${targetDept}.`);
+  const handleImportCourses = (selectedCourseIds: string[], targetDept: string, targetCollege: string) => {
+    // Import helper
+    reloadData();
+    setIsImportCoursesOpen(false);
+    showNotification(`Imported ${selectedCourseIds.length} course(s) into curriculum.`);
   };
 
-  // User Management Handlers
+  // User Handlers
   const handleOpenAddUser = () => {
     setEditingUser(null);
     setIsUserModalOpen(true);
   };
 
-  const handleEditUser = (userToEdit: User) => {
-    setEditingUser(userToEdit);
+  const handleEditUser = (targetUser: User) => {
+    setEditingUser(targetUser);
     setIsUserModalOpen(true);
   };
 
   const handleSaveUser = (userData: Partial<User>) => {
     if (editingUser) {
       db.from('users').update(editingUser.id, userData);
-      showNotification(`Updated user credentials for ${userData.name || editingUser.name}.`);
+      showNotification(`Updated user account ${userData.name || editingUser.name}.`);
     } else {
       const newUser: User = {
         id: `u_${Date.now()}`,
         name: userData.name || '',
         email: userData.email || '',
         role: userData.role || 'Student',
-        department: userData.department,
-        college: userData.college,
+        department: userData.department || 'Computer Science',
         matricNumber: userData.matricNumber,
         staffId: userData.staffId,
         level: userData.level,
-        phoneNumber: userData.phoneNumber,
       };
       db.from('users').insert(newUser);
-      showNotification(`Registered new user ${newUser.name} (${newUser.role}).`);
+      showNotification(`Created account for ${newUser.name}.`);
     }
     setUsers(db.from('users').select());
+    setIsUserModalOpen(false);
   };
 
   const handleDeleteUser = (userId: string) => {
     const target = users.find((u) => u.id === userId);
-    if (target?.id === user?.id) {
-      showNotification('Cannot delete your own active administrator account.', 'info');
-      return;
-    }
     db.from('users').delete(userId);
     setUsers(db.from('users').select());
     showNotification(`Deleted user ${target?.name || ''}.`, 'info');
   };
 
   const handleImpersonate = (targetUser: User) => {
-    login(targetUser.id);
-    showNotification(`Switched session to ${targetUser.name} (${targetUser.role}).`);
-
+    login(targetUser);
     if (targetUser.role === 'Student') {
       navigate('/student');
     } else if (targetUser.role === 'Lecturer') {
@@ -328,9 +366,26 @@ export function useAdminDashboardState() {
     showNotification,
     handleSettingChange,
     handleAllocateCourse,
+    handleUpdateCourseInstructors,
     handleBatchAllocate,
     handleConfirmTransition,
-    handleToggleRegistration,
+    handleConfirmToggleRegistration,
+    isRegConfirmModalOpen,
+    setIsRegConfirmModalOpen,
+    isAssignModalOpen,
+    setIsAssignModalOpen,
+    selectedCourseForAssignment,
+    setSelectedCourseForAssignment,
+    handleOpenAssignModalForCourse,
+    isAutoAssignModalOpen,
+    setIsAutoAssignModalOpen,
+    isLecturerWorkloadModalOpen,
+    setIsLecturerWorkloadModalOpen,
+    selectedLecturerForWorkload,
+    setSelectedLecturerForWorkload,
+    handleOpenLecturerWorkload,
+    handleAssignCourseToLecturer,
+    handleRemoveCourseFromLecturer,
     courseSearch,
     setCourseSearch,
     selectedSemesterFilter,

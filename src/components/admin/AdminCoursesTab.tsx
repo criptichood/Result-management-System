@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Plus, Search, Edit2, Trash2, BookPlus, UserCheck } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, BookPlus, UserCheck, Users, Unlock, XCircle } from 'lucide-react';
 import { Course, Department } from '../../types';
 
 interface AdminCoursesTabProps {
@@ -23,6 +23,9 @@ interface AdminCoursesTabProps {
   onOpenEditCourse: (course: Course) => void;
   onDeleteCourse: (courseId: string) => void;
   onNavigateToAllocations?: () => void;
+  isRegistrationOpen?: boolean;
+  onTriggerRegistrationModal?: () => void;
+  onOpenAssignLecturers?: (course: Course) => void;
 }
 
 export const AdminCoursesTab: React.FC<AdminCoursesTabProps> = ({
@@ -41,6 +44,9 @@ export const AdminCoursesTab: React.FC<AdminCoursesTabProps> = ({
   onOpenEditCourse,
   onDeleteCourse,
   onNavigateToAllocations,
+  isRegistrationOpen,
+  onTriggerRegistrationModal,
+  onOpenAssignLecturers,
 }) => {
   const filteredCourses = courses.filter(c => {
     const matchesSearch = c.code.toLowerCase().includes(courseSearch.toLowerCase()) || 
@@ -60,12 +66,37 @@ export const AdminCoursesTab: React.FC<AdminCoursesTabProps> = ({
           <CardDescription>Configure course codes, titles, credit units, and semester assignments.</CardDescription>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
+          {onTriggerRegistrationModal && (
+            <Button
+              id="btn-course-mgmt-toggle-registration"
+              variant={isRegistrationOpen ? 'outline' : 'default'}
+              onClick={onTriggerRegistrationModal}
+              className={`gap-1.5 text-xs font-semibold h-9 shadow-xs border ${
+                isRegistrationOpen
+                  ? 'border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60'
+                  : 'border-emerald-600 bg-[#059669] hover:bg-emerald-700 text-white'
+              }`}
+            >
+              {isRegistrationOpen ? (
+                <>
+                  <XCircle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span>Close Registration</span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-4 h-4 text-white" />
+                  <span>Open Registration</span>
+                </>
+              )}
+            </Button>
+          )}
+
           {onNavigateToAllocations && (
             <Button
               id="btn-goto-allocations"
               variant="outline"
               onClick={onNavigateToAllocations}
-              className="gap-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="gap-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 h-9 text-xs"
             >
               <UserCheck className="h-4 w-4 text-emerald-600" /> Allocation Matrix
             </Button>
@@ -75,12 +106,12 @@ export const AdminCoursesTab: React.FC<AdminCoursesTabProps> = ({
               id="btn-import-preexisting-courses" 
               variant="outline"
               onClick={onOpenImportCourse} 
-              className="gap-2 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
+              className="gap-2 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 h-9 text-xs"
             >
-              <BookPlus className="h-4 w-4 text-emerald-600" /> Add from Pre-existing
+              <BookPlus className="h-4 w-4 text-emerald-600" /> Add Pre-existing
             </Button>
           )}
-          <Button id="btn-add-course" onClick={onOpenAddCourse} className="bg-[#059669] hover:bg-emerald-700 text-white gap-2">
+          <Button id="btn-add-course" onClick={onOpenAddCourse} className="bg-[#059669] hover:bg-emerald-700 text-white gap-2 h-9 text-xs">
             <Plus className="h-4 w-4" /> Add New Course
           </Button>
         </div>
@@ -170,40 +201,67 @@ export const AdminCoursesTab: React.FC<AdminCoursesTabProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCourses.map((course) => (
-              <TableRow key={course.id}>
-                <TableCell className="font-mono font-bold text-[#059669]">{course.code}</TableCell>
-                <TableCell className="font-medium text-slate-900 dark:text-white">{course.title}</TableCell>
-                <TableCell className="text-center font-semibold">{course.creditUnits}</TableCell>
-                <TableCell className="text-slate-600 dark:text-slate-400">{course.department}</TableCell>
-                <TableCell className="text-center"><Badge variant="outline">{course.level}L</Badge></TableCell>
-                <TableCell className="text-center">
-                  <Badge variant={course.semester === 1 ? "secondary" : "default"}>
-                    {course.semester === 1 ? '1st Sem' : '2nd Sem'}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right space-x-1">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => onOpenEditCourse(course)} 
-                    className="text-slate-600 hover:text-emerald-700"
-                    aria-label={`Edit ${course.code}`}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => onDeleteCourse(course.id)} 
-                    className="text-slate-400 hover:text-red-600"
-                    aria-label={`Delete ${course.code}`}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredCourses.map((course) => {
+              const assignedLecturerCount = (course.instructors && course.instructors.length > 0)
+                ? course.instructors.length
+                : (course.lecturerIds && course.lecturerIds.length > 0)
+                ? course.lecturerIds.length
+                : course.lecturerId ? 1 : 0;
+
+              return (
+                <TableRow key={course.id}>
+                  <TableCell className="font-mono font-bold text-[#059669]">{course.code}</TableCell>
+                  <TableCell>
+                    <p className="font-medium text-slate-900 dark:text-white leading-tight">{course.title}</p>
+                    {assignedLecturerCount > 0 && (
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                        <Users className="w-3 h-3 text-emerald-600" />
+                        {assignedLecturerCount} instructor{assignedLecturerCount === 1 ? '' : 's'} assigned
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center font-semibold">{course.creditUnits}</TableCell>
+                  <TableCell className="text-slate-600 dark:text-slate-400">{course.department}</TableCell>
+                  <TableCell className="text-center"><Badge variant="outline">{course.level}L</Badge></TableCell>
+                  <TableCell className="text-center">
+                    <Badge variant={course.semester === 1 ? "secondary" : "default"}>
+                      {course.semester === 1 ? '1st Sem' : '2nd Sem'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-1">
+                    {onOpenAssignLecturers && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onOpenAssignLecturers(course)}
+                        className="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 h-8 px-2 text-xs"
+                        title="Manage Instructors for this course"
+                      >
+                        <Users className="w-3.5 h-3.5 mr-1" /> Instructors
+                      </Button>
+                    )}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => onOpenEditCourse(course)} 
+                      className="text-slate-600 hover:text-emerald-700 h-8 w-8"
+                      aria-label={`Edit ${course.code}`}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => onDeleteCourse(course.id)} 
+                      className="text-slate-400 hover:text-red-600 h-8 w-8"
+                      aria-label={`Delete ${course.code}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
             {filteredCourses.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-slate-500 py-12">

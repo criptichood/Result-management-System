@@ -35,7 +35,7 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
   departments,
   enrollments = [],
   results = [],
-  session = '2024/2025',
+  session = '2025/2026',
   semester = 1,
 }) => {
   // Filters

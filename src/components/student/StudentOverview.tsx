@@ -33,10 +33,10 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
   const mockAnnouncements = [
     {
       id: '1',
-      title: 'Mid-Semester Continuous Assessment (CA) Schedule - 2023/2024',
+      title: `Continuous Assessment (CA) Schedule - ${settings?.currentSession || '2025/2026'}`,
       course: 'University Wide',
       date: 'Sept 1, 2026',
-      content: 'All 200L and 300L students are required to complete their CA quizzes before Friday. Ensure your course registration is fully verified.',
+      content: 'All active undergraduate students are required to complete their CA quizzes before Friday. Ensure your course registration is fully verified.',
       type: 'important'
     },
     {
@@ -52,7 +52,7 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
       title: 'Course Registration Portal Status Notice',
       course: 'Academic Affairs',
       date: 'Aug 25, 2026',
-      content: settings.courseRegistrationOpen ? 'Course registration portal is currently OPEN for the current session.' : 'Course registration portal is currently closed. Contact your level coordinator for late registration.',
+      content: settings.courseRegistrationOpen ? `Course registration portal is currently OPEN for the ${settings.currentSession || '2025/2026'} academic session.` : 'Course registration portal is currently closed. Contact your level coordinator for late registration.',
       type: 'info'
     }
   ];
@@ -67,7 +67,7 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
               <Badge variant="success" className="bg-emerald-500/30 text-emerald-200 border-emerald-400/40">
                 FUAZ Student Portal
               </Badge>
-              <span className="text-emerald-300 text-xs font-semibold">• Session: {settings.currentSession || '2023/2024'}</span>
+              <span className="text-emerald-300 text-xs font-semibold">• Session: {settings.currentSession || '2025/2026'}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
               Welcome back, {user.name}!

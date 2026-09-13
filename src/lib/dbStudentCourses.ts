@@ -22,7 +22,12 @@ export function computeLecturerCourses(
   allResults: Result[]
 ) {
   let courses = allCourses;
-  const assigned = courses.filter((c) => c.lecturerId === lecturerId);
+  const assigned = courses.filter(
+    (c) =>
+      c.lecturerId === lecturerId ||
+      (c.lecturerIds && c.lecturerIds.includes(lecturerId)) ||
+      (c.instructors && c.instructors.some((i) => i.lecturerId === lecturerId))
+  );
   if (assigned.length > 0) {
     courses = assigned;
   } else if (user?.department) {

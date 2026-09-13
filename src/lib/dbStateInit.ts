@@ -1,7 +1,7 @@
 import { Course, Department, Enrollment, GradeDispute, ModerationLog, Result, User } from '../types';
 import { mockCourses, mockDepartments, mockEnrollments, mockResults, mockUsers } from './mockData';
 
-export const DB_KEY = 'fuaz_srms_db_v14';
+export const DB_KEY = 'fuaz_srms_db_v15';
 
 export interface DBState {
   users: User[];
@@ -65,7 +65,7 @@ export function createInitialDBState(): DBState {
       lecturerViewEmail: false,
       lecturerViewPhone: false,
       courseRegistrationOpen: true,
-      currentSession: '2024/2025',
+      currentSession: '2025/2026',
       currentSemester: 1,
     },
   };

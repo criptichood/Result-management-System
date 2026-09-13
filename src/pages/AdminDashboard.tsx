@@ -18,6 +18,10 @@ import {
   DepartmentFormModal,
   PreExistingCoursesModal,
   AdminUserFormModal,
+  CourseRegistrationConfirmModal,
+  CourseLecturerAssignmentModal,
+  AutoAssignPreviewModal,
+  LecturerCourseWorkloadModal,
 } from '../components/admin';
 
 export const AdminDashboard = () => {
@@ -38,9 +42,26 @@ export const AdminDashboard = () => {
     showNotification,
     handleSettingChange,
     handleAllocateCourse,
+    handleUpdateCourseInstructors,
     handleBatchAllocate,
     handleConfirmTransition,
-    handleToggleRegistration,
+    handleConfirmToggleRegistration,
+    isRegConfirmModalOpen,
+    setIsRegConfirmModalOpen,
+    isAssignModalOpen,
+    setIsAssignModalOpen,
+    selectedCourseForAssignment,
+    setSelectedCourseForAssignment,
+    handleOpenAssignModalForCourse,
+    isAutoAssignModalOpen,
+    setIsAutoAssignModalOpen,
+    isLecturerWorkloadModalOpen,
+    setIsLecturerWorkloadModalOpen,
+    selectedLecturerForWorkload,
+    setSelectedLecturerForWorkload,
+    handleOpenLecturerWorkload,
+    handleAssignCourseToLecturer,
+    handleRemoveCourseFromLecturer,
     courseSearch,
     setCourseSearch,
     selectedSemesterFilter,
@@ -101,6 +122,7 @@ export const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Header Banner */}
       <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#064e3b] dark:text-emerald-400 tracking-tight">
@@ -110,36 +132,18 @@ export const AdminDashboard = () => {
             Manage curriculum, courses, users, and academic sessions • FUAZ SRMS Core
           </p>
         </div>
-        <div className="flex gap-3">
-          <Button
-            id="btn-quick-toggle-registration"
-            onClick={handleToggleRegistration}
-            variant={settings.courseRegistrationOpen ? 'destructive' : 'default'}
-            className={
-              !settings.courseRegistrationOpen
-                ? 'bg-[#059669] hover:bg-emerald-700 text-white text-xs cursor-pointer'
-                : 'text-xs cursor-pointer'
-            }
-          >
-            {settings.courseRegistrationOpen ? (
-              <>
-                <XCircle className="w-4 h-4 mr-1.5" /> Close Course Registration
-              </>
-            ) : (
-              <>
-                <CheckCircle2 className="w-4 h-4 mr-1.5" /> Open Course Registration
-              </>
-            )}
-          </Button>
-        </div>
       </div>
 
       {activeTab === 'overview' && (
         <AdminOverviewTab
           usersCount={users.length}
           coursesCount={courses.length}
+          departmentsCount={departments.length}
+          enrollmentsCount={enrollments.length}
+          studentsCount={users.filter(u => u.role === 'Student').length}
+          facultyCount={users.filter(u => u.role === 'Lecturer' || u.role === 'Chief Examiner').length}
           settings={settings}
-          onToggleRegistration={handleToggleRegistration}
+          onToggleRegistration={() => setIsRegConfirmModalOpen(true)}
           onOpenSessionWizard={() => setIsSessionWizardOpen(true)}
         />
       )}
@@ -173,6 +177,9 @@ export const AdminDashboard = () => {
           onOpenEditCourse={handleOpenEditCourse}
           onDeleteCourse={handleDeleteCourse}
           onNavigateToAllocations={() => navigate('/admin?tab=allocations')}
+          isRegistrationOpen={settings.courseRegistrationOpen}
+          onTriggerRegistrationModal={() => setIsRegConfirmModalOpen(true)}
+          onOpenAssignLecturers={handleOpenAssignModalForCourse}
         />
       )}
 
@@ -184,6 +191,9 @@ export const AdminDashboard = () => {
           workloads={db.getLecturersWithWorkload()}
           onAllocateCourse={handleAllocateCourse}
           onBatchAllocate={handleBatchAllocate}
+          onOpenAssignModal={handleOpenAssignModalForCourse}
+          onOpenAutoAssignModal={() => setIsAutoAssignModalOpen(true)}
+          onOpenLecturerWorkloadModal={handleOpenLecturerWorkload}
         />
       )}
 
@@ -199,10 +209,12 @@ export const AdminDashboard = () => {
       {activeTab === 'users' && (
         <AdminUsersTab
           users={users}
+          courses={courses}
           onOpenAddUser={handleOpenAddUser}
           onEditUser={handleEditUser}
           onDeleteUser={handleDeleteUser}
           onImpersonate={handleImpersonate}
+          onViewLecturerWorkload={handleOpenLecturerWorkload}
         />
       )}
 
@@ -218,6 +230,56 @@ export const AdminDashboard = () => {
           onOpenSessionWizard={() => setIsSessionWizardOpen(true)}
         />
       )}
+
+      {/* Course Registration Confirmation Modal */}
+      <CourseRegistrationConfirmModal
+        isOpen={isRegConfirmModalOpen}
+        onClose={() => setIsRegConfirmModalOpen(false)}
+        onConfirm={handleConfirmToggleRegistration}
+        settings={settings}
+        isCurrentlyOpen={settings.courseRegistrationOpen}
+        currentSession={settings.currentSession}
+        currentSemester={settings.currentSemester}
+        enrolledCount={enrollments.length}
+      />
+
+      {/* Multi-Instructor Assignment Modal for a Course */}
+      <CourseLecturerAssignmentModal
+        isOpen={isAssignModalOpen}
+        onClose={() => {
+          setIsAssignModalOpen(false);
+          setSelectedCourseForAssignment(null);
+        }}
+        course={selectedCourseForAssignment}
+        lecturers={users.filter((u) => u.role === 'Lecturer' || u.role === 'Chief Examiner')}
+        onSaveInstructors={handleUpdateCourseInstructors}
+      />
+
+      {/* Intelligent Auto-Assign Preview Modal */}
+      <AutoAssignPreviewModal
+        isOpen={isAutoAssignModalOpen}
+        onClose={() => setIsAutoAssignModalOpen(false)}
+        courses={courses}
+        departments={departments}
+        lecturers={users.filter((u) => u.role === 'Lecturer' || u.role === 'Chief Examiner')}
+        workloads={db.getLecturersWithWorkload()}
+        onConfirmBatchAllocate={handleBatchAllocate}
+      />
+
+      {/* Lecturer Teaching Portfolio & Workload Modal */}
+      <LecturerCourseWorkloadModal
+        isOpen={isLecturerWorkloadModalOpen}
+        onClose={() => {
+          setIsLecturerWorkloadModalOpen(false);
+          setSelectedLecturerForWorkload(null);
+        }}
+        lecturer={selectedLecturerForWorkload}
+        courses={courses}
+        enrollments={enrollments}
+        onAssignCourseToLecturer={handleAssignCourseToLecturer}
+        onRemoveCourseFromLecturer={handleRemoveCourseFromLecturer}
+        onOpenAssignModalForCourse={handleOpenAssignModalForCourse}
+      />
 
       {/* Academic Session & Semester Transition Wizard Modal */}
       <AdminSessionTransitionModal
