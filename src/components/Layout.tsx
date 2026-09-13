@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, Menu, Calculator, User as UserIcon, BookOpen, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { LogOut, Menu, Calculator, User as UserIcon, LayoutDashboard, ChevronDown, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sidebar } from './Sidebar';
 import { FuazLogo } from './ui/FuazLogo';
@@ -52,6 +52,18 @@ export const Layout = () => {
       {/* Top Navigation */}
       <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs flex-shrink-0 z-30 print:hidden transition-colors">
         <div className="flex items-center space-x-3">
+          {location.pathname === '/login' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white mr-1"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Button>
+          )}
+
           {user && !isPublicRoute && !isGpaGuideRoute && (
             <button
               onClick={() => setIsMobileNavOpen(prev => !prev)}
@@ -200,24 +212,6 @@ export const Layout = () => {
           <Outlet />
         </main>
       </div>
-
-      {/* Footer */}
-      <footer className="h-10 sm:h-12 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 sm:px-8 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider flex-shrink-0 z-30 print:hidden transition-colors">
-        <div className="truncate flex items-center gap-2">
-          <span>Federal University of Agriculture, Zuru (FUAZ)</span>
-          <span className="hidden md:inline">•</span>
-          <button 
-            onClick={() => navigate('/gpa-guide')} 
-            className="hidden md:inline text-[#059669] dark:text-emerald-400 hover:underline font-bold lowercase first-letter:uppercase"
-          >
-            How GPA is calculated
-          </button>
-        </div>
-        <div className="flex gap-3 sm:gap-4 flex-shrink-0 items-center">
-          <span className="hidden sm:inline">System: Online</span>
-          <span className="text-emerald-700 dark:text-emerald-400 font-semibold">v1.0.4-Stable</span>
-        </div>
-      </footer>
     </div>
   );
 };

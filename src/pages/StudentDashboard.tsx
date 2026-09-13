@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/db';
 import { Card } from '../components/ui/card';
-import { FileText, CheckCircle2, Download } from 'lucide-react';
+import { FileText, CheckCircle2, Download, ShieldCheck, FileQuestion } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   StudentHeader, 
@@ -14,14 +14,19 @@ import {
   SemesterSelectorBar,
   OfficialResultSlipModal,
   StudentOverview,
-  StudentAnnouncementsView
+  StudentAnnouncementsView,
+  StudentDisputeModal,
+  StudentDisputeHistoryView,
+  OfficialStatementOfResultModal
 } from '../components/student';
 import { 
   getDegreeClassification, 
   calculateSemesterStats, 
   exportResultsToCsv,
-  sortSemesterKeysDescending
+  sortSemesterKeysDescending,
+  computeOutstandingCarryovers
 } from '../lib/academicUtils';
+import { GradeDispute } from '../types';
 
 export const StudentDashboard = () => {
   const { user } = useAuth();
@@ -34,8 +39,12 @@ export const StudentDashboard = () => {
   const [analyticsScope, setAnalyticsScope] = useState<string>('all');
   const [settings, setSettings] = useState(db.getSettings());
   const [isOfficialSlipOpen, setIsOfficialSlipOpen] = useState(false);
+  const [isVerifiableStatementOpen, setIsVerifiableStatementOpen] = useState(false);
   const [officialSlipScope, setOfficialSlipScope] = useState<string>('all');
   const [isExportingAll, setIsExportingAll] = useState(false);
+  const [disputes, setDisputes] = useState<GradeDispute[]>([]);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const [selectedDisputeCourse, setSelectedDisputeCourse] = useState<any | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'overview';
@@ -55,8 +64,17 @@ export const StudentDashboard = () => {
     if (!user) return;
     const res = db.getStudentResults(user.id);
     setResultsData(res);
-    setAvailableCourses(db.getAvailableCourses(user.id));
+    const available = db.getAvailableCourses(user.id);
+    setAvailableCourses(available);
+    
+    // Automatically pre-select compulsory carryover courses
+    const carryoverIds = available.filter(c => c.isCarryover).map(c => c.id);
+    if (carryoverIds.length > 0) {
+      setSelectedCoursesToRegister(prev => Array.from(new Set([...prev, ...carryoverIds])));
+    }
+
     setSettings(db.getSettings());
+    setDisputes(db.getDisputesByStudent(user.id));
 
     // Extract and sort semester keys descending
     const rawKeys: string[] = [];
@@ -94,16 +112,21 @@ export const StudentDashboard = () => {
   // Sort semester keys chronologically descending so recent is first
   const semesterKeys = sortSemesterKeysDescending(Object.keys(semesterGroups));
 
+  // Compute genuine outstanding carryovers (failed courses from earlier level/session not yet cleared)
+  const outstandingCourses = computeOutstandingCarryovers(
+    resultsData, 
+    settings.currentSession || '2024/2025', 
+    user.level || 100
+  );
+
   // Calculate Cumulative CGPA across all published courses
   let totalGradePoints = 0;
   let totalEarnedCredits = 0;
   const cumulativeGradeDistribution = { A: 0, B: 0, C: 0, D: 0, F: 0 };
-  const outstandingCourses: any[] = [];
 
   publishedResults.forEach(r => {
     const credits = r.course?.creditUnits || 0;
     const grade = r.result?.grade;
-    const score = r.result?.totalScore ?? 0;
     totalEarnedCredits += credits;
     
     if (grade === 'A') { totalGradePoints += 5 * credits; cumulativeGradeDistribution.A++; }
@@ -111,10 +134,6 @@ export const StudentDashboard = () => {
     else if (grade === 'C') { totalGradePoints += 3 * credits; cumulativeGradeDistribution.C++; }
     else if (grade === 'D') { totalGradePoints += 2 * credits; cumulativeGradeDistribution.D++; }
     else if (grade === 'F') { totalGradePoints += 0 * credits; cumulativeGradeDistribution.F++; }
-
-    if (score < 40 || grade === 'F') {
-      outstandingCourses.push(r);
-    }
   });
 
   const cumulativeCgpa = totalEarnedCredits > 0 ? (totalGradePoints / totalEarnedCredits) : 0;
@@ -182,18 +201,29 @@ export const StudentDashboard = () => {
   });
 
   const handleToggleCourseSelection = (courseId: string) => {
+    const targetCourse = availableCourses.find(c => c.id === courseId);
+    if (targetCourse?.isCarryover) {
+      showToast(`Notice: ${targetCourse.code} is an outstanding carryover course and is compulsory for registration.`);
+      return;
+    }
     setSelectedCoursesToRegister(prev => 
       prev.includes(courseId) ? prev.filter(id => id !== courseId) : [...prev, courseId]
     );
   };
 
   const handleSelectAllSemesterCourses = (courseList: any[]) => {
-    const listIds = courseList.map(c => c.id);
-    const allSelected = listIds.every(id => selectedCoursesToRegister.includes(id));
-    if (allSelected) {
-      setSelectedCoursesToRegister(prev => prev.filter(id => !listIds.includes(id)));
+    const carryoverIds = courseList.filter(c => c.isCarryover).map(c => c.id);
+    const nonCarryoverIds = courseList.filter(c => !c.isCarryover).map(c => c.id);
+    const allNonCarryoversSelected = nonCarryoverIds.length > 0 && nonCarryoverIds.every(id => selectedCoursesToRegister.includes(id));
+    
+    if (allNonCarryoversSelected) {
+      // Unselect regular courses only, retaining carryovers
+      setSelectedCoursesToRegister(prev => [
+        ...prev.filter(id => !nonCarryoverIds.includes(id)),
+        ...carryoverIds
+      ]);
     } else {
-      setSelectedCoursesToRegister(prev => Array.from(new Set([...prev, ...listIds])));
+      setSelectedCoursesToRegister(prev => Array.from(new Set([...prev, ...nonCarryoverIds, ...carryoverIds])));
     }
   };
 
@@ -228,6 +258,26 @@ export const StudentDashboard = () => {
     const published = items.filter(i => i.result?.status === 'Published');
     await exportResultsToCsv(published, user.matricNumber || 'Student', `Slip_${semesterKey.replace(/[^a-zA-Z0-9]/g, '_')}`);
     showToast(`CSV downloaded for ${semesterKey}`);
+  };
+
+  const handleOpenDispute = (item: any) => {
+    if (!item?.course) return;
+    setSelectedDisputeCourse({
+      courseId: item.course.id,
+      courseCode: item.course.code,
+      courseTitle: item.course.title,
+      lecturerId: item.course.lecturerId,
+      caScore: item.result?.caScore ?? null,
+      examScore: item.result?.examScore ?? null,
+      totalScore: item.result?.totalScore ?? null,
+      grade: item.result?.grade ?? null,
+    });
+    setIsDisputeModalOpen(true);
+  };
+
+  const handleDisputeSubmitted = (newDispute: GradeDispute) => {
+    setDisputes(prev => [newDispute, ...prev]);
+    showToast(`Grade query for ${newDispute.courseCode} lodged successfully.`);
   };
 
   const visibleSemesterKeys = selectedSemesterKey === 'all' 
@@ -267,6 +317,7 @@ export const StudentDashboard = () => {
             hasPublishedResults={publishedResults.length > 0}
             onExportCsv={handleExportAllCsv}
             onPrint={() => handleOpenPrintModal(selectedSemesterKey === 'all' ? 'all' : selectedSemesterKey)}
+            onOpenVerifiableStatement={() => setIsVerifiableStatementOpen(true)}
             isExporting={isExportingAll}
           />
 
@@ -307,6 +358,7 @@ export const StudentDashboard = () => {
                     cumulativeCgpa={cumulativeCgpa}
                     onPrintSemester={handleOpenPrintModal}
                     onExportSemesterCsv={handleExportSingleSemesterCsv}
+                    onQueryGrade={handleOpenDispute}
                   />
                 ))
               ) : (
@@ -350,11 +402,39 @@ export const StudentDashboard = () => {
         />
       )}
 
+      {activeTab === 'disputes' && (
+        <StudentDisputeHistoryView
+          disputes={disputes}
+          onOpenNewDispute={publishedResults.length > 0 ? () => handleOpenDispute(publishedResults[0]) : undefined}
+        />
+      )}
+
       {activeTab === 'announcements' && (
         <StudentAnnouncementsView />
       )}
 
-      {/* Official Statement of Results / Semester Result Slip Modal */}
+      {/* Student Grade Dispute Submission Modal */}
+      <StudentDisputeModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        student={user}
+        courseResult={selectedDisputeCourse}
+        onDisputeSubmitted={handleDisputeSubmitted}
+      />
+
+      {/* Verifiable Official Statement of Results with Checksum */}
+      <OfficialStatementOfResultModal
+        isOpen={isVerifiableStatementOpen}
+        onClose={() => setIsVerifiableStatementOpen(false)}
+        student={user}
+        coursesWithResults={publishedResults}
+        gpa={semesterKeys.length > 0 ? semesterGroups[semesterKeys[0]]?.items ? calculateSemesterStats(semesterGroups[semesterKeys[0]].items).gpa : 0 : 0}
+        cgpa={cumulativeCgpa}
+        session={settings.currentSession || '2024/2025'}
+        semester={settings.currentSemester || 1}
+      />
+
+      {/* Official Semester Result Slip Modal */}
       <OfficialResultSlipModal
         isOpen={isOfficialSlipOpen}
         onClose={() => setIsOfficialSlipOpen(false)}

@@ -4,7 +4,8 @@ import { User } from '../types';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, FileSearch, 
   LineChart, FileText, ClipboardList, BookMarked, Calculator, 
-  X, PanelLeftClose, PanelLeftOpen, Bell 
+  X, PanelLeftClose, PanelLeftOpen, Bell, Building2, Database,
+  UserCheck, FileQuestion, GraduationCap
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,6 +31,7 @@ export function Sidebar({ user, isOpen = false, onClose, isCollapsed, onToggleCo
           { id: 'overview', label: 'Overview', icon: LayoutDashboard },
           { id: 'results', label: 'My Results', icon: FileText },
           { id: 'registration', label: 'Course Registration', icon: BookMarked },
+          { id: 'disputes', label: 'Academic Queries', icon: FileQuestion },
           { id: 'announcements', label: 'Announcements', icon: Bell },
         ];
       case 'Lecturer':
@@ -37,22 +39,29 @@ export function Sidebar({ user, isOpen = false, onClose, isCollapsed, onToggleCo
         return [
           { id: 'grading', label: 'Grading & Courses', icon: ClipboardList },
           { id: 'class-list', label: 'Class List', icon: Users },
+          { id: 'disputes', label: 'Grade Queries', icon: FileQuestion },
           { id: 'analytics', label: 'Analytics', icon: LineChart },
         ];
       case 'Chief Examiner':
         activeTab = activeTab || 'pending';
         return [
           { id: 'pending', label: 'Pending Approvals', icon: FileSearch },
+          { id: 'disputes', label: 'Grade Disputes', icon: FileQuestion },
           { id: 'courses', label: 'Department Courses', icon: BookMarked },
           { id: 'students', label: 'Department Students', icon: Users },
+          { id: 'broadsheet', label: 'Degree Broadsheet', icon: GraduationCap },
           { id: 'published', label: 'Published Results', icon: BookOpen },
         ];
       case 'Admin':
         activeTab = activeTab || 'overview';
         return [
           { id: 'overview', label: 'System Overview', icon: LayoutDashboard },
+          { id: 'senate', label: 'Senate Analytics', icon: GraduationCap },
           { id: 'courses', label: 'Course Management', icon: BookOpen },
+          { id: 'allocations', label: 'Course Allocations', icon: UserCheck },
+          { id: 'departments', label: 'Departmental Management', icon: Building2 },
           { id: 'users', label: 'User Management', icon: Users },
+          { id: 'database', label: 'SQLite Database Studio', icon: Database },
           { id: 'settings', label: 'Settings', icon: Settings },
         ];
       default:

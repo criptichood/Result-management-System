@@ -10,4 +10,7 @@ export { StudentOverview } from './StudentOverview';
 export { StudentAnnouncementsView } from './StudentAnnouncementsView';
 export { SemesterGrowthChart } from './SemesterGrowthChart';
 export { SubjectDiagnosticsView } from './SubjectDiagnosticsView';
+export { StudentDisputeModal } from './StudentDisputeModal';
+export { StudentDisputeHistoryView } from './StudentDisputeHistoryView';
+export { OfficialStatementOfResultModal } from './OfficialStatementOfResultModal';
 

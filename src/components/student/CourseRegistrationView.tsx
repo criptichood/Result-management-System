@@ -33,7 +33,7 @@ export const CourseRegistrationView: React.FC<CourseRegistrationViewProps> = ({
   const [selectedSession, setSelectedSession] = useState<string>(currentActiveSession);
 
   // Extract all distinct academic sessions from student records + current session
-  const sessionSet = new Set<string>([currentActiveSession, '2022/2023', '2023/2024', '2024/2025']);
+  const sessionSet = new Set<string>([currentActiveSession, '2022/2023', '2023/2024', '2024/2025', '2025/2026']);
   resultsData.forEach(item => {
     if (item.enrollment?.academicYear) {
       sessionSet.add(item.enrollment.academicYear);
@@ -218,6 +218,16 @@ export const CourseRegistrationView: React.FC<CourseRegistrationViewProps> = ({
             </div>
           </CardHeader>
 
+          {/* Carryover notice banner if carryover courses are present */}
+          {filteredAvailableCourses.some(c => c.isCarryover) && (
+            <div className="mx-6 mt-4 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-start gap-3">
+              <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-amber-800 dark:text-amber-300">
+                <span className="font-bold">Compulsory Carryover Course(s) Detected:</span> You have outstanding course(s) from previous semesters that have been automatically included in your registration. In accordance with university academic regulations, carryover courses are locked and compulsory for retake.
+              </div>
+            </div>
+          )}
+
           <div className="p-4 bg-slate-50/70 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
             <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
               <span>Available Courses: <strong className="text-slate-900 dark:text-white">{filteredAvailableCourses.length}</strong></span>
@@ -232,7 +242,7 @@ export const CourseRegistrationView: React.FC<CourseRegistrationViewProps> = ({
                 onClick={() => onSelectAllSemesterCourses(filteredAvailableCourses)}
                 className="text-xs text-[#059669] dark:text-emerald-400 hover:text-emerald-800 font-bold"
               >
-                {filteredAvailableCourses.every(c => selectedCoursesToRegister.includes(c.id)) ? 'Deselect All' : 'Select All Courses'}
+                {filteredAvailableCourses.filter(c => !c.isCarryover).every(c => selectedCoursesToRegister.includes(c.id)) ? 'Deselect Electives' : 'Select All Courses'}
               </Button>
             )}
           </div>
@@ -247,32 +257,54 @@ export const CourseRegistrationView: React.FC<CourseRegistrationViewProps> = ({
                     <TableHead>Course Title</TableHead>
                     <TableHead className="text-center">Credit Units</TableHead>
                     <TableHead>Department</TableHead>
-                    <TableHead className="text-center">Level</TableHead>
+                    <TableHead className="text-center">Category / Level</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredAvailableCourses.map((course) => {
-                    const isSelected = selectedCoursesToRegister.includes(course.id);
+                    const isSelected = selectedCoursesToRegister.includes(course.id) || course.isCarryover;
                     return (
                       <TableRow 
                         key={course.id} 
-                        className={`cursor-pointer transition-colors ${isSelected ? 'bg-emerald-50/40 dark:bg-emerald-950/40' : 'hover:bg-slate-50/60 dark:hover:bg-slate-800/50'}`}
+                        className={`cursor-pointer transition-colors ${
+                          course.isCarryover 
+                            ? 'bg-amber-50/50 dark:bg-amber-950/20 hover:bg-amber-50/80 dark:hover:bg-amber-950/30' 
+                            : isSelected 
+                              ? 'bg-emerald-50/40 dark:bg-emerald-950/40' 
+                              : 'hover:bg-slate-50/60 dark:hover:bg-slate-800/50'
+                        }`}
                         onClick={() => onToggleCourseSelection(course.id)}
                       >
                         <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
                           <input 
                             type="checkbox" 
                             aria-label={`Select ${course.code}`}
-                            className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-gray-300 dark:border-gray-700 cursor-pointer" 
+                            className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-gray-300 dark:border-gray-700 cursor-pointer disabled:opacity-75" 
                             checked={isSelected}
+                            disabled={course.isCarryover}
                             onChange={() => onToggleCourseSelection(course.id)}
                           />
                         </TableCell>
-                        <TableCell className="font-bold text-slate-900 dark:text-white">{course.code}</TableCell>
+                        <TableCell className="font-bold text-slate-900 dark:text-white">
+                          <div className="flex items-center gap-1.5">
+                            <span>{course.code}</span>
+                            {course.isCarryover && (
+                              <Badge variant="warning" className="text-[10px] py-0 px-1.5 font-bold uppercase tracking-wider">
+                                Carryover Retake
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell className="font-medium text-slate-700 dark:text-slate-300">{course.title}</TableCell>
                         <TableCell className="text-center font-bold text-[#059669] dark:text-emerald-400">{course.creditUnits}</TableCell>
                         <TableCell className="text-slate-600 dark:text-slate-400 text-xs">{course.department}</TableCell>
-                        <TableCell className="text-center"><Badge variant="outline">{course.level}L</Badge></TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <Badge variant={course.isCarryover ? "warning" : "outline"}>
+                              {course.level}L {course.isCarryover ? '(Carryover)' : 'Curriculum'}
+                            </Badge>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     );
                   })}

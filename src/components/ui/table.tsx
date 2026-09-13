@@ -5,7 +5,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto rounded-xl border border-slate-200">
+  <div className="relative w-full overflow-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -19,7 +19,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b bg-slate-50 text-slate-500 text-xs uppercase tracking-wider", className)} {...props} />
+  <thead ref={ref} className={cn("[&_tr]:border-b dark:[&_tr]:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -42,7 +42,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b border-slate-100 transition-colors hover:bg-emerald-50/30 data-[state=selected]:bg-slate-50",
+      "border-b border-slate-100 dark:border-slate-800 transition-colors hover:bg-emerald-50/30 dark:hover:bg-slate-800/50 data-[state=selected]:bg-slate-50 dark:data-[state=selected]:bg-slate-800",
       className
     )}
     {...props}
@@ -57,7 +57,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-6 text-left align-middle font-semibold text-slate-500 [&:has([role=checkbox])]:pr-0",
+      "h-12 px-6 text-left align-middle font-semibold text-slate-500 dark:text-slate-400 [&:has([role=checkbox])]:pr-0",
       className
     )}
     {...props}
@@ -71,7 +71,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("p-6 align-middle [&:has([role=checkbox])]:pr-0", className)}
+    className={cn("p-6 align-middle text-slate-700 dark:text-slate-300 [&:has([role=checkbox])]:pr-0", className)}
     {...props}
   />
 ))

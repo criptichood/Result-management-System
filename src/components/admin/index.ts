@@ -1,5 +1,17 @@
 export { AdminOverviewTab } from './AdminOverviewTab';
 export { AdminCoursesTab } from './AdminCoursesTab';
+export { AdminCourseAllocationTab } from './AdminCourseAllocationTab';
+export { AdminDepartmentsTab } from './AdminDepartmentsTab';
 export { AdminUsersTab } from './AdminUsersTab';
 export { AdminSettingsTab } from './AdminSettingsTab';
+export { AdminSessionTransitionModal } from './AdminSessionTransitionModal';
+export { AdminSqlExplorerTab } from './AdminSqlExplorerTab';
 export { CourseFormModal } from './CourseFormModal';
+export { DepartmentFormModal } from './DepartmentFormModal';
+export { PreExistingCoursesModal } from './PreExistingCoursesModal';
+export { AdminUserFormModal } from './AdminUserFormModal';
+export { AdminResetDatabaseModal } from './AdminResetDatabaseModal';
+export { AdminSenateAnalyticsTab } from './AdminSenateAnalyticsTab';
+export { SenateBroadsheetModal } from './SenateBroadsheetModal';
+export { SenateStudentProfileModal } from './SenateStudentProfileModal';
+export { AcademicAnomalyModal } from './AcademicAnomalyModal';

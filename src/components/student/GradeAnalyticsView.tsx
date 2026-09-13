@@ -8,8 +8,7 @@ import {
   AlertTriangle, 
   BookOpen, 
   Lightbulb, 
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { GradeDistribution, DegreeClassification } from '../../lib/academicUtils';

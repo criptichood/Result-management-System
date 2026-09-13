@@ -7,8 +7,14 @@ import {
   DepartmentStudentsTable,
   PublishedResultsTable,
   DepartmentCoursesTable,
+  ExaminerBroadSheetModal,
+  ExaminerAuditTrailModal,
+  ExaminerDisputeQueue,
 } from '../components/examiner';
-import { Course, User } from '../types';
+import { AdminSenateAnalyticsTab } from '../components/admin';
+import { Course, User, ModerationLog, Department, Enrollment, Result } from '../types';
+import { Button } from '../components/ui/button';
+import { FileSpreadsheet, CheckCircle2, Info, History } from 'lucide-react';
 
 export const ExaminerDashboard = () => {
   const { user } = useAuth();
@@ -16,9 +22,26 @@ export const ExaminerDashboard = () => {
   const [departmentStudents, setDepartmentStudents] = useState<User[]>([]);
   const [departmentCourses, setDepartmentCourses] = useState<any[]>([]);
   const [lecturers, setLecturers] = useState<User[]>([]);
+  const [moderationLogs, setModerationLogs] = useState<ModerationLog[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [allEnrollments, setAllEnrollments] = useState<Enrollment[]>([]);
+  const [allResults, setAllResults] = useState<Result[]>([]);
+  const [settings, setSettings] = useState<any>({ currentSession: '2024/2025', currentSemester: 1 });
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'pending';
   const [searchQuery, setSearchQuery] = useState('');
+  const [isBroadSheetOpen, setIsBroadSheetOpen] = useState(false);
+  const [isAuditTrailOpen, setIsAuditTrailOpen] = useState(false);
+  const [notification, setNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
+
+  const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 4500);
+  };
 
   const loadData = useCallback(() => {
     if (!user) return;
@@ -27,33 +50,50 @@ export const ExaminerDashboard = () => {
     const allResults = db.from('results').select();
     const allEnrollments = db.from('enrollments').select();
     const allUsers = db.from('users').select();
+    const allDepts = db.from('departments').select();
+    const appSettings = db.getSettings();
+    const logs = db.getModerationLogs();
+    setModerationLogs(logs);
+    setAllUsers(allUsers);
+    setAllCourses(allCourses);
+    setDepartments(allDepts);
+    setAllEnrollments(allEnrollments);
+    setAllResults(allResults);
+    setSettings(appSettings);
 
-    const students = allUsers.filter(u => u.role === 'Student' && u.department === user.department);
+    const students = allUsers.filter(
+      (u) => u.role === 'Student' && u.department === user.department
+    );
     setDepartmentStudents(students);
 
-    const faculty = allUsers.filter(u => u.role === 'Lecturer' || u.role === 'Chief Examiner');
+    const faculty = allUsers.filter(
+      (u) => u.role === 'Lecturer' || u.role === 'Chief Examiner'
+    );
     setLecturers(faculty);
 
-    const deptStudentIds = new Set(students.map(s => s.id));
+    const deptStudentIds = new Set(students.map((s) => s.id));
 
     // Group all courses with detailed results and enrollment metrics
-    const grouped = allCourses.map(course => {
-      // Find all enrollments for this course
-      const courseEnrollments = allEnrollments.filter(e => e.courseId === course.id);
-      
-      // Filter enrollments relevant to this department's student body or course department
-      const relevantEnrollments = course.department === user.department
-        ? courseEnrollments
-        : courseEnrollments.filter(e => deptStudentIds.has(e.studentId));
+    const grouped = allCourses.map((course) => {
+      const courseEnrollments = allEnrollments.filter((e) => e.courseId === course.id);
 
-      const detailedResults = relevantEnrollments.map(e => {
-        const result = allResults.find(r => r.enrollmentId === e.id);
-        const student = allUsers.find(u => u.id === e.studentId);
+      const relevantEnrollments =
+        course.department === user.department
+          ? courseEnrollments
+          : courseEnrollments.filter((e) => deptStudentIds.has(e.studentId));
+
+      const detailedResults = relevantEnrollments.map((e) => {
+        const result = allResults.find((r) => r.enrollmentId === e.id);
+        const student = allUsers.find((u) => u.id === e.studentId);
         return { enrollment: e, result, student };
       });
-      
-      const submittedCount = detailedResults.filter(r => r.result?.status === 'Submitted' || r.result?.status === 'Published').length;
-      const publishedCount = detailedResults.filter(r => r.result?.status === 'Published').length;
+
+      const submittedCount = detailedResults.filter(
+        (r) => r.result?.status === 'Submitted' || r.result?.status === 'Published'
+      ).length;
+      const publishedCount = detailedResults.filter(
+        (r) => r.result?.status === 'Published'
+      ).length;
       const totalEnrolled = relevantEnrollments.length;
 
       const isCore = course.department === user.department;
@@ -67,17 +107,19 @@ export const ExaminerDashboard = () => {
         totalEnrolled,
         isCore,
         isTakenByDeptStudents,
-        hasPendingReview: detailedResults.some(r => r.result?.status === 'Submitted'),
-        isFullyPublished: publishedCount === totalEnrolled && totalEnrolled > 0
+        hasPendingReview: detailedResults.some((r) => r.result?.status === 'Submitted'),
+        isFullyPublished: publishedCount === totalEnrolled && totalEnrolled > 0,
       };
     });
 
-    // Courses for moderation (Pending / Published)
-    const moderationCourses = grouped.filter(c => c.totalEnrolled > 0 && (c.isCore || c.isTakenByDeptStudents));
+    const moderationCourses = grouped.filter(
+      (c) => c.totalEnrolled > 0 && (c.isCore || c.isTakenByDeptStudents)
+    );
     setCoursesWithResults(moderationCourses);
 
-    // Department Courses (Both Core CSC courses and Borrowed courses taken by department students)
-    const deptAndBorrowedCourses = grouped.filter(c => c.isCore || c.isTakenByDeptStudents);
+    const deptAndBorrowedCourses = grouped.filter(
+      (c) => c.isCore || c.isTakenByDeptStudents
+    );
     setDepartmentCourses(deptAndBorrowedCourses);
   }, [user]);
 
@@ -88,44 +130,47 @@ export const ExaminerDashboard = () => {
   if (!user) return null;
 
   const handleApprove = (courseId: string) => {
-    const allEnrollments = db.from('enrollments').select();
-    const courseEnrollments = allEnrollments.filter(e => e.courseId === courseId);
-    
-    courseEnrollments.forEach(e => {
-      const res = db.from('results').select().find(r => r.enrollmentId === e.id);
-      if (res && res.status !== 'Published') {
-        db.from('results').update(res.id, { 
-          status: 'Published', 
-          lastUpdated: new Date().toISOString() 
-        });
-      }
-    });
-
+    db.moderateCourse(courseId, 'approve', undefined, user);
     loadData();
+    const course = coursesWithResults.find((c) => c.id === courseId);
+    showNotification(
+      `Results for ${course?.code || 'course'} successfully published to student portals.`
+    );
   };
 
-  const handleReject = (courseId: string) => {
-    const allEnrollments = db.from('enrollments').select();
-    const courseEnrollments = allEnrollments.filter(e => e.courseId === courseId);
-    
-    courseEnrollments.forEach(e => {
-      const res = db.from('results').select().find(r => r.enrollmentId === e.id);
-      if (res) {
-        db.from('results').update(res.id, { 
-          status: 'Draft', 
-          lastUpdated: new Date().toISOString() 
-        });
-      }
-    });
-
+  const handleReject = (courseId: string, notes?: string) => {
+    db.moderateCourse(courseId, 'reject', notes, user);
     loadData();
+    const course = coursesWithResults.find((c) => c.id === courseId);
+    showNotification(
+      `Results for ${course?.code || 'course'} returned to lecturer with revision feedback.`,
+      'info'
+    );
+  };
+
+  const handleBatchModerate = (
+    courseIds: string[],
+    action: 'approve' | 'reject',
+    notes?: string
+  ) => {
+    db.batchModerateCourses(courseIds, action, notes, user);
+    loadData();
+    showNotification(
+      action === 'approve'
+        ? `Successfully approved and published ${courseIds.length} course batches to student portals.`
+        : `Returned ${courseIds.length} course batches for lecturer revision.`,
+      action === 'approve' ? 'success' : 'info'
+    );
   };
 
   const handleSaveCourse = (courseData: Partial<Course>) => {
     if (courseData.id) {
       db.from('courses').update(courseData.id, courseData);
+      showNotification(`Updated course ${courseData.code}.`);
     } else {
-      const newCourseId = `c_${(courseData.code || 'course').toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
+      const newCourseId = `c_${(courseData.code || 'course')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
       db.from('courses').insert({
         ...courseData,
         id: newCourseId,
@@ -135,24 +180,66 @@ export const ExaminerDashboard = () => {
         level: courseData.level || 100,
         semester: courseData.semester || 1,
       });
+      showNotification(`Created course ${courseData.code}.`);
     }
     loadData();
   };
 
-  const pendingCourses = coursesWithResults.filter(c => !c.isFullyPublished);
-  const publishedCourses = coursesWithResults.filter(c => c.isFullyPublished);
+  const pendingCourses = coursesWithResults.filter((c) => !c.isFullyPublished);
+  const publishedCourses = coursesWithResults.filter((c) => c.isFullyPublished);
 
-  const filteredStudents = departmentStudents.filter(s => 
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (s.matricNumber && s.matricNumber.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredStudents = departmentStudents.filter(
+    (s) =>
+      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (s.matricNumber && s.matricNumber.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl mx-auto w-full space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+      {/* Toast Notification Banner */}
+      {notification && (
+        <div
+          className={`p-4 rounded-xl flex items-center justify-between shadow-xs transition-all border ${
+            notification.type === 'success'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
+              : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            {notification.type === 'success' ? (
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+            ) : (
+              <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+            )}
+            <span className="text-sm font-semibold">{notification.message}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#064e3b] tracking-tight">Chief Examiner Portal</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Academic moderation, curriculum registry, and result validation for Department of {user.department}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#064e3b] dark:text-emerald-400 tracking-tight">
+            Chief Examiner Portal
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">
+            Academic moderation, curriculum registry, and result validation for Dept. of {user.department}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Button
+            variant="outline"
+            onClick={() => setIsAuditTrailOpen(true)}
+            className="gap-1.5 text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700"
+          >
+            <History className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Audit Trail ({moderationLogs.length})
+          </Button>
+          <Button
+            onClick={() => setIsBroadSheetOpen(true)}
+            className="gap-2 bg-[#064e3b] hover:bg-[#053d2e] text-white text-xs shadow-xs"
+          >
+            <FileSpreadsheet className="w-4 h-4" /> Senate Master Broad Sheet
+          </Button>
         </div>
       </div>
 
@@ -160,8 +247,19 @@ export const ExaminerDashboard = () => {
         <PendingResultsTable
           pendingCourses={pendingCourses}
           lecturers={lecturers}
+          examiner={user}
           onApprove={handleApprove}
           onReject={handleReject}
+          onBatchModerate={handleBatchModerate}
+          onOpenAuditTrail={() => setIsAuditTrailOpen(true)}
+          onRefresh={loadData}
+        />
+      )}
+
+      {activeTab === 'disputes' && (
+        <ExaminerDisputeQueue
+          currentUser={user}
+          onRefresh={loadData}
         />
       )}
 
@@ -185,12 +283,39 @@ export const ExaminerDashboard = () => {
         />
       )}
 
+      {activeTab === 'broadsheet' && (
+        <AdminSenateAnalyticsTab
+          users={allUsers}
+          courses={allCourses}
+          departments={departments}
+          enrollments={allEnrollments}
+          results={allResults}
+          session={settings.currentSession}
+          semester={settings.currentSemester}
+        />
+      )}
+
       {activeTab === 'published' && (
-        <PublishedResultsTable 
-          publishedCourses={publishedCourses} 
+        <PublishedResultsTable
+          publishedCourses={publishedCourses}
           lecturers={lecturers}
         />
       )}
+
+      {/* Senate Master Broad Sheet Modal */}
+      <ExaminerBroadSheetModal
+        isOpen={isBroadSheetOpen}
+        onClose={() => setIsBroadSheetOpen(false)}
+        departmentName={user.department || 'Computer Science'}
+      />
+
+      {/* Immutable Moderation Audit Trail Modal */}
+      <ExaminerAuditTrailModal
+        isOpen={isAuditTrailOpen}
+        onOpenChange={setIsAuditTrailOpen}
+        logs={moderationLogs}
+        departmentName={user.department || 'Computer Science'}
+      />
     </div>
   );
 };

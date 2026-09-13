@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Calculator, 
   BookOpen, 
-  Sparkles, 
   Layers, 
   HelpCircle, 
   ArrowLeft, 
@@ -102,7 +101,7 @@ export const GpaCalculatorPage = () => {
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
           }`}
         >
-          <Sparkles className="w-4 h-4" />
+          <BookOpen className="w-4 h-4" />
           2. Semester GPA Walkthrough
         </button>
 

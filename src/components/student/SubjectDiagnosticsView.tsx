@@ -9,7 +9,6 @@ import {
   TrendingUp, 
   Info, 
   ArrowRight,
-  Sparkles,
   Layers,
   Search
 } from 'lucide-react';
@@ -174,21 +173,21 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
   return (
     <div id="subject-diagnostics-view" className="space-y-6">
       {/* Overview Diagnostic Banner */}
-      <div className="p-4 bg-gradient-to-r from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 bg-gradient-to-r from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-200 dark:border-amber-800/60 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="p-2 bg-amber-100 text-amber-800 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 rounded-lg flex-shrink-0">
             <Lightbulb className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">Academic Subject Diagnostics & Focus Pinpointer</h3>
-            <p className="text-xs text-slate-600 mt-0.5 max-w-2xl leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Academic Subject Diagnostics & Focus Pinpointer</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 max-w-2xl leading-relaxed">
               Automated subject-domain analytics and pinpointed course evaluations to help you prioritize revision efforts in critical subjects (e.g. Mathematics and Computing).
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
             {weakCourses.length} Key Area{weakCourses.length !== 1 ? 's' : ''} to Strengthen
           </span>
         </div>
@@ -197,34 +196,34 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
       {/* Disciplinary Domain Breakdown Cards */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-emerald-600" /> Disciplinary Subject Mastery Index
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Layers className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Disciplinary Subject Mastery Index
           </h3>
-          <span className="text-xs text-slate-500 font-medium">{domains.length} Core Disciplines Assessed</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{domains.length} Core Disciplines Assessed</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {domains.map(dom => (
-            <Card key={dom.name} className="border-slate-200 shadow-xs hover:border-slate-300 transition-colors">
-              <CardHeader className="pb-3 border-b border-slate-100">
+            <Card key={dom.name} className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+              <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
+                    <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                       <BookOpen className="w-4 h-4" />
                     </div>
                     <div>
-                      <CardTitle className="text-sm font-bold text-slate-900">{dom.name}</CardTitle>
-                      <CardDescription className="text-[11px] text-slate-500">
+                      <CardTitle className="text-sm font-bold text-slate-900 dark:text-white">{dom.name}</CardTitle>
+                      <CardDescription className="text-[11px] text-slate-500 dark:text-slate-400">
                         {dom.courses.length} courses • {dom.totalUnits} credit units
                       </CardDescription>
                     </div>
                   </div>
 
                   <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
-                    dom.status === 'strength' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    dom.status === 'competent' ? 'bg-teal-50 text-teal-700 border-teal-200' :
-                    dom.status === 'moderate' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-rose-50 text-rose-700 border-rose-200'
+                    dom.status === 'strength' ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' :
+                    dom.status === 'competent' ? 'bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800' :
+                    dom.status === 'moderate' ? 'bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' :
+                    'bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
                   }`}>
                     {dom.status === 'strength' ? 'Strength (A Band)' :
                      dom.status === 'competent' ? 'Competent (B Band)' :
@@ -235,32 +234,32 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
 
               <CardContent className="pt-3.5 space-y-3">
                 {/* Domain Metrics Grid */}
-                <div className="grid grid-cols-2 gap-2 text-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <div className="grid grid-cols-2 gap-2 text-center bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
                   <div>
-                    <span className="text-[10px] text-slate-500 font-medium uppercase">Domain Average Score</span>
-                    <p className="text-base font-bold text-slate-900">{dom.avgScore.toFixed(1)}%</p>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase">Domain Average Score</span>
+                    <p className="text-base font-bold text-slate-900 dark:text-white">{dom.avgScore.toFixed(1)}%</p>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 font-medium uppercase">Discipline GPA</span>
-                    <p className="text-base font-bold text-emerald-700">{dom.avgGp.toFixed(2)} / 5.00</p>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase">Discipline GPA</span>
+                    <p className="text-base font-bold text-emerald-700 dark:text-emerald-400">{dom.avgGp.toFixed(2)} / 5.00</p>
                   </div>
                 </div>
 
                 {/* Grade Distribution in this domain */}
-                <div className="flex items-center justify-between text-[11px] text-slate-600 px-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-300 px-1">
                   <span>Grade Breakdown:</span>
                   <div className="flex items-center gap-1.5 font-bold">
-                    {dom.gradeCounts.A > 0 && <span className="text-emerald-700">{dom.gradeCounts.A} A</span>}
-                    {dom.gradeCounts.B > 0 && <span className="text-teal-700">{dom.gradeCounts.B} B</span>}
-                    {dom.gradeCounts.C > 0 && <span className="text-blue-700">{dom.gradeCounts.C} C</span>}
-                    {dom.gradeCounts.D > 0 && <span className="text-amber-700">{dom.gradeCounts.D} D</span>}
-                    {dom.gradeCounts.F > 0 && <span className="text-rose-700">{dom.gradeCounts.F} F</span>}
+                    {dom.gradeCounts.A > 0 && <span className="text-emerald-700 dark:text-emerald-400">{dom.gradeCounts.A} A</span>}
+                    {dom.gradeCounts.B > 0 && <span className="text-teal-700 dark:text-teal-400">{dom.gradeCounts.B} B</span>}
+                    {dom.gradeCounts.C > 0 && <span className="text-blue-700 dark:text-blue-400">{dom.gradeCounts.C} C</span>}
+                    {dom.gradeCounts.D > 0 && <span className="text-amber-700 dark:text-amber-400">{dom.gradeCounts.D} D</span>}
+                    {dom.gradeCounts.F > 0 && <span className="text-rose-700 dark:text-rose-400">{dom.gradeCounts.F} F</span>}
                   </div>
                 </div>
 
                 {/* Recommendation Note */}
-                <div className="p-2 rounded bg-slate-50 border-l-2 border-emerald-600 text-[11px] text-slate-600 leading-relaxed">
-                  <strong className="text-slate-800">Recommendation:</strong> {dom.recommendation}
+                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/60 border-l-2 border-emerald-600 dark:border-emerald-500 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <strong className="text-slate-800 dark:text-slate-200">Recommendation:</strong> {dom.recommendation}
                 </div>
               </CardContent>
             </Card>
@@ -269,18 +268,18 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
       </div>
 
       {/* Critical Focus Areas & Course Weakness Pinpointer */}
-      <Card id="card-weak-courses-diagnostics" className="border-slate-200 shadow-xs">
-        <CardHeader className="border-b border-slate-100 pb-3">
+      <Card id="card-weak-courses-diagnostics" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500" /> Key Areas & Weakness Pinpoint Analysis (C & D Grades)
+              <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500 dark:text-amber-400" /> Key Areas & Weakness Pinpoint Analysis (C & D Grades)
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
                 In-depth assessment of courses with C or D grades, detailing CA vs. Exam root causes and tailored remedies
               </CardDescription>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-500 dark:text-slate-400">
               Showing {weakCourses.length} flagged course{weakCourses.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -317,24 +316,24 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
                     key={item.course.id}
                     className={`p-4 rounded-xl border transition-all ${
                       priority === 'high' 
-                        ? 'border-amber-300 bg-amber-50/40 shadow-xs' 
-                        : 'border-slate-200 bg-white hover:border-slate-300'
+                        ? 'border-amber-300 dark:border-amber-800/80 bg-amber-50/40 dark:bg-amber-950/20 shadow-xs' 
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
+                    <div className="flex items-start justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900 text-sm">{item.course.code}</span>
-                          <span className="text-xs text-slate-500 font-medium">({units} Units)</span>
+                          <span className="font-bold text-slate-900 dark:text-white text-sm">{item.course.code}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">({units} Units)</span>
                         </div>
-                        <h4 className="text-xs font-semibold text-slate-700 mt-0.5 line-clamp-1">{item.course.title}</h4>
+                        <h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-0.5 line-clamp-1">{item.course.title}</h4>
                       </div>
 
                       <div className="text-right flex-shrink-0">
                         <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-extrabold ${
-                          grade === 'D' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
-                          grade === 'F' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
-                          'bg-blue-50 text-blue-800 border border-blue-200'
+                          grade === 'D' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800' :
+                          grade === 'F' ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-200 border border-rose-300 dark:border-rose-800' :
+                          'bg-blue-50 dark:bg-blue-950/80 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800'
                         }`}>
                           Grade {grade} ({total}%)
                         </span>
@@ -343,25 +342,25 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
 
                     {/* CA vs Exam breakdown chips */}
                     <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
-                      <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-[10px] text-slate-500 uppercase block font-semibold">CA Score (40)</span>
-                        <span className="font-bold text-slate-800 text-sm">{ca}</span>
-                        <span className="text-[10px] text-slate-400 block">{((ca / 40) * 100).toFixed(0)}% yield</span>
+                      <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase block font-semibold">CA Score (40)</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{ca}</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 block">{((ca / 40) * 100).toFixed(0)}% yield</span>
                       </div>
-                      <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-[10px] text-slate-500 uppercase block font-semibold">Exam Score (60)</span>
-                        <span className="font-bold text-slate-800 text-sm">{exam}</span>
-                        <span className="text-[10px] text-slate-400 block">{((exam / 60) * 100).toFixed(0)}% yield</span>
+                      <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase block font-semibold">Exam Score (60)</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{exam}</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 block">{((exam / 60) * 100).toFixed(0)}% yield</span>
                       </div>
                     </div>
 
                     {/* Diagnostics & Guidance */}
                     <div className="mt-3 space-y-1.5 text-xs">
-                      <p className="text-slate-700">
-                        <strong className="text-slate-900">Diagnosis:</strong> {rootCause}
+                      <p className="text-slate-700 dark:text-slate-300">
+                        <strong className="text-slate-900 dark:text-slate-100">Diagnosis:</strong> {rootCause}
                       </p>
-                      <div className="p-2 rounded bg-emerald-50/70 border border-emerald-100 text-emerald-900 flex items-start gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                      <div className="p-2 rounded bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 flex items-start gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                         <span className="text-[11px] leading-relaxed"><strong>Action:</strong> {actionPlan}</span>
                       </div>
                     </div>
@@ -370,10 +369,10 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
               })}
             </div>
           ) : (
-            <div className="text-center py-8 text-slate-500">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-              <h4 className="font-bold text-slate-800 text-sm">Flawless Academic Standing</h4>
-              <p className="text-xs text-slate-500 mt-1">You have no C, D, or F grades recorded in your transcript.</p>
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+              <CheckCircle2 className="w-10 h-10 text-emerald-500 dark:text-emerald-400 mx-auto mb-2" />
+              <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">Flawless Academic Standing</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You have no C, D, or F grades recorded in your transcript.</p>
             </div>
           )}
         </CardContent>
@@ -431,7 +430,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
             {/* Projected CGPA */}
             <div className="p-3.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-center">
               <span className="text-[11px] text-emerald-400 uppercase font-bold flex items-center justify-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> Projected CGPA
+                <TrendingUp className="w-3.5 h-3.5" /> Projected CGPA
               </span>
               <p className="text-2xl font-black text-emerald-300 mt-0.5">{simulatedCgpa.toFixed(2)}</p>
               <span className="text-[10px] text-emerald-400 font-semibold">

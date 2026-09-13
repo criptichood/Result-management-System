@@ -8,10 +8,20 @@ export interface User {
   department?: string;
   college?: string;
   matricNumber?: string; // For students
+  level?: number; // 100, 200, 300, 400
   staffId?: string; // For staff
   phoneNumber?: string;
   emergencyContact?: string;
   address?: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  code: string;
+  college: string;
+  HOD?: string;
+  description?: string;
 }
 
 export interface Course {
@@ -24,6 +34,7 @@ export interface Course {
   level: number;
   semester: 1 | 2;
   lecturerId?: string;
+  description?: string;
 }
 
 export interface Enrollment {
@@ -46,6 +57,7 @@ export interface Result {
   status: ResultStatus;
   lecturerId: string;
   lastUpdated: string;
+  moderationNotes?: string;
 }
 
 export interface SystemSettings {
@@ -54,4 +66,55 @@ export interface SystemSettings {
   courseRegistrationOpen: boolean;
   currentSession: string;
   currentSemester: 1 | 2;
+}
+
+export interface ModerationLog {
+  id: string;
+  courseId: string;
+  courseCode: string;
+  examinerId: string;
+  examinerName: string;
+  action: 'Approved' | 'Rejected' | 'Score Override' | 'Batch Approved' | 'Batch Rejected';
+  timestamp: string;
+  notes?: string;
+  affectedStudentCount?: number;
+  details?: string;
+}
+
+export type DisputeCategory =
+  | 'Missing CA Score'
+  | 'Exam Script Remarking'
+  | 'Transcription Error'
+  | 'Missing Total Score'
+  | 'Other';
+
+export type DisputeStatus =
+  | 'Pending'
+  | 'Under Investigation'
+  | 'Resolved (Score Adjusted)'
+  | 'Dismissed';
+
+export interface GradeDispute {
+  id: string;
+  studentId: string;
+  studentName: string;
+  matricNumber: string;
+  courseId: string;
+  courseCode: string;
+  courseTitle: string;
+  lecturerId?: string;
+  category: DisputeCategory;
+  description: string;
+  requestedScoreType?: 'CA' | 'Exam' | 'Both';
+  originalCa?: number | null;
+  originalExam?: number | null;
+  originalTotal?: number | null;
+  adjustedCa?: number | null;
+  adjustedExam?: number | null;
+  adjustedTotal?: number | null;
+  status: DisputeStatus;
+  resolutionNote?: string;
+  resolvedBy?: string;
+  createdAt: string;
+  resolvedAt?: string;
 }

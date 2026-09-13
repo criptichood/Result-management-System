@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, ChevronRight, HelpCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronRight, HelpCircle, Calculator } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 
@@ -23,7 +23,7 @@ export const SemesterGpaWalkthrough = () => {
       <Card className="border border-slate-200 dark:border-slate-800 dark:bg-slate-900 shadow-xs">
         <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
           <CardTitle className="text-base font-bold text-[#064e3b] dark:text-emerald-400 flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
+            <Calculator className="w-5 h-5" />
             Semester Grade Point Average (GPA) Mathematical Formula
           </CardTitle>
         </CardHeader>

@@ -6,7 +6,6 @@ import {
   Award, 
   Zap, 
   Calendar, 
-  Sparkles, 
   Target,
   ArrowUpRight,
   ArrowDownRight
@@ -52,10 +51,10 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
 
   if (trajectoryData.length === 0) {
     return (
-      <Card id="card-growth-empty" className="border-slate-200 shadow-xs p-8 text-center">
-        <TrendingUp className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-        <h3 className="text-sm font-bold text-slate-800">No Semester History Yet</h3>
-        <p className="text-xs text-slate-500 mt-1">Complete more than one semester to view your academic growth trajectory.</p>
+      <Card id="card-growth-empty" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-8 text-center">
+        <TrendingUp className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">No Semester History Yet</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Complete more than one semester to view your academic growth trajectory.</p>
       </Card>
     );
   }
@@ -73,75 +72,75 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
       {/* Top Growth Key Metric Highlights */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Latest Semester Velocity */}
-        <Card id="card-metric-velocity" className="border-slate-200 shadow-xs bg-white">
+        <Card id="card-metric-velocity" className="border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Growth Velocity</p>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Growth Velocity</p>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-slate-900">
+                <span className="text-2xl font-bold text-slate-900 dark:text-white">
                   {latestPoint.delta >= 0 ? `+${latestPoint.delta.toFixed(2)}` : latestPoint.delta.toFixed(2)}
                 </span>
-                <span className={`text-xs font-bold flex items-center ${latestPoint.delta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <span className={`text-xs font-bold flex items-center ${latestPoint.delta >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                   {latestPoint.delta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
                   {latestPoint.percentChange >= 0 ? `+${latestPoint.percentChange.toFixed(1)}%` : `${latestPoint.percentChange.toFixed(1)}%`}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">vs previous semester</p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">vs previous semester</p>
             </div>
-            <div className={`p-2.5 rounded-xl ${latestPoint.delta >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+            <div className={`p-2.5 rounded-xl ${latestPoint.delta >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400'}`}>
               <Zap className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
         {/* Peak Semester */}
-        <Card id="card-metric-peak" className="border-slate-200 shadow-xs bg-white">
+        <Card id="card-metric-peak" className="border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Peak Semester GPA</p>
-              <div className="text-2xl font-bold text-emerald-700 mt-1">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Peak Semester GPA</p>
+              <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">
                 {highestPoint.gpa.toFixed(2)}
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{highestPoint.shortLabel}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{highestPoint.shortLabel}</p>
             </div>
-            <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+            <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400">
               <Award className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
         {/* Cumulative Standing */}
-        <Card id="card-metric-trajectory" className="border-slate-200 shadow-xs bg-white">
+        <Card id="card-metric-trajectory" className="border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cumulative CGPA</p>
-              <div className="text-2xl font-bold text-slate-900 mt-1">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Cumulative CGPA</p>
+              <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
                 {cumulativeCgpa.toFixed(2)}
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">Scale: 5.00 Maximum</p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Scale: 5.00 Maximum</p>
             </div>
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
+            <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400">
               <Target className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
         {/* Net Academic Rise */}
-        <Card id="card-metric-net-rise" className="border-slate-200 shadow-xs bg-white">
+        <Card id="card-metric-net-rise" className="border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Overall Trajectory</p>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Overall Trajectory</p>
               <div className="flex items-baseline gap-1.5 mt-1">
-                <span className={`text-2xl font-bold ${netGrowth >= 0 ? 'text-emerald-700' : 'text-slate-800'}`}>
+                <span className={`text-2xl font-bold ${netGrowth >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-200'}`}>
                   {netGrowth >= 0 ? `+${netGrowth.toFixed(2)}` : netGrowth.toFixed(2)}
                 </span>
-                <span className="text-xs font-semibold text-slate-500">GPA delta</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">GPA delta</span>
               </div>
-              <p className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Positive upward momentum
+              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" /> Positive upward momentum
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600">
+            <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400">
               <TrendingUp className="w-5 h-5" />
             </div>
           </CardContent>
@@ -149,26 +148,26 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
       </div>
 
       {/* Main Interactive Growth Graph */}
-      <Card id="card-growth-chart-container" className="border-slate-200 shadow-xs">
-        <CardHeader className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <Card id="card-growth-chart-container" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-emerald-600" /> Semester GPA & CGPA Growth Trajectory
+            <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Semester GPA & CGPA Growth Trajectory
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
               Chronological progress tracking semester GPA alongside cumulative CGPA curve
             </CardDescription>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
               <button
                 id="btn-chart-line"
                 onClick={() => setChartType('line')}
                 className={`px-3 py-1 font-semibold rounded-md transition-all ${
                   chartType === 'line' 
-                    ? 'bg-white text-emerald-700 shadow-xs' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 shadow-xs' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 Line Trend
@@ -178,8 +177,8 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
                 onClick={() => setChartType('area')}
                 className={`px-3 py-1 font-semibold rounded-md transition-all ${
                   chartType === 'area' 
-                    ? 'bg-white text-emerald-700 shadow-xs' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 shadow-xs' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 Area Fill
@@ -193,11 +192,11 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
             <ResponsiveContainer width="100%" height="100%">
               {chartType === 'line' ? (
                 <LineChart data={trajectoryData} margin={{ top: 20, right: 30, left: -10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.2} vertical={false} />
                   <XAxis 
                     dataKey="shortLabel" 
-                    tick={{ fontSize: 11, fill: '#475569', fontWeight: 600 }}
-                    axisLine={{ stroke: '#cbd5e1' }}
+                    tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }}
+                    axisLine={{ stroke: '#94a3b8', strokeOpacity: 0.3 }}
                     tickLine={false}
                   />
                   <YAxis 
@@ -212,27 +211,27 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
                       if (active && payload && payload.length) {
                         const item = payload[0].payload as SemesterTrajectoryPoint;
                         return (
-                          <div className="bg-white p-3 rounded-xl shadow-lg border border-slate-200 text-xs space-y-1.5 min-w-[190px]">
-                            <p className="font-bold text-slate-900 border-b border-slate-100 pb-1 flex items-center justify-between">
+                          <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-xs space-y-1.5 min-w-[190px]">
+                            <p className="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-1 flex items-center justify-between">
                               <span>{item.label}</span>
-                              <span className="text-[10px] text-slate-500 font-normal">{item.academicYear}</span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">{item.academicYear}</span>
                             </p>
-                            <div className="flex justify-between items-center text-emerald-700 font-semibold">
+                            <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-400 font-semibold">
                               <span>Semester GPA:</span>
                               <span className="text-sm font-bold">{item.gpa.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between items-center text-blue-700 font-semibold">
+                            <div className="flex justify-between items-center text-blue-700 dark:text-blue-400 font-semibold">
                               <span>Cumulative CGPA:</span>
                               <span className="text-sm font-bold">{item.runningCgpa.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-600 text-[11px] pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-slate-600 dark:text-slate-300 text-[11px] pt-1 border-t border-slate-100 dark:border-slate-700">
                               <span>Total Units / Courses:</span>
                               <span>{item.credits} Units ({item.coursesCount} courses)</span>
                             </div>
                             {item.delta !== 0 && (
                               <div className="flex justify-between items-center text-[11px]">
                                 <span>Semester Delta:</span>
-                                <span className={`font-bold ${item.delta > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                <span className={`font-bold ${item.delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                                   {item.delta > 0 ? `+${item.delta.toFixed(2)}` : item.delta.toFixed(2)}
                                 </span>
                               </div>
@@ -278,11 +277,11 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
                       <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.2} vertical={false} />
                   <XAxis 
                     dataKey="shortLabel" 
-                    tick={{ fontSize: 11, fill: '#475569', fontWeight: 600 }}
-                    axisLine={{ stroke: '#cbd5e1' }}
+                    tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }}
+                    axisLine={{ stroke: '#94a3b8', strokeOpacity: 0.3 }}
                     tickLine={false}
                   />
                   <YAxis 
@@ -297,13 +296,13 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
                       if (active && payload && payload.length) {
                         const item = payload[0].payload as SemesterTrajectoryPoint;
                         return (
-                          <div className="bg-white p-3 rounded-xl shadow-lg border border-slate-200 text-xs space-y-1.5 min-w-[190px]">
-                            <p className="font-bold text-slate-900 border-b border-slate-100 pb-1">{item.label}</p>
-                            <div className="flex justify-between items-center text-emerald-700 font-semibold">
+                          <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-xs space-y-1.5 min-w-[190px]">
+                            <p className="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-1">{item.label}</p>
+                            <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-400 font-semibold">
                               <span>Semester GPA:</span>
                               <span className="text-sm font-bold">{item.gpa.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between items-center text-blue-700 font-semibold">
+                            <div className="flex justify-between items-center text-blue-700 dark:text-blue-400 font-semibold">
                               <span>Cumulative CGPA:</span>
                               <span className="text-sm font-bold">{item.runningCgpa.toFixed(2)}</span>
                             </div>
@@ -336,23 +335,23 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
           </div>
 
           {/* Chart Legend & Benchmarks Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 mt-2 border-t border-slate-100 text-xs text-slate-600">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-emerald-600"></span>
-                <span className="font-semibold text-slate-800">Semester GPA</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">Semester GPA</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-1 bg-blue-600 rounded"></span>
-                <span className="font-semibold text-slate-800">Cumulative CGPA</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">Cumulative CGPA</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-emerald-500 border-dashed border-t"></span>
-                <span className="text-slate-500">First Class Threshold (4.50)</span>
+                <span className="text-slate-500 dark:text-slate-400">First Class Threshold (4.50)</span>
               </div>
             </div>
 
-            <div className="text-[11px] text-slate-400">
+            <div className="text-[11px] text-slate-400 dark:text-slate-500">
               *Calculated on standard Nigerian University 5-point scale
             </div>
           </div>
@@ -360,19 +359,19 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
       </Card>
 
       {/* Semester by Semester Progression Breakdown Table */}
-      <Card id="card-growth-breakdown" className="border-slate-200 shadow-xs">
-        <CardHeader className="border-b border-slate-100 pb-3">
-          <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-600" /> Semester Performance Audit & Progression Log
+      <Card id="card-growth-breakdown" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-3">
+          <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Semester Performance Audit & Progression Log
           </CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
             Step-by-step credit units, quality points, and velocity across all recorded academic periods
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <tr className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold">
                 <th className="py-2.5 px-4">Academic Session & Semester</th>
                 <th className="py-2.5 px-3 text-center">Courses</th>
                 <th className="py-2.5 px-3 text-center">Units (CR)</th>
@@ -382,33 +381,33 @@ export const SemesterGrowthChart: React.FC<SemesterGrowthChartProps> = ({
                 <th className="py-2.5 px-4 text-right">Growth Delta</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {trajectoryData.map((pt, idx) => (
-                <tr key={pt.semesterKey} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3 px-4 font-bold text-slate-900">
+                <tr key={pt.semesterKey} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                       <span>{pt.label}</span>
                     </div>
-                    <span className="text-[10px] text-slate-400 pl-4 font-normal block">{pt.academicYear}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 pl-4 font-normal block">{pt.academicYear}</span>
                   </td>
-                  <td className="py-3 px-3 text-center font-medium text-slate-700">{pt.coursesCount}</td>
-                  <td className="py-3 px-3 text-center font-semibold text-slate-900">{pt.credits}</td>
-                  <td className="py-3 px-3 text-center font-semibold text-slate-700">{pt.qualityPoints}</td>
-                  <td className="py-3 px-3 text-center font-bold text-emerald-700 text-sm">
+                  <td className="py-3 px-3 text-center font-medium text-slate-700 dark:text-slate-300">{pt.coursesCount}</td>
+                  <td className="py-3 px-3 text-center font-semibold text-slate-900 dark:text-white">{pt.credits}</td>
+                  <td className="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300">{pt.qualityPoints}</td>
+                  <td className="py-3 px-3 text-center font-bold text-emerald-700 dark:text-emerald-400 text-sm">
                     {pt.gpa.toFixed(2)}
                   </td>
-                  <td className="py-3 px-3 text-center font-bold text-blue-700 text-sm">
+                  <td className="py-3 px-3 text-center font-bold text-blue-700 dark:text-blue-400 text-sm">
                     {pt.runningCgpa.toFixed(2)}
                   </td>
                   <td className="py-3 px-4 text-right font-bold">
                     {idx === 0 ? (
-                      <span className="text-slate-400 text-[11px] font-normal">Baseline</span>
+                      <span className="text-slate-400 dark:text-slate-500 text-[11px] font-normal">Baseline</span>
                     ) : (
                       <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[11px] ${
                         pt.delta >= 0 
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' 
+                          : 'bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
                       }`}>
                         {pt.delta >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                         {pt.delta >= 0 ? `+${pt.delta.toFixed(2)}` : pt.delta.toFixed(2)}

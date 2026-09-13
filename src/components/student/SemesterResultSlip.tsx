@@ -19,6 +19,7 @@ interface SemesterResultSlipProps {
   cumulativeCgpa: number;
   onPrintSemester?: (semesterKey: string) => void;
   onExportSemesterCsv?: (semesterKey: string, items: any[]) => Promise<void> | void;
+  onQueryGrade?: (item: any) => void;
 }
 
 export const SemesterResultSlip: React.FC<SemesterResultSlipProps> = ({
@@ -29,6 +30,7 @@ export const SemesterResultSlip: React.FC<SemesterResultSlipProps> = ({
   cumulativeCgpa,
   onPrintSemester,
   onExportSemesterCsv,
+  onQueryGrade,
 }) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -160,13 +162,25 @@ export const SemesterResultSlip: React.FC<SemesterResultSlipProps> = ({
                         {gp}
                       </TableCell>
                       <TableCell className="text-right py-3">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          isPassed 
-                            ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' 
-                            : 'bg-red-50 dark:bg-red-950/70 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
-                        }`}>
-                          {isPassed ? 'Passed' : 'Failed'}
-                        </span>
+                        <div className="flex items-center justify-end gap-2">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                            isPassed 
+                              ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' 
+                              : 'bg-red-50 dark:bg-red-950/70 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+                          }`}>
+                            {isPassed ? 'Passed' : 'Failed'}
+                          </span>
+                          {onQueryGrade && (
+                            <button
+                              type="button"
+                              onClick={() => onQueryGrade(item)}
+                              className="text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:underline px-1.5 py-0.5 rounded hover:bg-amber-50 dark:hover:bg-amber-950/40"
+                              title="Lodge an academic query or remarking petition for this course"
+                            >
+                              Query
+                            </button>
+                          )}
+                        </div>
                       </TableCell>
                     </>
                   ) : (

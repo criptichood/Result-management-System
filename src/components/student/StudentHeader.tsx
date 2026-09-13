@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/button';
-import { Download, Printer, Calculator, Loader2 } from 'lucide-react';
+import { Download, Printer, Calculator, Loader2, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../types';
 
@@ -9,6 +9,7 @@ interface StudentHeaderProps {
   hasPublishedResults: boolean;
   onExportCsv: () => void;
   onPrint: () => void;
+  onOpenVerifiableStatement?: () => void;
   isExporting?: boolean;
 }
 
@@ -17,6 +18,7 @@ export const StudentHeader: React.FC<StudentHeaderProps> = ({
   hasPublishedResults,
   onExportCsv,
   onPrint,
+  onOpenVerifiableStatement,
   isExporting = false,
 }) => {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export const StudentHeader: React.FC<StudentHeaderProps> = ({
       </div>
 
       {/* Global Export & Print Statement Actions */}
-      <div className="flex items-center gap-2.5 self-stretch sm:self-auto">
+      <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
         <Button 
           id="btn-export-all-csv"
           variant="outline" 
@@ -64,6 +66,21 @@ export const StudentHeader: React.FC<StudentHeaderProps> = ({
             </>
           )}
         </Button>
+
+        {onOpenVerifiableStatement && (
+          <Button
+            id="btn-verifiable-transcript"
+            variant="outline"
+            size="sm"
+            className="flex-1 sm:flex-none gap-1.5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs text-xs font-semibold h-9 px-3"
+            onClick={onOpenVerifiableStatement}
+            disabled={!hasPublishedResults}
+          >
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+            <span>Verifiable Statement</span>
+          </Button>
+        )}
+
         <Button 
           id="btn-print-statement"
           size="sm" 
@@ -72,7 +89,7 @@ export const StudentHeader: React.FC<StudentHeaderProps> = ({
           disabled={!hasPublishedResults}
         >
           <Printer className="h-3.5 w-3.5 text-emerald-200" />
-          <span>Statement of Results</span>
+          <span>Semester Slip</span>
         </Button>
       </div>
     </div>

@@ -152,17 +152,17 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
         id="modal-official-result-slip"
-        className="max-w-4xl w-full max-h-[92vh] overflow-y-auto p-0 bg-slate-100/90 border-slate-300 print:border-none print:shadow-none print:p-0 print:max-w-none print:w-full print:max-h-none print:bg-white"
+        className="max-w-4xl w-full max-h-[92vh] overflow-y-auto p-0 bg-slate-100/90 dark:bg-slate-950 border-slate-300 dark:border-slate-800 print:border-none print:shadow-none print:p-0 print:max-w-none print:w-full print:max-h-none print:bg-white"
       >
         {/* Top Floating Control Bar (Hidden on print) */}
-        <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs print:hidden">
+        <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs print:hidden">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700">Slip Scope:</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Slip Scope:</span>
             <select
               id="select-modal-slip-scope"
               value={selectedScope}
               onChange={(e) => setSelectedScope(e.target.value)}
-              className="text-xs border border-slate-300 rounded-md px-2.5 py-1.5 bg-slate-50 font-semibold text-slate-800 focus:ring-1 focus:ring-emerald-600 cursor-pointer"
+              className="text-xs border border-slate-300 dark:border-slate-700 rounded-md px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 font-semibold text-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-emerald-600 cursor-pointer"
             >
               <option value="all">Complete Statement (All Semesters)</option>
               {semesterKeys.map((key) => (
@@ -180,7 +180,7 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
               size="sm"
               onClick={handleExportCsv}
               disabled={isExporting || allPublishedItems.length === 0}
-              className="text-xs gap-1.5 h-8 bg-white text-slate-700 cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
+              className="text-xs gap-1.5 h-8 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
             >
               {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               {isExporting ? 'Exporting...' : 'Export CSV'}
@@ -191,16 +191,16 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
               size="sm"
               onClick={handleDownloadPdf}
               disabled={isPdfDownloading || allPublishedItems.length === 0}
-              className="text-xs gap-1.5 h-8 bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 font-semibold cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
+              className="text-xs gap-1.5 h-8 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 font-semibold cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
             >
-              {isPdfDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700" /> : <FileDown className="w-3.5 h-3.5 text-emerald-700" />}
+              {isPdfDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700 dark:text-emerald-400" /> : <FileDown className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />}
               {isPdfDownloading ? 'Generating PDF...' : 'Download PDF'}
             </Button>
             <Button
               id="btn-modal-trigger-print"
               size="sm"
               onClick={handlePrint}
-              className="text-xs gap-1.5 h-8 bg-[#064e3b] hover:bg-[#053d2e] text-white font-semibold cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
+              className="text-xs gap-1.5 h-8 bg-[#064e3b] dark:bg-emerald-700 hover:bg-[#053d2e] dark:hover:bg-emerald-600 text-white font-semibold cursor-pointer active:scale-95 transition-all shadow-xs hover:shadow-md"
             >
               <Printer className="w-3.5 h-3.5" />
               Print / Preview
@@ -209,7 +209,7 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8 text-slate-400 hover:text-slate-700"
+              className="h-8 w-8 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             >
               <X className="w-4 h-4" />
             </Button>
@@ -217,7 +217,7 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
         </div>
 
         {/* The Printable Official Document Body */}
-        <div className="p-4 sm:p-8 bg-slate-100 print:bg-white print:p-0">
+        <div className="p-4 sm:p-8 bg-slate-100 dark:bg-slate-950 print:bg-white print:p-0">
           <div 
             id="official-printable-slip"
             className="bg-white border border-slate-300 shadow-md print:shadow-none print:border-none p-6 sm:p-10 max-w-3xl mx-auto rounded-xl print:rounded-none text-slate-900"

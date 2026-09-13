@@ -88,7 +88,7 @@ export const calculateSemesterStats = (items: any[]) => {
       else if (grade === 'D') dist.D++;
       else if (grade === 'F') dist.F++;
 
-      if ((r.result.totalScore ?? 0) < 45 || grade === 'F') {
+      if ((r.result.totalScore ?? 0) < 40 || grade === 'F') {
         failedItems.push(r);
       }
     }
@@ -105,6 +105,46 @@ export const calculateSemesterStats = (items: any[]) => {
     avgExam: scoredCourses > 0 ? (totalExamSum / scoredCourses).toFixed(1) : '0.0',
     failedItems
   };
+};
+
+/**
+ * Computes genuine outstanding carryovers for a student:
+ * - A course from a previous session / lower level that was failed (Grade F or score < 40)
+ * - Has NOT subsequently been retaken and passed (Grade >= E / score >= 40)
+ */
+export const computeOutstandingCarryovers = (
+  resultsData: any[],
+  currentSession: string = '2024/2025',
+  studentLevel: number = 100
+): any[] => {
+  const passedCourseCodes = new Set<string>();
+  const failedRecordsByCode = new Map<string, any>();
+
+  // Sort chronological
+  const publishedRecords = resultsData.filter(r => r.result?.status === 'Published');
+  
+  publishedRecords.forEach(r => {
+    const code = r.course?.code;
+    if (!code) return;
+    const score = r.result?.totalScore ?? 0;
+    const grade = r.result?.grade;
+    const isPassed = score >= 40 && grade !== 'F';
+
+    if (isPassed) {
+      passedCourseCodes.add(code);
+      failedRecordsByCode.delete(code);
+    } else if (!passedCourseCodes.has(code)) {
+      // It is only a carryover if it is from an earlier level OR prior session
+      const courseLevel = r.course?.level || 100;
+      const isPastSessionOrLevel = (r.enrollment?.academicYear !== currentSession) || (courseLevel < studentLevel);
+      
+      if (isPastSessionOrLevel) {
+        failedRecordsByCode.set(code, r);
+      }
+    }
+  });
+
+  return Array.from(failedRecordsByCode.values());
 };
 
 export const exportResultsToCsv = (
