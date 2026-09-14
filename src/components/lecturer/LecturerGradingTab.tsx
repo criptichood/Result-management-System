@@ -100,7 +100,7 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
       const total = (isNaN(ca) ? 0 : ca) + (isNaN(exam) ? 0 : exam);
       totalScoreSum += total;
       if (total > highestScore) highestScore = total;
-      if (total >= 40) passCount++;
+      if (total >= 45) passCount++;
     }
   });
 
@@ -123,10 +123,10 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
     const total = (parseFloat(caStr) || 0) + (parseFloat(examStr) || 0);
 
     if (statusFilter === 'unscored') return !hasScore;
-    if (statusFilter === 'passed') return hasScore && total >= 40;
-    if (statusFilter === 'failing') return hasScore && total < 40;
+    if (statusFilter === 'passed') return hasScore && total >= 45;
+    if (statusFilter === 'failing') return hasScore && total < 45;
     if (statusFilter === 'borderline') {
-      return hasScore && (total === 39 || total === 44 || total === 49 || total === 59 || total === 69);
+      return hasScore && (total === 44 || total === 49 || total === 59 || total === 69);
     }
 
     return true;

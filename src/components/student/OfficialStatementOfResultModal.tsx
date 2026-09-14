@@ -59,7 +59,6 @@ export const OfficialStatementOfResultModal: React.FC<OfficialStatementOfResultM
       case 'B': return 4;
       case 'C': return 3;
       case 'D': return 2;
-      case 'E': return 1;
       case 'F': return 0;
       default: return 0;
     }

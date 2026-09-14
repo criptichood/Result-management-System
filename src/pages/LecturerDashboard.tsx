@@ -82,10 +82,23 @@ export const LecturerDashboard = () => {
   };
 
   const handleScoreChange = (enrollmentId: string, type: 'ca' | 'exam', value: string) => {
-    setScores((prev) => ({
-      ...prev,
-      [enrollmentId]: { ...prev[enrollmentId], [type]: value },
-    }));
+    if (value === '') {
+      setScores((prev) => ({
+        ...prev,
+        [enrollmentId]: { ...prev[enrollmentId], [type]: '' },
+      }));
+      return;
+    }
+    const maxVal = type === 'ca' ? 40 : 60;
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed)) {
+      // Clamped to 0-maxVal immediately so the text input cannot exceed the bounds
+      const clamped = Math.min(maxVal, Math.max(0, parsed));
+      setScores((prev) => ({
+        ...prev,
+        [enrollmentId]: { ...prev[enrollmentId], [type]: clamped.toString() },
+      }));
+    }
   };
 
   const calculateGrade = (total: number) => {
@@ -93,7 +106,6 @@ export const LecturerDashboard = () => {
     if (total >= 60) return 'B';
     if (total >= 50) return 'C';
     if (total >= 45) return 'D';
-    if (total >= 40) return 'E';
     return 'F';
   };
 
@@ -195,12 +207,9 @@ export const LecturerDashboard = () => {
       } else if (grade === 'D') {
         category = 'atRisk';
         insight = isLowExam ? 'Exam Deficit — CA was solid, but exam pulled score into marginal band' : 'Marginal Pass — Requires tutorial engagement';
-      } else if (grade === 'E') {
-        category = 'atRisk';
-        insight = 'Narrow Pass — Bare minimum threshold met (40%)';
       } else if (grade === 'F') {
         category = 'failing';
-        insight = 'Carryover Deficit — Scored below minimum pass (40%); repeat required';
+        insight = 'Carryover Deficit — Scored below minimum pass (45%); repeat required';
       }
 
       return {
@@ -227,7 +236,7 @@ export const LecturerDashboard = () => {
         totalScoreSum += total;
         if (total > highestScore) highestScore = total;
         if (total < lowestScore) lowestScore = total;
-        if (total >= 40) passCount++;
+        if (total >= 45) passCount++;
 
         const grade = calculateGrade(total) as keyof typeof gradeDistribution;
         if (gradeDistribution[grade] !== undefined) {
