@@ -79,7 +79,7 @@ export const OfficialStatementOfResultModal: React.FC<OfficialStatementOfResultM
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[92vh] flex flex-col p-0 overflow-hidden bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+      <DialogContent hideCloseButton className="max-w-4xl max-h-[92vh] flex flex-col p-0 overflow-hidden bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <DialogHeader className="p-6 pb-4 border-b border-slate-100 dark:border-slate-800 print:hidden flex flex-row items-center justify-between">
           <div>
             <DialogTitle className="text-xl font-bold text-slate-900 dark:text-slate-100">

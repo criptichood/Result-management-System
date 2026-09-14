@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { AdminResetDatabaseModal } from './AdminResetDatabaseModal';
 import { Calendar, RotateCcw, Award, Sparkles, ArrowRight } from 'lucide-react';
+import { getAcademicSessionOptions } from '../../lib/academicSessionUtils';
 
 interface AdminSettingsTabProps {
   settings: {
@@ -73,13 +74,15 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
                   Current Academic Session
                 </label>
                 <select
-                  value={settings.currentSession || '2024/2025'}
+                  value={settings.currentSession || '2025/2026'}
                   onChange={(e) => onSettingChange('currentSession', e.target.value)}
                   className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 >
-                  <option value="2023/2024">2023/2024 Academic Session</option>
-                  <option value="2024/2025">2024/2025 Academic Session (Current)</option>
-                  <option value="2025/2026">2025/2026 Academic Session (Upcoming)</option>
+                  {getAcademicSessionOptions(settings.currentSession || '2025/2026').map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

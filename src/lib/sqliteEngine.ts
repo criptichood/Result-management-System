@@ -171,7 +171,7 @@ class SQLiteEngine {
       ['lecturerViewEmail', 'false'],
       ['lecturerViewPhone', 'false'],
       ['courseRegistrationOpen', 'true'],
-      ['currentSession', '2024/2025'],
+      ['currentSession', '2025/2026'],
       ['currentSemester', '1'],
     ];
 

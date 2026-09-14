@@ -13,6 +13,12 @@ export interface User {
   phoneNumber?: string;
   emergencyContact?: string;
   address?: string;
+  isGraduated?: boolean; // True if student has completed program and graduated
+  graduationYear?: string; // e.g., "2023/2024"
+  graduationSession?: string; // e.g., "2023/2024 Session"
+  degreeClass?: string; // e.g., "First Class Honours"
+  finalCgpa?: number; // e.g. 4.74
+  entryYear?: string; // e.g. "2019/2020"
 }
 
 export interface Department {

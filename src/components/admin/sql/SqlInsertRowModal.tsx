@@ -39,7 +39,7 @@ export const SqlInsertRowModal: React.FC<SqlInsertRowModalProps> = ({
         } else if (col.name === 'status') {
           initialData[col.name] = 'Draft';
         } else if (col.name === 'academic_year') {
-          initialData[col.name] = '2024/2025';
+          initialData[col.name] = '2025/2026';
         } else {
           initialData[col.name] = '';
         }

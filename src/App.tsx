@@ -20,6 +20,7 @@ const ExaminerDashboard = lazy(() => import('./pages/ExaminerDashboard').then(m 
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 const GpaCalculatorPage = lazy(() => import('./pages/GpaCalculatorPage').then(m => ({ default: m.GpaCalculatorPage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const ProjectReviewPage = lazy(() => import('./pages/ProjectReviewPage').then(m => ({ default: m.ProjectReviewPage })));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh] w-full">
@@ -96,6 +97,23 @@ export default function App() {
                 }
               />
             </Route>
+            {/* Standalone Project Review & Architecture Slide Deck Routes */}
+            <Route
+              path="/project-review"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProjectReviewPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/system-review"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProjectReviewPage />
+                </Suspense>
+              }
+            />
           </Routes>
         </Router>
       </AuthProvider>

@@ -9,17 +9,17 @@ import {
   BookOpen, 
   Search, 
   Plus, 
-  Edit3, 
-  FileSearch, 
-  User as UserIcon, 
   Filter, 
   Layers, 
   CheckCircle2, 
-  Clock, 
   GraduationCap
 } from 'lucide-react';
 import { CourseResultModal } from './CourseResultModal';
 import { ExaminerCourseModal } from './ExaminerCourseModal';
+import { DepartmentCourseRow } from './DepartmentCourseRow';
+import { DepartmentCourseCard } from './DepartmentCourseCard';
+import { ModerationFeedbackModal } from './ModerationFeedbackModal';
+import { exportCourseRosterCSV } from './examinerUtils';
 
 interface DepartmentCoursesTableProps {
   department: string;
@@ -27,7 +27,7 @@ interface DepartmentCoursesTableProps {
   lecturers: User[];
   onSaveCourse: (courseData: Partial<Course>) => void;
   onApprove?: (courseId: string) => void;
-  onReject?: (courseId: string) => void;
+  onReject?: (courseId: string, notes?: string) => void;
 }
 
 export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
@@ -48,6 +48,7 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [rejectingCourse, setRejectingCourse] = useState<any | null>(null);
 
   // Compute counts
   const coreCourses = departmentCourses.filter(c => c.department === department);
@@ -117,52 +118,52 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
     <div className="space-y-6">
       {/* Top Overview Metric Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Curriculum</span>
-            <BookOpen className="w-4 h-4 text-[#064e3b]" />
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Curriculum</span>
+            <BookOpen className="w-4 h-4 text-[#064e3b] dark:text-emerald-400" />
           </div>
-          <p className="text-2xl font-bold text-slate-900 mt-2">{departmentCourses.length}</p>
-          <p className="text-xs text-slate-500 mt-1">Courses taken by students</p>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-2">{departmentCourses.length}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Courses taken by students</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Department Core</span>
-            <GraduationCap className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Department Core</span>
+            <GraduationCap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <p className="text-2xl font-bold text-emerald-700 mt-2">{coreCourses.length}</p>
-          <p className="text-xs text-slate-500 mt-1">Offered by {department}</p>
+          <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-2">{coreCourses.length}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Offered by {department}</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">Borrowed Courses</span>
-            <Layers className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Borrowed Courses</span>
+            <Layers className="w-4 h-4 text-amber-600 dark:text-amber-400" />
           </div>
-          <p className="text-2xl font-bold text-amber-700 mt-2">{borrowedCourses.length}</p>
-          <p className="text-xs text-slate-500 mt-1">External service courses</p>
+          <p className="text-2xl font-bold text-amber-700 dark:text-amber-400 mt-2">{borrowedCourses.length}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">External service courses</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">Published Results</span>
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
+            <span className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Published Results</span>
+            <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
-          <p className="text-2xl font-bold text-blue-700 mt-2">{publishedCount}</p>
-          <p className="text-xs text-slate-500 mt-1">{pendingCount} pending review</p>
+          <p className="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-2">{publishedCount}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{pendingCount} pending review</p>
         </div>
       </div>
 
       {/* Main Card */}
-      <Card className="shadow-2xs">
-        <CardHeader className="border-b border-slate-100 p-6">
+      <Card className="shadow-2xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-xl font-bold text-[#064e3b] flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#059669]" /> Department Curriculum & Course Roster
+              <CardTitle className="text-xl font-bold text-[#064e3b] dark:text-emerald-400 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-[#059669] dark:text-emerald-400" /> Department Curriculum & Course Roster
               </CardTitle>
-              <CardDescription className="mt-1">
+              <CardDescription className="mt-1 text-slate-500 dark:text-slate-400">
                 Manage all departmental core courses, service/borrowed courses taken by {department} students, and assigned lecturers.
               </CardDescription>
             </div>
@@ -176,15 +177,15 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
           </div>
 
           {/* Filtering Controls */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             {/* Category Tabs */}
-            <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl w-fit">
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-fit">
               <button
                 onClick={() => setActiveTypeTab('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                   activeTypeTab === 'all' 
-                    ? 'bg-white text-[#064e3b] shadow-2xs' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-[#064e3b] dark:text-emerald-400 shadow-2xs' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 All Courses ({departmentCourses.length})
@@ -193,8 +194,8 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
                 onClick={() => setActiveTypeTab('core')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                   activeTypeTab === 'core' 
-                    ? 'bg-white text-emerald-800 shadow-2xs' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-2xs' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Core {department} ({coreCourses.length})
@@ -203,8 +204,8 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
                 onClick={() => setActiveTypeTab('borrowed')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                   activeTypeTab === 'borrowed' 
-                    ? 'bg-white text-amber-800 shadow-2xs' 
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-amber-800 dark:text-amber-400 shadow-2xs' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Borrowed / Service ({borrowedCourses.length})
@@ -218,7 +219,7 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
                 <select
                   value={levelFilter}
                   onChange={(e) => setLevelFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                  className="h-9 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 >
                   <option value="all">All Levels</option>
                   <option value={100}>100 Level</option>
@@ -231,7 +232,7 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
                 <select
                   value={semesterFilter}
                   onChange={(e) => setSemesterFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                  className="h-9 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 >
                   <option value="all">All Semesters</option>
                   <option value={1}>1st Semester</option>
@@ -245,7 +246,7 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
                   placeholder="Search code, title, or lecturer..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-9 pl-8 text-xs bg-slate-50 border-slate-200"
+                  className="h-9 pl-8 text-xs bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -253,152 +254,72 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
         </CardHeader>
 
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-slate-50">
-                  <TableHead className="w-28 font-bold">Course Code</TableHead>
-                  <TableHead className="font-bold">Course Title</TableHead>
-                  <TableHead className="text-center font-bold">Units / Level</TableHead>
-                  <TableHead className="font-bold">Assigned Lecturer / Dept</TableHead>
-                  <TableHead className="text-center font-bold">Enrollment & Status</TableHead>
-                  <TableHead className="text-right font-bold pr-6">Actions</TableHead>
+          {/* Mobile & Small Screen Optimized Card Feed */}
+          <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+            {filteredCourses.map((course) => {
+              const lecturer = getCourseLecturer(course);
+              return (
+                <DepartmentCourseCard
+                  key={`mobile-${course.id}`}
+                  course={course}
+                  department={department}
+                  lecturer={lecturer}
+                  onAudit={handleOpenView}
+                  onEdit={handleOpenEdit}
+                  onApprove={onApprove}
+                  onReturn={onReject ? (c) => setRejectingCourse(c) : undefined}
+                  onExport={exportCourseRosterCSV}
+                />
+              );
+            })}
+
+            {filteredCourses.length === 0 && (
+              <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                <BookOpen className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                <p className="font-medium text-slate-700 dark:text-slate-200">No courses match your active filter.</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Try resetting the level, semester, or search query.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop & Tablet Full Table Layout */}
+          <div className="hidden md:block overflow-x-auto">
+            <Table className="w-full">
+              <TableHeader className="bg-slate-50 dark:bg-slate-800/80">
+                <TableRow className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-xs">
+                  <TableHead className="w-40 font-bold text-slate-700 dark:text-slate-300">Course Code</TableHead>
+                  <TableHead className="font-bold text-slate-700 dark:text-slate-300">Course Title</TableHead>
+                  <TableHead className="w-44 font-bold text-slate-700 dark:text-slate-300">Assigned Lecturer</TableHead>
+                  <TableHead className="w-36 text-center font-bold text-slate-700 dark:text-slate-300">Candidates & Status</TableHead>
+                  <TableHead className="w-32 text-right pr-4 font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCourses.map((course) => {
-                  const isCore = course.department === department;
                   const lecturer = getCourseLecturer(course);
-                  const enrolledCount = course.totalEnrolled || 0;
-                  const hasPending = course.hasPendingReview;
-                  const isPublished = course.isFullyPublished;
 
                   return (
-                    <TableRow key={course.id} className="hover:bg-slate-50/70">
-                      {/* Course Code & Type */}
-                      <TableCell>
-                        <div className="space-y-1">
-                          <span className="font-mono font-bold text-sm text-[#064e3b]">
-                            {course.code}
-                          </span>
-                          <div>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                              isCore 
-                                ? 'bg-emerald-100 text-emerald-800' 
-                                : 'bg-amber-100 text-amber-800'
-                            }`}>
-                              {isCore ? 'Core' : 'Borrowed'}
-                            </span>
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      {/* Course Title */}
-                      <TableCell>
-                        <div>
-                          <p className="font-bold text-slate-900 text-sm">{course.title}</p>
-                          <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                            <span>Host: {course.department}</span>
-                            <span>•</span>
-                            <span>{course.college || 'College of Science'}</span>
-                          </p>
-                        </div>
-                      </TableCell>
-
-                      {/* Credit Units & Level */}
-                      <TableCell className="text-center">
-                        <div className="space-y-0.5">
-                          <span className="inline-block px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-bold text-xs">
-                            {course.creditUnits} Units
-                          </span>
-                          <p className="text-[11px] text-slate-500">
-                            {course.level}L • Sem {course.semester}
-                          </p>
-                        </div>
-                      </TableCell>
-
-                      {/* Assigned Lecturer (Prominently displayed) */}
-                      <TableCell>
-                        {lecturer ? (
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center flex-shrink-0">
-                              {lecturer.name.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('')}
-                            </div>
-                            <div>
-                              <p className="text-xs font-bold text-slate-900 leading-tight">
-                                {lecturer.name}
-                              </p>
-                              <p className="text-[11px] text-slate-500">
-                                {lecturer.staffId || lecturer.department}
-                              </p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1.5 text-slate-400 text-xs italic">
-                            <UserIcon className="w-3.5 h-3.5" />
-                            <span>Unassigned / Dept Head</span>
-                          </div>
-                        )}
-                      </TableCell>
-
-                      {/* Enrollment & Status */}
-                      <TableCell className="text-center">
-                        <div className="space-y-1">
-                          <span className="text-xs font-medium text-slate-700 block">
-                            {enrolledCount} Student{enrolledCount === 1 ? '' : 's'}
-                          </span>
-                          {isPublished ? (
-                            <Badge variant="success" className="text-[10px] py-0 px-2">
-                              Published
-                            </Badge>
-                          ) : hasPending ? (
-                            <Badge variant="warning" className="text-[10px] py-0 px-2">
-                              Pending Review
-                            </Badge>
-                          ) : enrolledCount > 0 ? (
-                            <Badge variant="secondary" className="text-[10px] py-0 px-2 text-slate-500">
-                              In Progress
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="text-[10px] py-0 px-2 text-slate-400">
-                              No Enrollee
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-
-                      {/* Actions */}
-                      <TableCell className="text-right pr-6 space-x-2">
-                        {enrolledCount > 0 && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleOpenView(course)}
-                            className="h-8 gap-1 text-slate-700 bg-white hover:bg-slate-50 hover:text-[#064e3b]"
-                          >
-                            <FileSearch className="w-3.5 h-3.5" /> View Results
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleOpenEdit(course)}
-                          className="h-8 gap-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" /> Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                    <DepartmentCourseRow
+                      key={course.id}
+                      course={course}
+                      department={department}
+                      lecturer={lecturer}
+                      onAudit={handleOpenView}
+                      onEdit={handleOpenEdit}
+                      onApprove={onApprove}
+                      onReturn={onReject ? (c) => setRejectingCourse(c) : undefined}
+                      onExport={exportCourseRosterCSV}
+                    />
                   );
                 })}
 
                 {filteredCourses.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-slate-500 py-12">
+                    <TableCell colSpan={5} className="text-center text-slate-500 dark:text-slate-400 py-12">
                       <div className="flex flex-col items-center justify-center">
-                        <BookOpen className="h-8 w-8 text-slate-300 mb-2" />
-                        <p className="font-medium text-slate-700">No courses match your active filter.</p>
-                        <p className="text-xs text-slate-400 mt-1">Try resetting the level, semester, or search query.</p>
+                        <BookOpen className="h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
+                        <p className="font-medium text-slate-700 dark:text-slate-200">No courses match your active filter.</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Try resetting the level, semester, or search query.</p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -417,6 +338,17 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
         lecturer={selectedCourseForView ? getCourseLecturer(selectedCourseForView) : null}
         onApprove={onApprove}
         onReject={onReject}
+      />
+
+      {/* Return to Lecturer Feedback Modal */}
+      <ModerationFeedbackModal
+        isOpen={!!rejectingCourse}
+        onClose={() => setRejectingCourse(null)}
+        course={rejectingCourse}
+        onConfirmReject={(courseId, notes) => {
+          if (onReject) onReject(courseId, notes);
+          setRejectingCourse(null);
+        }}
       />
 
       {/* Edit / Add Course Modal */}

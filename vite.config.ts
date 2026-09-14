@@ -10,6 +10,23 @@ export default defineConfig(() => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
+      dedupe: ['react', 'react-dom'],
+    },
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@radix-ui/react-dialog',
+        '@radix-ui/react-dropdown-menu',
+        '@radix-ui/react-select',
+        '@radix-ui/react-tabs',
+        '@radix-ui/react-label',
+        '@radix-ui/react-slot',
+        'lucide-react',
+        'clsx',
+        'tailwind-merge',
+      ],
     },
     build: {
       chunkSizeWarningLimit: 800,
@@ -32,10 +49,12 @@ export default defineConfig(() => {
               if (id.includes('motion')) {
                 return 'vendor-motion';
               }
-              if (id.includes('@radix-ui')) {
-                return 'vendor-radix';
-              }
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              if (
+                id.includes('react') ||
+                id.includes('react-dom') ||
+                id.includes('react-router') ||
+                id.includes('@radix-ui')
+              ) {
                 return 'vendor-react-core';
               }
             }

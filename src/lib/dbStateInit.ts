@@ -1,7 +1,7 @@
 import { Course, Department, Enrollment, GradeDispute, ModerationLog, Result, User } from '../types';
 import { mockCourses, mockDepartments, mockEnrollments, mockResults, mockUsers } from './mockData';
 
-export const DB_KEY = 'fuaz_srms_db_v15';
+export const DB_KEY = 'fuaz_srms_db_v16';
 
 export interface DBState {
   users: User[];
@@ -65,7 +65,7 @@ export function createInitialDBState(): DBState {
       lecturerViewEmail: false,
       lecturerViewPhone: false,
       courseRegistrationOpen: true,
-      currentSession: '2025/2026',
+      currentSession: '2024/2025',
       currentSemester: 1,
     },
   };
@@ -108,16 +108,45 @@ export function loadAndMigrateDBState(): DBState {
         parsed.courses = [...parsed.courses, ...missingCourses];
       }
 
+      // Sync and merge users from mockUsers
+      const existingUserIds = new Set(parsed.users.map((u) => u.id));
+      const missingUsers = mockUsers.filter((u) => !existingUserIds.has(u.id));
+      if (missingUsers.length > 0) {
+        parsed.users = [...parsed.users, ...missingUsers];
+      }
+      mockUsers.forEach((mu) => {
+        const target = parsed.users.find((u) => u.id === mu.id);
+        if (target) {
+          if (mu.level !== undefined) target.level = mu.level;
+          if (mu.isGraduated !== undefined) target.isGraduated = mu.isGraduated;
+          if (mu.graduationYear !== undefined) target.graduationYear = mu.graduationYear;
+          if (mu.graduationSession !== undefined) target.graduationSession = mu.graduationSession;
+          if (mu.degreeClass !== undefined) target.degreeClass = mu.degreeClass;
+          if (mu.finalCgpa !== undefined) target.finalCgpa = mu.finalCgpa;
+          if (mu.entryYear !== undefined) target.entryYear = mu.entryYear;
+          if (mu.department !== undefined) target.department = mu.department;
+          if (mu.college !== undefined) target.college = mu.college;
+          if (mu.matricNumber !== undefined) target.matricNumber = mu.matricNumber;
+        }
+      });
+
       const existingEnrollmentIds = new Set(parsed.enrollments.map((e) => e.id));
       const missingEnrollments = mockEnrollments.filter((e) => !existingEnrollmentIds.has(e.id));
       if (missingEnrollments.length > 0) {
         parsed.enrollments = [...parsed.enrollments, ...missingEnrollments];
       }
 
+      const existingResultIds = new Set(parsed.results.map((r) => r.id));
+      const missingResults = mockResults.filter((r) => !existingResultIds.has(r.id));
+      if (missingResults.length > 0) {
+        parsed.results = [...parsed.results, ...missingResults];
+      }
+
       const jeremiah = parsed.users.find((u) => u.id === 'u5');
       if (jeremiah) {
         jeremiah.matricNumber = 'UG/2021/02/03/045';
         jeremiah.level = 400;
+        jeremiah.isGraduated = false;
       }
 
       if (!parsed.disputes) {

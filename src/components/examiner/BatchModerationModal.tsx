@@ -50,9 +50,12 @@ export const BatchModerationModal: React.FC<BatchModerationModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden">
+      <DialogContent 
+        className="max-w-lg p-0 overflow-hidden"
+        closeClassName="text-white/80 hover:text-white hover:bg-white/20 top-5 right-5"
+      >
         {/* Header */}
-        <div className={`p-5 text-white ${isApprove ? 'bg-gradient-to-r from-[#064e3b] to-[#047857]' : 'bg-gradient-to-r from-amber-700 to-amber-800'}`}>
+        <div className={`p-5 pr-14 sm:pr-16 text-white ${isApprove ? 'bg-gradient-to-r from-[#064e3b] to-[#047857]' : 'bg-gradient-to-r from-amber-700 to-amber-800'}`}>
           <DialogHeader>
             <div className="flex items-center gap-2 mb-1">
               <Badge className={isApprove ? 'bg-emerald-400 text-emerald-950 font-bold' : 'bg-amber-300 text-amber-950 font-bold'}>

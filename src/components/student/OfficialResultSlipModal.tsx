@@ -152,6 +152,7 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
         id="modal-official-result-slip"
+        hideCloseButton
         className="max-w-4xl w-full max-h-[92vh] overflow-y-auto p-0 bg-slate-100/90 dark:bg-slate-950 border-slate-300 dark:border-slate-800 print:border-none print:shadow-none print:p-0 print:max-w-none print:w-full print:max-h-none print:bg-white"
       >
         {/* Top Floating Control Bar (Hidden on print) */}
@@ -265,7 +266,7 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
                 </div>
                 <div className="flex justify-between border-b border-slate-200/80 pb-1">
                   <span className="text-slate-500 font-medium">Current Session:</span>
-                  <span className="font-semibold text-slate-800">{settings.currentSession || '2023/2024'}</span>
+                  <span className="font-semibold text-slate-800">{settings.currentSession || '2025/2026'}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200/80 pb-1">
                   <span className="text-slate-500 font-medium">Grading System:</span>

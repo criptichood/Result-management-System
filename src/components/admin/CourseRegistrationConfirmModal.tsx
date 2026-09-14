@@ -36,7 +36,7 @@ export const CourseRegistrationConfirmModal: React.FC<CourseRegistrationConfirmM
     ? propIsCurrentlyOpen 
     : (settings?.courseRegistrationOpen ?? true);
     
-  const session = propCurrentSession || settings?.currentSession || '2024/2025';
+  const session = propCurrentSession || settings?.currentSession || '2025/2026';
   
   const semValue = propCurrentSemester !== undefined 
     ? propCurrentSemester 

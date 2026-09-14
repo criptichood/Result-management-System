@@ -57,6 +57,10 @@ export const StudentDashboard = () => {
   useEffect(() => {
     if (user) {
       loadData();
+      const unsubscribe = db.subscribe(() => {
+        loadData();
+      });
+      return () => unsubscribe();
     }
   }, [user]);
 
@@ -115,7 +119,7 @@ export const StudentDashboard = () => {
   // Compute genuine outstanding carryovers (failed courses from earlier level/session not yet cleared)
   const outstandingCourses = computeOutstandingCarryovers(
     resultsData, 
-    settings.currentSession || '2024/2025', 
+    settings.currentSession || db.getSettings().currentSession || '2025/2026', 
     user.level || 100
   );
 
@@ -229,7 +233,7 @@ export const StudentDashboard = () => {
 
   const handleRegisterCourses = () => {
     if (selectedCoursesToRegister.length === 0) return;
-    db.registerForCourses(user.id, selectedCoursesToRegister, registrationSemester, settings.currentSession || '2023/2024');
+    db.registerForCourses(user.id, selectedCoursesToRegister, registrationSemester, settings.currentSession || db.getSettings().currentSession || '2025/2026');
     loadData();
     setSelectedCoursesToRegister([]);
     showToast('Course registration submitted and approved successfully!');
@@ -430,7 +434,7 @@ export const StudentDashboard = () => {
         coursesWithResults={publishedResults}
         gpa={semesterKeys.length > 0 ? semesterGroups[semesterKeys[0]]?.items ? calculateSemesterStats(semesterGroups[semesterKeys[0]].items).gpa : 0 : 0}
         cgpa={cumulativeCgpa}
-        session={settings.currentSession || '2024/2025'}
+        session={settings.currentSession || db.getSettings().currentSession || '2025/2026'}
         semester={settings.currentSemester || 1}
       />
 

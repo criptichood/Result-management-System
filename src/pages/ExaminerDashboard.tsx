@@ -28,7 +28,13 @@ export const ExaminerDashboard = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [allEnrollments, setAllEnrollments] = useState<Enrollment[]>([]);
   const [allResults, setAllResults] = useState<Result[]>([]);
-  const [settings, setSettings] = useState<any>({ currentSession: '2024/2025', currentSemester: 1 });
+  const [settings, setSettings] = useState<any>(() => db.getSettings());
+  const [selectedSession, setSelectedSession] = useState<string>(() => {
+    const s = db.getSettings();
+    return s.currentSession || '2024/2025';
+  });
+  const [selectedSemester, setSelectedSemester] = useState<number | 'ALL'>('ALL');
+  const [availableSessions, setAvailableSessions] = useState<string[]>(['2024/2025', '2023/2024', '2022/2023']);
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'pending';
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,6 +67,18 @@ export const ExaminerDashboard = () => {
     setAllResults(allResults);
     setSettings(appSettings);
 
+    // Extract all unique sessions from enrollments
+    const sessionSet = new Set<string>();
+    if (appSettings.currentSession) sessionSet.add(appSettings.currentSession);
+    allEnrollments.forEach((e) => {
+      const enrSession = e.academicYear || (e as any).session;
+      if (enrSession) sessionSet.add(enrSession);
+    });
+    const sortedSessions = Array.from(sessionSet).sort().reverse();
+    setAvailableSessions(sortedSessions);
+
+    const activeSession = selectedSession || appSettings.currentSession || '2024/2025';
+
     const students = allUsers.filter(
       (u) => u.role === 'Student' && u.department === user.department
     );
@@ -73,9 +91,13 @@ export const ExaminerDashboard = () => {
 
     const deptStudentIds = new Set(students.map((s) => s.id));
 
-    // Group all courses with detailed results and enrollment metrics
+    // Group all courses with detailed results and enrollment metrics filtered to activeSession
     const grouped = allCourses.map((course) => {
-      const courseEnrollments = allEnrollments.filter((e) => e.courseId === course.id);
+      const courseEnrollments = allEnrollments.filter((e) => {
+        if (e.courseId !== course.id) return false;
+        const enrSession = e.academicYear || (e as any).session;
+        return enrSession === activeSession;
+      });
 
       const relevantEnrollments =
         course.department === user.department
@@ -89,7 +111,7 @@ export const ExaminerDashboard = () => {
       });
 
       const submittedCount = detailedResults.filter(
-        (r) => r.result?.status === 'Submitted' || r.result?.status === 'Published'
+        (r) => r.result?.status === 'Submitted'
       ).length;
       const publishedCount = detailedResults.filter(
         (r) => r.result?.status === 'Published'
@@ -98,6 +120,9 @@ export const ExaminerDashboard = () => {
 
       const isCore = course.department === user.department;
       const isTakenByDeptStudents = relevantEnrollments.length > 0;
+      const hasPendingReview = submittedCount > 0;
+      const isFullyPublished = publishedCount > 0 && publishedCount === totalEnrolled;
+      const isAwaitingLecturer = submittedCount === 0 && publishedCount === 0;
 
       return {
         ...course,
@@ -107,8 +132,9 @@ export const ExaminerDashboard = () => {
         totalEnrolled,
         isCore,
         isTakenByDeptStudents,
-        hasPendingReview: detailedResults.some((r) => r.result?.status === 'Submitted'),
-        isFullyPublished: publishedCount === totalEnrolled && totalEnrolled > 0,
+        hasPendingReview,
+        isFullyPublished,
+        isAwaitingLecturer,
       };
     });
 
@@ -121,10 +147,14 @@ export const ExaminerDashboard = () => {
       (c) => c.isCore || c.isTakenByDeptStudents
     );
     setDepartmentCourses(deptAndBorrowedCourses);
-  }, [user]);
+  }, [user, selectedSession]);
 
   useEffect(() => {
     loadData();
+    const unsubscribe = db.subscribe(() => {
+      loadData();
+    });
+    return () => unsubscribe();
   }, [loadData]);
 
   if (!user) return null;
@@ -185,7 +215,7 @@ export const ExaminerDashboard = () => {
     loadData();
   };
 
-  const pendingCourses = coursesWithResults.filter((c) => !c.isFullyPublished);
+  const pendingCourses = coursesWithResults.filter((c) => c.hasPendingReview);
   const publishedCourses = coursesWithResults.filter((c) => c.isFullyPublished);
 
   const filteredStudents = departmentStudents.filter(
@@ -238,7 +268,7 @@ export const ExaminerDashboard = () => {
             onClick={() => setIsBroadSheetOpen(true)}
             className="gap-2 bg-[#064e3b] hover:bg-[#053d2e] text-white text-xs shadow-xs"
           >
-            <FileSpreadsheet className="w-4 h-4" /> Senate Master Broad Sheet
+            <FileSpreadsheet className="w-4 h-4" /> Senate Broadsheet
           </Button>
         </div>
       </div>
@@ -246,8 +276,15 @@ export const ExaminerDashboard = () => {
       {activeTab === 'pending' && (
         <PendingResultsTable
           pendingCourses={pendingCourses}
+          allSessionCourses={coursesWithResults}
           lecturers={lecturers}
           examiner={user}
+          selectedSession={selectedSession}
+          onSessionChange={setSelectedSession}
+          selectedSemester={selectedSemester}
+          onSemesterChange={setSelectedSemester}
+          availableSessions={availableSessions}
+          activeSystemSession={settings.currentSession}
           onApprove={handleApprove}
           onReject={handleReject}
           onBatchModerate={handleBatchModerate}
@@ -277,9 +314,10 @@ export const ExaminerDashboard = () => {
       {activeTab === 'students' && (
         <DepartmentStudentsTable
           department={user.department || 'Computer Science'}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          filteredStudents={filteredStudents}
+          students={departmentStudents}
+          courses={allCourses}
+          enrollments={allEnrollments}
+          results={allResults}
         />
       )}
 
@@ -292,6 +330,7 @@ export const ExaminerDashboard = () => {
           results={allResults}
           session={settings.currentSession}
           semester={settings.currentSemester}
+          lockedDepartment={user.department || 'Computer Science'}
         />
       )}
 

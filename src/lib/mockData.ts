@@ -5,16 +5,28 @@ export const mockUsers: User[] = [
   { id: 'u2', name: 'Prof. Bello Ibrahim', email: 'chief@fuaz.edu.ng', role: 'Chief Examiner', college: 'Science', department: 'Computer Science', staffId: 'CE001' },
   { id: 'u3', name: 'Dr. Chidi Okafor (Lecturer A)', email: 'lecturer1@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC001' },
   { id: 'u4', name: 'Dr. Fatima Umar (Lecturer B)', email: 'lecturer2@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC002' },
-  { id: 'u5', name: 'Jeremiah Dantani', email: 'jeremiah@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/045', level: 400, phoneNumber: '+234 801 234 5678', emergencyContact: '+234 809 876 5432 (Father)', address: 'Block A, Male Hostel, FUAZ Campus' },
-  { id: 'u6', name: 'Sarah Musa', email: 'sarah@student.fuaz.edu.ng', role: 'Student', college: 'Agriculture', department: 'Crop Science', matricNumber: 'UG/2022/02/03/002', level: 300, phoneNumber: '+234 812 345 6789', emergencyContact: '+234 803 456 7890 (Mother)', address: 'Block C, Female Hostel, FUAZ Campus' },
-  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 300, phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
-  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 200, phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
-  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 200, phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 100, phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
-  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 100, phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
-  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 100, phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
-  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 200, phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 300, phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
+  
+  // Active Undergraduates (Computer Science)
+  { id: 'u5', name: 'Jeremiah Dantani', email: 'jeremiah@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/045', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 801 234 5678', emergencyContact: '+234 809 876 5432 (Father)', address: 'Block A, Male Hostel, FUAZ Campus' },
+  { id: 'u19', name: 'Zubairu Adamu', email: 'zubairu.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/012', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 802 345 6789', emergencyContact: '+234 803 456 7891 (Father)', address: 'Block B, Male Hostel' },
+  { id: 'u20', name: 'Grace Danjuma', email: 'grace.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/033', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 806 789 0123', emergencyContact: '+234 807 890 1234 (Mother)', address: 'Block C, Female Hostel' },
+  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
+  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
+  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
+  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
+  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
+  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
+
+  // Graduated Alumni (Computer Science)
+  { id: 'u15', name: 'Ibrahim Yakubu', email: 'ibrahim.y@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2019/02/03/001', level: 400, isGraduated: true, graduationYear: '2023/2024', graduationSession: '2023/2024 Session', degreeClass: 'First Class Honours', finalCgpa: 4.74, entryYear: '2019/2020', phoneNumber: '+234 803 999 1122', emergencyContact: '+234 803 111 2233 (Father)', address: 'Plot 12, Garki II, Abuja' },
+  { id: 'u16', name: 'Maryam Al-Hassan', email: 'maryam.a@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2019/02/03/018', level: 400, isGraduated: true, graduationYear: '2023/2024', graduationSession: '2023/2024 Session', degreeClass: 'Second Class Honours (Upper Division)', finalCgpa: 4.18, entryYear: '2019/2020', phoneNumber: '+234 812 444 5566', emergencyContact: '+234 802 888 9900 (Mother)', address: '14 Ahmadu Bello Way, Kaduna' },
+  { id: 'u17', name: 'Chukwuma Obi', email: 'chukwuma.o@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2018/02/03/007', level: 400, isGraduated: true, graduationYear: '2022/2023', graduationSession: '2022/2023 Session', degreeClass: 'Second Class Honours (Upper Division)', finalCgpa: 3.82, entryYear: '2018/2019', phoneNumber: '+234 810 777 6655', emergencyContact: '+234 809 333 2211 (Brother)', address: 'Independence Layout, Enugu' },
+  { id: 'u18', name: 'Kemi Adeleke', email: 'kemi.a@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2018/02/03/024', level: 400, isGraduated: true, graduationYear: '2022/2023', graduationSession: '2022/2023 Session', degreeClass: 'Second Class Honours (Lower Division)', finalCgpa: 3.12, entryYear: '2018/2019', phoneNumber: '+234 816 222 3344', emergencyContact: '+234 803 777 6655 (Guardian)', address: 'Bodija, Ibadan' },
+
+  // Non-Departmental Student (Demonstrates university-wide data isolation)
+  { id: 'u6', name: 'Sarah Musa', email: 'sarah@student.fuaz.edu.ng', role: 'Student', college: 'Agriculture', department: 'Crop Science', matricNumber: 'UG/2022/02/03/002', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 812 345 6789', emergencyContact: '+234 803 456 7890 (Mother)', address: 'Block C, Female Hostel, FUAZ Campus' },
 ];
 
 export const mockCourses: Course[] = [
@@ -169,6 +181,20 @@ export const mockEnrollments: Enrollment[] = [
   { id: 'e7_csc423', studentId: 'u5', courseId: 'c_csc423', semester: 2, academicYear: '2024/2025' },
   { id: 'e7_csc424', studentId: 'u5', courseId: 'c_csc424', semester: 2, academicYear: '2024/2025' },
 
+  // Zubairu Adamu (u19) - 2024/2025 ACTIVE SESSION (400 Level / UG4)
+  { id: 'e7_zubairu_csc411', studentId: 'u19', courseId: 'c_csc411', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_zubairu_csc412', studentId: 'u19', courseId: 'c_csc412', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_zubairu_csc414', studentId: 'u19', courseId: 'c_csc414', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_zubairu_csc415', studentId: 'u19', courseId: 'c_csc415', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_zubairu_csc418', studentId: 'u19', courseId: 'c_csc418', semester: 1, academicYear: '2024/2025' },
+
+  // Grace Danjuma (u20) - 2024/2025 ACTIVE SESSION (400 Level / UG4)
+  { id: 'e7_grace_csc411', studentId: 'u20', courseId: 'c_csc411', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_grace_csc412', studentId: 'u20', courseId: 'c_csc412', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_grace_csc414', studentId: 'u20', courseId: 'c_csc414', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_grace_csc415', studentId: 'u20', courseId: 'c_csc415', semester: 1, academicYear: '2024/2025' },
+  { id: 'e7_grace_csc418', studentId: 'u20', courseId: 'c_csc418', semester: 1, academicYear: '2024/2025' },
+
   // David Ojo (u7) - 300 Level
   { id: 'e_david_csc311', studentId: 'u7', courseId: 'c_csc311', semester: 1, academicYear: '2023/2024' },
   { id: 'e_david_csc312', studentId: 'u7', courseId: 'c_csc312', semester: 1, academicYear: '2023/2024' },
@@ -207,6 +233,37 @@ export const mockEnrollments: Enrollment[] = [
   { id: 'e_blessing_csc111', studentId: 'u12', courseId: 'c_csc111', semester: 1, academicYear: '2024/2025' },
   { id: 'e_tunde_csc111', studentId: 'u13', courseId: 'c_csc111', semester: 1, academicYear: '2023/2024' },
   { id: 'e_sarah_agr101', studentId: 'u6', courseId: 'c_agr101', semester: 1, academicYear: '2022/2023' },
+
+  // Graduated Alumni Enrollments (Computer Science)
+  // Ibrahim Yakubu (u15) - Graduated 2023/2024 (First Class)
+  { id: 'e_ibrahim_csc111', studentId: 'u15', courseId: 'c_csc111', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_ibrahim_mth111', studentId: 'u15', courseId: 'c_mth111', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_ibrahim_chm111', studentId: 'u15', courseId: 'c_chm111', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_ibrahim_csc211', studentId: 'u15', courseId: 'c_csc211', semester: 1, academicYear: '2020/2021' },
+  { id: 'e_ibrahim_csc213', studentId: 'u15', courseId: 'c_csc213', semester: 1, academicYear: '2020/2021' },
+  { id: 'e_ibrahim_csc311', studentId: 'u15', courseId: 'c_csc311', semester: 1, academicYear: '2021/2022' },
+  { id: 'e_ibrahim_csc411', studentId: 'u15', courseId: 'c_csc411', semester: 1, academicYear: '2023/2024' },
+
+  // Maryam Al-Hassan (u16) - Graduated 2023/2024 (2:1)
+  { id: 'e_maryam_csc111', studentId: 'u16', courseId: 'c_csc111', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_maryam_mth111', studentId: 'u16', courseId: 'c_mth111', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_maryam_csc211', studentId: 'u16', courseId: 'c_csc211', semester: 1, academicYear: '2020/2021' },
+  { id: 'e_maryam_csc311', studentId: 'u16', courseId: 'c_csc311', semester: 1, academicYear: '2021/2022' },
+  { id: 'e_maryam_csc411', studentId: 'u16', courseId: 'c_csc411', semester: 1, academicYear: '2023/2024' },
+
+  // Chukwuma Obi (u17) - Graduated 2022/2023 (2:1)
+  { id: 'e_chukwuma_csc111', studentId: 'u17', courseId: 'c_csc111', semester: 1, academicYear: '2018/2019' },
+  { id: 'e_chukwuma_mth111', studentId: 'u17', courseId: 'c_mth111', semester: 1, academicYear: '2018/2019' },
+  { id: 'e_chukwuma_csc211', studentId: 'u17', courseId: 'c_csc211', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_chukwuma_csc311', studentId: 'u17', courseId: 'c_csc311', semester: 1, academicYear: '2020/2021' },
+  { id: 'e_chukwuma_csc411', studentId: 'u17', courseId: 'c_csc411', semester: 1, academicYear: '2022/2023' },
+
+  // Kemi Adeleke (u18) - Graduated 2022/2023 (2:2)
+  { id: 'e_kemi_csc111', studentId: 'u18', courseId: 'c_csc111', semester: 1, academicYear: '2018/2019' },
+  { id: 'e_kemi_mth111', studentId: 'u18', courseId: 'c_mth111', semester: 1, academicYear: '2018/2019' },
+  { id: 'e_kemi_csc211', studentId: 'u18', courseId: 'c_csc211', semester: 1, academicYear: '2019/2020' },
+  { id: 'e_kemi_csc311', studentId: 'u18', courseId: 'c_csc311', semester: 1, academicYear: '2020/2021' },
+  { id: 'e_kemi_csc411', studentId: 'u18', courseId: 'c_csc411', semester: 1, academicYear: '2022/2023' },
 ];
 
 export const mockResults: Result[] = [
@@ -304,20 +361,55 @@ export const mockResults: Result[] = [
   { id: 'r_aisha_csc221', enrollmentId: 'e_aisha_csc221', caScore: 36, examScore: 46, totalScore: 82, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
   { id: 'r_aisha_csc224', enrollmentId: 'e_aisha_csc224', caScore: 38, examScore: 50, totalScore: 88, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
 
-  // 100L Cohort Results
+  // 100L Cohort Results (2024/2025 Active Session - Submitted for Examiner Review)
   { id: 'r_david_csc111', enrollmentId: 'e_david_csc111', caScore: 28, examScore: 42, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
   { id: 'r_zainab_csc111', enrollmentId: 'e_zainab_csc111', caScore: 35, examScore: 50, totalScore: 85, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
   { id: 'r_aisha_csc111', enrollmentId: 'e_aisha_csc111', caScore: 38, examScore: 54, totalScore: 92, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_blessing_csc111', enrollmentId: 'e_blessing_csc111', caScore: 26, examScore: 40, totalScore: 66, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
+  { id: 'r_blessing_csc111', enrollmentId: 'e_blessing_csc111', caScore: 26, examScore: 40, totalScore: 66, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
   { id: 'r_tunde_csc111', enrollmentId: 'e_tunde_csc111', caScore: 22, examScore: 36, totalScore: 58, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
   { id: 'r_emeka_csc111', enrollmentId: 'e_emeka_csc111', caScore: 16, examScore: 29, totalScore: 45, grade: 'D', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
-  { id: 'r_musa_csc111', enrollmentId: 'e_musa_csc111', caScore: 32, examScore: 40, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-  { id: 'r_fatima_csc111', enrollmentId: 'e_fatima_csc111', caScore: 28, examScore: 42, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
+  { id: 'r_musa_csc111', enrollmentId: 'e_musa_csc111', caScore: 32, examScore: 40, totalScore: 72, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
+  { id: 'r_fatima_csc111', enrollmentId: 'e_fatima_csc111', caScore: 28, examScore: 42, totalScore: 70, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
+
+  // ==========================================
+  // Active 2024/2025 400 Level Results (Submitted by Dr. Chidi Okafor, Awaiting Chief Examiner Audit)
+  // ==========================================
+  // CSC 411 - Organization of Programming Language
+  { id: 'r_jeremiah_csc411', enrollmentId: 'e7_csc411', caScore: 35, examScore: 47, totalScore: 82, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
+  { id: 'r_zubairu_csc411', enrollmentId: 'e7_zubairu_csc411', caScore: 28, examScore: 44, totalScore: 72, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
+  { id: 'r_grace_csc411', enrollmentId: 'e7_grace_csc411', caScore: 31, examScore: 37, totalScore: 68, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
+
+  // CSC 412 - Software Engineering
+  { id: 'r_jeremiah_csc412', enrollmentId: 'e7_csc412', caScore: 33, examScore: 45, totalScore: 78, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
+  { id: 'r_zubairu_csc412', enrollmentId: 'e7_zubairu_csc412', caScore: 26, examScore: 38, totalScore: 64, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
+  { id: 'r_grace_csc412', enrollmentId: 'e7_grace_csc412', caScore: 29, examScore: 42, totalScore: 71, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
+
+  // CSC 414 - Net-Centric Computing
+  { id: 'r_jeremiah_csc414', enrollmentId: 'e7_csc414', caScore: 30, examScore: 40, totalScore: 70, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
+  { id: 'r_zubairu_csc414', enrollmentId: 'e7_zubairu_csc414', caScore: 22, examScore: 35, totalScore: 57, grade: 'C', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
+  { id: 'r_grace_csc414', enrollmentId: 'e7_grace_csc414', caScore: 34, examScore: 48, totalScore: 82, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
 
   // MTH 111 Cohort
   { id: 'r_david_mth111', enrollmentId: 'e_david_mth111', caScore: 30, examScore: 35, totalScore: 65, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-04-15T10:00:00Z' },
   { id: 'r_zainab_mth111', enrollmentId: 'e_zainab_mth111', caScore: 33, examScore: 45, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-04-15T10:00:00Z' },
   { id: 'r_emeka_mth111', enrollmentId: 'e_emeka_mth111', caScore: 10, examScore: 22, totalScore: 32, grade: 'F', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-04-15T10:00:00Z' },
+
+  // Graduated Alumni Results
+  // Ibrahim Yakubu (u15)
+  { id: 'r_ibrahim_csc111', enrollmentId: 'e_ibrahim_csc111', caScore: 38, examScore: 54, totalScore: 92, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_mth111', enrollmentId: 'e_ibrahim_mth111', caScore: 36, examScore: 48, totalScore: 84, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2020-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_chm111', enrollmentId: 'e_ibrahim_chm111', caScore: 32, examScore: 45, totalScore: 77, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_csc211', enrollmentId: 'e_ibrahim_csc211', caScore: 35, examScore: 49, totalScore: 84, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_csc213', enrollmentId: 'e_ibrahim_csc213', caScore: 34, examScore: 46, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_csc311', enrollmentId: 'e_ibrahim_csc311', caScore: 37, examScore: 51, totalScore: 88, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
+  { id: 'r_ibrahim_csc411', enrollmentId: 'e_ibrahim_csc411', caScore: 36, examScore: 50, totalScore: 86, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
+
+  // Maryam Al-Hassan (u16)
+  { id: 'r_maryam_csc111', enrollmentId: 'e_maryam_csc111', caScore: 32, examScore: 46, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
+  { id: 'r_maryam_mth111', enrollmentId: 'e_maryam_mth111', caScore: 28, examScore: 40, totalScore: 68, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2020-04-15T10:00:00Z' },
+  { id: 'r_maryam_csc211', enrollmentId: 'e_maryam_csc211', caScore: 31, examScore: 45, totalScore: 76, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
+  { id: 'r_maryam_csc311', enrollmentId: 'e_maryam_csc311', caScore: 30, examScore: 42, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
+  { id: 'r_maryam_csc411', enrollmentId: 'e_maryam_csc411', caScore: 29, examScore: 41, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
 ];
 
 export const mockDepartments: Department[] = [

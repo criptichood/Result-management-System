@@ -37,18 +37,30 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
     }
   };
 
-  // Fetch courses for this level and semester
-  const courses = db.from('courses').select().filter(
-    (c) => c.level === selectedLevel && c.semester === selectedSemester
-  );
-
-  // Fetch students in this level
-  const allStudents = db.from('users').select().filter(
-    (u) => u.role === 'Student' && (u.level === selectedLevel || (!u.level && selectedLevel === 100))
-  );
-
   const enrollments = db.from('enrollments').select();
   const results = db.from('results').select();
+
+  // Fetch departmental student IDs (e.g. Computer Science only)
+  const deptStudents = db.from('users').select().filter(
+    (u) => u.role === 'Student' && (!departmentName || u.department === departmentName)
+  );
+  const deptStudentIds = new Set(deptStudents.map((u) => u.id));
+
+  // Fetch courses for this level and semester:
+  // Include departmental courses OR borrowed/service courses taken by students of this department
+  const courses = db.from('courses').select().filter((c) => {
+    if (c.level !== selectedLevel || c.semester !== selectedSemester) return false;
+    const isDeptCourse = !departmentName || c.department === departmentName;
+    const isTakenByDeptStudent = enrollments.some(
+      (e) => e.courseId === c.id && deptStudentIds.has(e.studentId)
+    );
+    return isDeptCourse || isTakenByDeptStudent;
+  });
+
+  // Fetch students in this level strictly within this department
+  const allStudents = deptStudents.filter(
+    (u) => (u.level === selectedLevel || (!u.level && selectedLevel === 100))
+  );
 
   // Compute broad sheet row for each student
   const studentRows = allStudents.map((student, idx) => {
@@ -170,7 +182,7 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-6xl max-h-[95vh] flex flex-col p-0 overflow-hidden bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 print:bg-white print:border-none print:max-w-none print:w-full">
+      <DialogContent hideCloseButton className="max-w-6xl max-h-[95vh] flex flex-col p-0 overflow-hidden bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 print:bg-white print:border-none print:max-w-none print:w-full">
         {/* Modal Toolbar (hidden on print) */}
         <div className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 print:hidden">
           <div className="flex items-center gap-2">

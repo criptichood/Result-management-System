@@ -177,7 +177,7 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                 <span>Active Session:</span>
-                <span className="font-bold text-slate-900 dark:text-white">{settings.currentSession || '2023/2024'}</span>
+                <span className="font-bold text-slate-900 dark:text-white">{settings.currentSession || '2025/2026'}</span>
               </div>
               <div className="flex items-center justify-between py-1.5">
                 <span>Academic Standing:</span>

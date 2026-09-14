@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, Mail, Phone, MapPin, Clock, ShieldCheck, 
-  Calculator, FileText, CheckCircle2, ArrowRight 
+  Calculator, FileText, CheckCircle2, ArrowRight, Presentation, Sparkles 
 } from 'lucide-react';
 import { FuazLogo } from '../ui/FuazLogo';
 
@@ -92,7 +92,7 @@ export const UniversityFooterHelpdesk: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigate('/gpa-guide')}
-                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left"
+                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <Calculator className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Official NUC 5.0 CGPA Computation Guide</span>
@@ -100,8 +100,17 @@ export const UniversityFooterHelpdesk: React.FC = () => {
               </li>
               <li>
                 <button
+                  onClick={() => navigate('/project-review')}
+                  className="text-emerald-300 hover:text-emerald-200 flex items-center gap-1.5 transition-colors font-semibold text-left cursor-pointer"
+                >
+                  <Presentation className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>System Architecture & Defense Review Deck</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => navigate('/login?role=Student')}
-                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left"
+                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Student Result Checker & Transcript Slips</span>
@@ -160,6 +169,18 @@ export const UniversityFooterHelpdesk: React.FC = () => {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Portal Status: <strong className="text-slate-200">Online & Secure</strong></span>
             </div>
+
+            {/* Interactive Review Button in Footer */}
+            <button
+              onClick={() => navigate('/project-review')}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-700/60 text-emerald-200 transition-all text-xs font-bold shadow-xs cursor-pointer group"
+            >
+              <div className="flex items-center gap-2">
+                <Presentation className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                <span>Architecture & Review Deck</span>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
 
@@ -171,8 +192,16 @@ export const UniversityFooterHelpdesk: React.FC = () => {
             <span>•</span>
             <span className="font-mono text-emerald-400">Release v2.4.0 (Enterprise)</span>
             <span>•</span>
-            <button onClick={() => navigate('/gpa-guide')} className="hover:text-emerald-400 transition-colors">
+            <button onClick={() => navigate('/gpa-guide')} className="hover:text-emerald-400 transition-colors cursor-pointer">
               Grading Benchmark
+            </button>
+            <span>•</span>
+            <button 
+              onClick={() => navigate('/project-review')} 
+              className="hover:text-emerald-300 transition-colors text-emerald-400 font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <Presentation className="w-3.5 h-3.5" />
+              <span>System Review & Defense Slides</span>
             </button>
           </div>
         </div>

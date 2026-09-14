@@ -27,6 +27,7 @@ interface AdminSenateAnalyticsTabProps {
   results?: Result[];
   session?: string;
   semester?: 1 | 2;
+  lockedDepartment?: string;
 }
 
 export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = ({
@@ -37,9 +38,10 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
   results = [],
   session = '2025/2026',
   semester = 1,
+  lockedDepartment,
 }) => {
   // Filters
-  const [selectedDept, setSelectedDept] = useState<string>('all');
+  const [selectedDept, setSelectedDept] = useState<string>(lockedDepartment || 'all');
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const [selectedClass, setSelectedClass] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -50,13 +52,31 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
   const [selectedStudentSummary, setSelectedStudentSummary] = useState<StudentSenateSummary | null>(null);
   const [selectedAnomaly, setSelectedAnomaly] = useState<CourseAnomaly | null>(null);
 
+  // Filter users and courses strictly to lockedDepartment if provided
+  const effectiveUsers = useMemo(() => {
+    if (!lockedDepartment) return users;
+    return users.filter((u) => u.role !== 'Student' || u.department === lockedDepartment);
+  }, [users, lockedDepartment]);
+
+  const effectiveCourses = useMemo(() => {
+    if (!lockedDepartment) return courses;
+    const deptStudentIds = new Set(
+      effectiveUsers.filter((u) => u.role === 'Student' && u.department === lockedDepartment).map((u) => u.id)
+    );
+    return courses.filter(
+      (c) =>
+        c.department === lockedDepartment ||
+        enrollments.some((e) => e.courseId === c.id && deptStudentIds.has(e.studentId))
+    );
+  }, [courses, lockedDepartment, effectiveUsers, enrollments]);
+
   // Compute live analytics
   const analytics = useMemo(() => {
-    return computeSenateInstitutionalAnalytics(users, courses, enrollments, results, {
-      department: selectedDept,
+    return computeSenateInstitutionalAnalytics(effectiveUsers, effectiveCourses, enrollments, results, {
+      department: lockedDepartment || selectedDept,
       level: selectedLevel,
     });
-  }, [users, courses, enrollments, results, selectedDept, selectedLevel]);
+  }, [effectiveUsers, effectiveCourses, enrollments, results, lockedDepartment, selectedDept, selectedLevel]);
 
   // Filter student summaries for the table
   const filteredStudents = useMemo(() => {
@@ -132,18 +152,25 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
 
           {/* Department & Level Selector Filters */}
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              value={selectedDept}
-              onChange={(e) => setSelectedDept(e.target.value)}
-              className="text-xs h-8 px-2.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
-            >
-              <option value="all">All Departments</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.name}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
+            {lockedDepartment ? (
+              <div className="text-xs h-8 px-3 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 flex items-center font-semibold gap-1.5 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Dept: {lockedDepartment}
+              </div>
+            ) : (
+              <select
+                value={selectedDept}
+                onChange={(e) => setSelectedDept(e.target.value)}
+                className="text-xs h-8 px-2.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
+              >
+                <option value="all">All Departments</option>
+                {departments.map((d) => (
+                  <option key={d.id} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            )}
 
             <select
               value={selectedLevel}

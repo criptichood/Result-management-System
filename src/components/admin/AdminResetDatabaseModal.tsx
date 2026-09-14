@@ -41,7 +41,7 @@ export const AdminResetDatabaseModal: React.FC<AdminResetDatabaseModalProps> = (
           <ul className="list-disc list-inside space-y-0.5 text-[11px]">
             <li>Any custom-created courses or newly registered users will be cleared.</li>
             <li>All grading changes and status updates will return to initial seed states.</li>
-            <li>The active session will reset to 2024/2025 (1st Semester).</li>
+            <li>The active session will reset to 2025/2026 (1st Semester).</li>
           </ul>
         </div>
 

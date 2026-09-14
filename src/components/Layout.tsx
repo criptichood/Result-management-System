@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, Menu, Calculator, User as UserIcon, LayoutDashboard, ChevronDown, ArrowLeft } from 'lucide-react';
+import { LogOut, Menu, Calculator, User as UserIcon, LayoutDashboard, ChevronDown, ArrowLeft, Presentation } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sidebar } from './Sidebar';
 import { FuazLogo } from './ui/FuazLogo';
@@ -108,6 +108,17 @@ export const Layout = () => {
           >
             <Calculator className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>GPA Guide</span>
+          </Button>
+
+          {/* Architecture & Defense Deck Link */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/project-review')}
+            className="hidden md:flex items-center gap-1.5 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-slate-800"
+          >
+            <Presentation className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>Architecture & Review</span>
           </Button>
 
           {/* Theme Toggle (Light / Dark) */}

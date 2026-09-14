@@ -28,14 +28,34 @@ import { sqliteEngine } from './sqliteEngine';
 
 class MockDB {
   private state: DBState;
+  private listeners: Set<() => void> = new Set();
 
   constructor() {
     this.state = loadAndMigrateDBState();
     sqliteEngine.init().catch((e) => console.warn('SQLite init deferred:', e));
   }
 
+  public subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((listener) => {
+      try {
+        listener();
+      } catch (err) {
+        console.error('Error in DB subscriber listener:', err);
+      }
+    });
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('fuaz_db_updated'));
+    }
+  }
+
   private saveState(state: DBState = this.state) {
     localStorage.setItem(DB_KEY, JSON.stringify(state));
+    this.notifyListeners();
     this.syncStateToSqlite().catch((err) => console.warn('SQLite background sync warning:', err));
   }
 
@@ -224,13 +244,13 @@ class MockDB {
   getOutstandingCarryovers(studentId: string) {
     const student = this.from('users').selectById(studentId);
     const resultsData = this.getStudentResults(studentId);
-    const currentSession = this.getSettings().currentSession || '2024/2025';
+    const currentSession = this.getSettings().currentSession || '2025/2026';
     return computeOutstandingCarryovers(student, resultsData, currentSession);
   }
 
   getAvailableCourses(studentId: string, semester?: number) {
     const student = this.from('users').selectById(studentId);
-    const currentSession = this.getSettings().currentSession || '2024/2025';
+    const currentSession = this.getSettings().currentSession || '2025/2026';
     const allCourses = this.from('courses').select();
     const allEnrollments = this.from('enrollments').select();
     const studentResults = this.getStudentResults(studentId);
@@ -248,8 +268,9 @@ class MockDB {
     studentId: string,
     courseIds: string[],
     semester: 1 | 2,
-    academicYear: string
+    academicYear?: string
   ) {
+    const session = academicYear || this.getSettings().currentSession || '2025/2026';
     courseIds.forEach((courseId) => {
       const enrollmentId = `e_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       this.from('enrollments').insert({
@@ -257,7 +278,7 @@ class MockDB {
         studentId,
         courseId,
         semester,
-        academicYear,
+        academicYear: session,
       });
       this.from('results').insert({
         id: `r_${Date.now()}_${Math.random().toString(36).substring(7)}`,

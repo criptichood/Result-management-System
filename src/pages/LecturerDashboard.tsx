@@ -60,12 +60,20 @@ export const LecturerDashboard = () => {
 
   useEffect(() => {
     if (user) {
-      const lecturerCourses = db.getLecturerCourses(user.id);
-      setCourses(lecturerCourses);
-      if (lecturerCourses.length > 0 && !selectedCourse) {
-        loadCourseData(lecturerCourses[0]);
-      }
-      setSettings(db.getSettings());
+      const refresh = () => {
+        const lecturerCourses = db.getLecturerCourses(user.id);
+        setCourses(lecturerCourses);
+        if (selectedCourse) {
+          const fresh = lecturerCourses.find((c) => c.id === selectedCourse.id);
+          if (fresh) loadCourseData(fresh);
+        } else if (lecturerCourses.length > 0) {
+          loadCourseData(lecturerCourses[0]);
+        }
+        setSettings(db.getSettings());
+      };
+      refresh();
+      const unsubscribe = db.subscribe(refresh);
+      return () => unsubscribe();
     }
   }, [user]);
 

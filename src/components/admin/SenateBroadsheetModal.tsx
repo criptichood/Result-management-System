@@ -21,7 +21,7 @@ export const SenateBroadsheetModal: React.FC<SenateBroadsheetModalProps> = ({
   students,
   departmentFilter = 'All Departments',
   levelFilter = 0,
-  session = '2024/2025',
+  session = '2025/2026',
   semester = 1,
 }) => {
   const [filterClass, setFilterClass] = useState<string>('all');
@@ -47,7 +47,7 @@ export const SenateBroadsheetModal: React.FC<SenateBroadsheetModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl w-[96vw] max-h-[92vh] flex flex-col p-0 overflow-hidden bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         {/* Header toolbar */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950/60 print:hidden">
+        <div className="p-4 sm:p-5 pr-14 sm:pr-16 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950/60 print:hidden">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-emerald-700 text-white rounded-lg shadow-xs">
               <ShieldCheck className="w-5 h-5" />

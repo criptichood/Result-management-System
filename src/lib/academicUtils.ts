@@ -114,7 +114,7 @@ export const calculateSemesterStats = (items: any[]) => {
  */
 export const computeOutstandingCarryovers = (
   resultsData: any[],
-  currentSession: string = '2024/2025',
+  currentSession: string = '2025/2026',
   studentLevel: number = 100
 ): any[] => {
   const passedCourseCodes = new Set<string>();

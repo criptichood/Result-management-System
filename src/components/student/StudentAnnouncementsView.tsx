@@ -3,20 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui
 import { Badge } from '../ui/badge';
 import { Bell, Clock, Calendar, Search, Filter, AlertCircle, BookOpen } from 'lucide-react';
 import { Input } from '../ui/input';
+import { db } from '../../lib/db';
 
 export const StudentAnnouncementsView: React.FC = () => {
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const settings = db.getSettings();
+  const currentSession = settings?.currentSession || '2025/2026';
 
   const announcements = [
     {
       id: '1',
-      title: 'Mid-Semester Continuous Assessment (CA) Schedule - 2023/2024',
+      title: `Mid-Semester Continuous Assessment (CA) Schedule - ${currentSession}`,
       course: 'University Wide',
       category: 'Exam & CA',
       date: 'Sept 1, 2026',
       author: 'Academic Affairs Unit',
-      content: 'All 200L and 300L students are required to complete their CA quizzes before Friday. Ensure your course registration is fully verified and stamped by your level coordinator.',
+      content: `All active undergraduate students are required to complete their CA quizzes for the ${currentSession} session before Friday. Ensure your course registration is fully verified and stamped by your level coordinator.`,
       type: 'important'
     },
     {
@@ -31,12 +34,14 @@ export const StudentAnnouncementsView: React.FC = () => {
     },
     {
       id: '3',
-      title: 'Course Registration Portal Status Notice for 2023/2024 Session',
+      title: `Course Registration Portal Status Notice for ${currentSession} Session`,
       course: 'Portal Management',
       category: 'Administrative',
       date: 'Aug 25, 2026',
       author: 'Director of ICT',
-      content: 'The course registration portal is currently open. Students are advised to register their electives and core courses promptly to avoid late registration penalties.',
+      content: settings.courseRegistrationOpen
+        ? `The course registration portal is currently OPEN for the ${currentSession} session. Students are advised to register their electives and core courses promptly.`
+        : `The course registration portal for ${currentSession} is currently CLOSED. Contact your level coordinator for special late registration approval.`,
       type: 'info'
     },
     {

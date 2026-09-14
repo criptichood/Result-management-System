@@ -129,7 +129,7 @@ ORDER BY total_graded DESC;`
     category: 'Update',
     description: 'Update the active session in system_settings table',
     query: `UPDATE system_settings 
-SET value = '2024/2025' 
+SET value = '2025/2026' 
 WHERE key = 'currentSession';`
   },
   {

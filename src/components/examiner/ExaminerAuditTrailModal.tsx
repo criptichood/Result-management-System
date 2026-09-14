@@ -90,18 +90,21 @@ export const ExaminerAuditTrailModal: React.FC<ExaminerAuditTrailModalProps> = (
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 overflow-hidden">
-        {/* Header */}
-        <div className="bg-[#064e3b] text-white p-5">
+      <DialogContent 
+        className="max-w-4xl max-h-[85vh] flex flex-col p-0 overflow-hidden"
+        closeClassName="text-white/80 hover:text-white hover:bg-white/20 focus:ring-white/50 top-5 right-5"
+      >
+        {/* Header with reserved right padding for close button */}
+        <div className="bg-[#064e3b] text-white p-5 pr-14 sm:pr-16">
           <DialogHeader>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <History className="w-5 h-5 text-emerald-300" />
-                <DialogTitle className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <History className="w-5 h-5 text-emerald-300 flex-shrink-0" />
+                <DialogTitle className="text-xl font-bold text-white truncate">
                   Chief Examiner Moderation Audit Trail
                 </DialogTitle>
               </div>
-              <Badge className="bg-white/20 text-emerald-100 text-xs">
+              <Badge className="bg-white/20 text-emerald-100 text-xs px-2.5 py-1 whitespace-nowrap flex-shrink-0 font-semibold border border-white/20">
                 Dept. of {departmentName}
               </Badge>
             </div>
