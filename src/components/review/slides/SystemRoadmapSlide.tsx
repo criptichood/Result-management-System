@@ -26,27 +26,33 @@ export const SystemRoadmapSlide: React.FC = () => {
 
   const architecturalEvaluations = [
     {
-      area: 'Backend Persistence & Database Decoupling',
-      currentStatus: 'Client-side reactive storage with in-memory state models for instant responsiveness.',
-      recommendation: 'Decouple into an independent enterprise REST/GraphQL backend (Node.js/Spring Boot + PostgreSQL/Cloud SQL) with database-level row-level security (RLS) and strict transactional acid locks for broadsheet submission.',
+      area: 'Cloud PostgreSQL Database Integration (Primary Core Requirement)',
+      currentStatus: 'High-fidelity offline-first simulation mapping state models locally in the client.',
+      recommendation: 'Deploy a dedicated PostgreSQL database in the cloud (hosted on Google Cloud SQL / Supabase / ElephantSQL) to store relational student academic indices. Ensure database schema models represent tables for Students, Lecturers, Courses, Marks, Overrides, and Disputes with explicit foreign keys and strict constraints.',
+      tag: 'PostgreSQL'
+    },
+    {
+      area: 'Backend Persistence & Decoupled Architecture',
+      currentStatus: 'Client-side simulation running with complete role access boundaries.',
+      recommendation: 'Migrate the application from client-only execution to a full-stack system. Develop an independent backend API layer (Node.js/Express, NestJS, or Spring Boot) that communicates securely with the Cloud PostgreSQL instance and handles server-side token authorization.',
       tag: 'Architecture'
     },
     {
       area: 'Institutional SSO & Identity Federation',
-      currentStatus: 'Role-based credentials with email/matriculation authentication in auth context.',
-      recommendation: 'Integrate university LDAP / Active Directory / Google Workspace SSO with multi-factor authentication (MFA) required for all Chief Examiner score overrides.',
+      currentStatus: 'Role-based login credentials in the auth simulation context.',
+      recommendation: 'Integrate the system with the university\'s LDAP or Google Workspace SSO directory. This ensures staff can sign in using their institutional email, requiring multi-factor authentication (MFA) for any examiner score override actions.',
       tag: 'Security'
     },
     {
       area: 'Asynchronous SMS & Notification Gateway',
-      currentStatus: 'In-app real-time alerts and dispute status tracking badges.',
-      recommendation: 'Deploy a decoupled message queue (RabbitMQ / Redis) triggering instant GSM SMS broadcasts to students when their semester broadsheet is ratified by Senate.',
+      currentStatus: 'In-app real-time notification alerts and tracking status tags.',
+      recommendation: 'Connect an SMS gateway api (e.g. Twilio or Africa\'s Talking) triggered via Redis queue. Students will receive immediate SMS texts once their course marks are approved and published by the Chief Examiner.',
       tag: 'Notifications'
     },
     {
-      area: 'Biometric Exam Hall Attendance Validation',
-      currentStatus: 'Continuous assessment and exam scores validated against 0-40 and 0-60 thresholds.',
-      recommendation: 'Pair the scoring module with biometric fingerprint or QR wristband scanners at exam hall entry to verify student physical presence before exam script grading.',
+      area: 'Biometric Exam Presence Verification',
+      currentStatus: 'Continuous assessment and exam marks validated against 0-40 and 0-60 boundaries.',
+      recommendation: 'Pair the grading workspace with a fingerprint or card scanner at the examination hall. This confirms a student was physically present for the examination before a score sheet is accepted.',
       tag: 'Integrity'
     },
   ];
@@ -87,7 +93,7 @@ export const SystemRoadmapSlide: React.FC = () => {
       <div className="bg-gradient-to-r from-blue-950 via-[#064e3b] to-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-md border border-blue-800/40">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 text-xs font-bold tracking-wider uppercase border border-blue-500/30">
-            Section 07 • Evaluation & Future Scope
+            Section 09 • Evaluation & Future Scope
           </span>
           <span className="text-xs text-blue-200">Defensive Self-Critique & Roadmap</span>
         </div>

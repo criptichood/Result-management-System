@@ -75,7 +75,7 @@ export const GradingEngineSlide: React.FC = () => {
       <div className="bg-gradient-to-r from-emerald-900 via-[#064e3b] to-emerald-800 text-white p-6 sm:p-8 rounded-2xl shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <span className="px-3 py-1 rounded-full bg-white/20 text-emerald-100 text-xs font-bold tracking-wider uppercase border border-white/20">
-            Section 04 • Mathematics & NUC Compliance
+            Section 05 • Mathematics & NUC Compliance
           </span>
           <span className="text-xs text-emerald-200">Official 5.0 Scale Architecture</span>
         </div>

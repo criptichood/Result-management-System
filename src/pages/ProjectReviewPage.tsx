@@ -8,6 +8,7 @@ import { ReviewSlideNavigation } from '../components/review/ReviewSlideNavigatio
 // Modular Slides
 import { ProblemSolutionSlide } from '../components/review/slides/ProblemSolutionSlide';
 import { TechStackArchitectureSlide } from '../components/review/slides/TechStackArchitectureSlide';
+import { DefinitionOfTermsSlide } from '../components/review/slides/DefinitionOfTermsSlide';
 import { UserRolesSlide } from '../components/review/slides/UserRolesSlide';
 import { GradingEngineSlide } from '../components/review/slides/GradingEngineSlide';
 import { ModerationLifecycleSlide } from '../components/review/slides/ModerationLifecycleSlide';
@@ -60,12 +61,13 @@ export const ProjectReviewPage: React.FC = () => {
     switch (currentIndex) {
       case 0: return <ProblemSolutionSlide />;
       case 1: return <TechStackArchitectureSlide />;
-      case 2: return <UserRolesSlide />;
-      case 3: return <GradingEngineSlide />;
-      case 4: return <ModerationLifecycleSlide />;
-      case 5: return <CourseManagementSlide />;
-      case 6: return <DefenseScriptSlide />;
-      case 7: return <SystemRoadmapSlide />;
+      case 2: return <DefinitionOfTermsSlide />;
+      case 3: return <UserRolesSlide />;
+      case 4: return <GradingEngineSlide />;
+      case 5: return <ModerationLifecycleSlide />;
+      case 6: return <CourseManagementSlide />;
+      case 7: return <DefenseScriptSlide />;
+      case 8: return <SystemRoadmapSlide />;
       default: return <ProblemSolutionSlide />;
     }
   };

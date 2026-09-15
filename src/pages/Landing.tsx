@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { ArrowRight, BookOpen, Calculator, ShieldCheck, Users, Award, ChevronDown, Presentation } from 'lucide-react';
+import { ArrowRight, BookOpen, Calculator, ShieldCheck, Users, Award, ChevronDown } from 'lucide-react';
 import { FuazLogo } from '../components/ui/FuazLogo';
 import { 
   InstitutionalGateways, 
@@ -88,21 +88,6 @@ export const Landing = () => {
                 <Calculator className="h-4 sm:h-5 w-4 sm:w-5 text-emerald-600 dark:text-emerald-400" />
                 How GPA is Calculated
               </Button>
-            </div>
-
-            {/* Quick Affordance to Project Architecture & Defense Deck */}
-            <div className="flex items-center justify-center mb-6">
-              <button
-                onClick={() => navigate('/project-review')}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-800 dark:text-emerald-300 transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
-              >
-                <Presentation className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
-                <span>Explore System Architecture & Defense Review</span>
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-600 text-white font-semibold">
-                  7 Slides
-                </span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-              </button>
             </div>
           </motion.div>
         </div>

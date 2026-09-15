@@ -98,7 +98,7 @@ export const ModerationLifecycleSlide: React.FC = () => {
       <div className="bg-gradient-to-r from-purple-950 via-[#064e3b] to-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-md border border-purple-800/40">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-200 text-xs font-bold tracking-wider uppercase border border-purple-500/30">
-            Section 04 • Integrity & Governance
+            Section 06 • Integrity & Governance
           </span>
           <span className="text-xs text-purple-200">5-Stage Academic Quality Control</span>
         </div>

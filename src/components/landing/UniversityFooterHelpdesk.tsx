@@ -195,14 +195,6 @@ export const UniversityFooterHelpdesk: React.FC = () => {
             <button onClick={() => navigate('/gpa-guide')} className="hover:text-emerald-400 transition-colors cursor-pointer">
               Grading Benchmark
             </button>
-            <span>•</span>
-            <button 
-              onClick={() => navigate('/project-review')} 
-              className="hover:text-emerald-300 transition-colors text-emerald-400 font-semibold flex items-center gap-1 cursor-pointer"
-            >
-              <Presentation className="w-3.5 h-3.5" />
-              <span>System Review & Defense Slides</span>
-            </button>
           </div>
         </div>
       </div>

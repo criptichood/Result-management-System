@@ -11,7 +11,7 @@ export const CourseManagementSlide: React.FC = () => {
       <div className="bg-gradient-to-r from-[#064e3b] via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-md border border-emerald-800/40">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <span className="px-3 py-1 rounded-full bg-teal-500/20 text-teal-200 text-xs font-bold tracking-wider uppercase border border-teal-500/30">
-            Section 05 • Institutional Reporting
+            Section 07 • Institutional Reporting
           </span>
           <span className="text-xs text-teal-200">Curriculum & Senate Broadsheets</span>
         </div>

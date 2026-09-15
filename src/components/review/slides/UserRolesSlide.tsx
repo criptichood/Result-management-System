@@ -120,7 +120,7 @@ export const UserRolesSlide: React.FC = () => {
       <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-700">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold tracking-wider uppercase border border-emerald-500/30">
-            Section 02 • Access Control
+            Section 04 • Access Control
           </span>
           <span className="text-xs text-slate-400">Strict NUC Separation of Concerns</span>
         </div>
