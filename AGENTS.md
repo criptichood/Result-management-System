@@ -12,7 +12,7 @@ npm run build
 ```
 
 - **No test runner exists** (no vitest/jest/playwright). Verify changes with `npm run lint` + `npm run build` + clicking the flow in `npm run dev`.
-- Use **npm**. `bun.lock` and `package-lock.json` both sit in the root; the npm lockfile is the newer one and `README.md` assumes npm.
+- **npm is the only package manager.** `package.json` pins `"packageManager": "npm@11.19.0"` and `package-lock.json` is the sole lockfile. The repo previously tracked a `bun.lock` alongside an untracked `package-lock.json`; since npm ignores `bun.lock` and bun ignores `package-lock.json`, the tracked lockfile was guaranteeing nothing for anyone following the README. Don't reintroduce a second lockfile.
 - `npm run clean` deletes a `server.js` that does not exist — vestigial, ignore it.
 - `DISABLE_HMR=true` disables HMR **and** file watching (`vite.config.ts`). Don't "fix" that block.
 - No env vars are needed. `.env.example`, `metadata.json`, `public/assets/aistudio/`, and the installed-but-never-imported `@google/genai` / `express` / `dotenv` deps are Google AI Studio boilerplate.
