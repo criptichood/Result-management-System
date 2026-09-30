@@ -8,7 +8,8 @@ export const GpaScaleReference = () => {
     { grade: 'B', range: '60% – 69%', gp: 4, description: 'Very Good', color: 'bg-blue-50 text-blue-800 border-blue-300 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800' },
     { grade: 'C', range: '50% – 59%', gp: 3, description: 'Good', color: 'bg-cyan-50 text-cyan-800 border-cyan-300 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800' },
     { grade: 'D', range: '45% – 49%', gp: 2, description: 'Fair / Satisfactory', color: 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800' },
-    { grade: 'F', range: '0% – 44%', gp: 0, description: 'Fail / Carry Over', color: 'bg-red-50 text-red-800 border-red-300 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800' },
+    { grade: 'E', range: '40% – 44%', gp: 1, description: 'Pass (Minimum Pass Threshold)', color: 'bg-orange-50 text-orange-800 border-orange-300 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800' },
+    { grade: 'F', range: '0% – 39%', gp: 0, description: 'Fail / Carry Over', color: 'bg-red-50 text-red-800 border-red-300 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800' },
   ];
 
   const classifications = [

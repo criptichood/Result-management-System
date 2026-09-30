@@ -5,6 +5,7 @@ export interface GradeDistribution {
   B: number;
   C: number;
   D: number;
+  E: number;
   F: number;
 }
 
@@ -27,6 +28,7 @@ export const getGradePoint = (grade: string | undefined): number => {
     case 'B': return 4;
     case 'C': return 3;
     case 'D': return 2;
+    case 'E': return 1;
     default: return 0;
   }
 };
@@ -66,7 +68,7 @@ export const calculateSemesterStats = (items: any[]) => {
   let totalCaSum = 0;
   let totalExamSum = 0;
   let scoredCourses = 0;
-  const dist: GradeDistribution = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+  const dist: GradeDistribution = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
   const failedItems: any[] = [];
 
   items.forEach(r => {
@@ -86,6 +88,7 @@ export const calculateSemesterStats = (items: any[]) => {
       else if (grade === 'B') dist.B++;
       else if (grade === 'C') dist.C++;
       else if (grade === 'D') dist.D++;
+      else if (grade === 'E') dist.E++;
       else if (grade === 'F') dist.F++;
 
       if ((r.result.totalScore ?? 0) < 40 || grade === 'F') {

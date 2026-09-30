@@ -48,6 +48,7 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
       case 'B': return 4;
       case 'C': return 3;
       case 'D': return 2;
+      case 'E': return 1;
       default: return 0;
     }
   };
@@ -372,6 +373,8 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                             className={
                               item.grade === 'A'
                                 ? 'text-emerald-600 dark:text-emerald-400'
+                                : item.grade === 'E'
+                                ? 'text-orange-600 dark:text-orange-400'
                                 : item.grade === 'F'
                                 ? 'text-rose-600 dark:text-rose-400'
                                 : 'text-slate-800 dark:text-slate-200'

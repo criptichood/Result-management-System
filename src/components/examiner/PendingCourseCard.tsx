@@ -11,6 +11,7 @@ import {
   FileSpreadsheet,
   Download,
   Users,
+  Lock,
   User as UserIcon,
 } from 'lucide-react';
 import {
@@ -26,6 +27,7 @@ interface PendingCourseCardProps {
   course: any;
   lecturer: User | null;
   isSelected: boolean;
+  isHod?: boolean;
   onToggleSelect: (courseId: string) => void;
   onAudit: (course: any) => void;
   onApprove: (courseId: string) => void;
@@ -37,6 +39,7 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
   course,
   lecturer,
   isSelected,
+  isHod = true,
   onToggleSelect,
   onAudit,
   onApprove,
@@ -85,22 +88,31 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
         </div>
 
         <div>
-          {course.hasPendingReview ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              Submitted ({course.submittedCount}/{course.totalEnrolled})
-            </span>
-          ) : course.isFullyPublished ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-              Published ({course.publishedCount}/{course.totalEnrolled})
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-              <Users className="w-3 h-3 text-slate-400" />
-              Awaiting ({course.totalEnrolled})
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+            {course.hasPendingReview ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <span>{course.submittedCount} Candidates</span>
+              </>
+            ) : course.isSenatePending ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                <span>{course.approvedCount} Candidates</span>
+              </>
+            ) : course.isReturnedForRemarking ? (
+              <>
+                <RotateCcw className="w-3 h-3 text-red-500" />
+                <span>{course.rejectedCount} Candidates</span>
+              </>
+            ) : course.isFullyPublished ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-500" />
+                <span>{course.publishedCount} Live</span>
+              </>
+            ) : (
+              <span>{course.totalEnrolled || 0} Enrolled</span>
+            )}
+          </span>
         </div>
       </div>
 
@@ -134,7 +146,7 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
                 {lecturer.name}
               </p>
               <p className="text-[10px] text-slate-400 truncate">
-                {lecturer.department || course.department}
+                {lecturer.staffId ? `ID: ${lecturer.staffId}` : (lecturer.department || course.department)}
               </p>
             </div>
           </div>
@@ -145,12 +157,12 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
           </span>
         )}
 
-        <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">
-          {course.totalEnrolled} Candidate{course.totalEnrolled === 1 ? '' : 's'}
+        <span className="text-slate-500 dark:text-slate-400 text-xs font-semibold">
+          {course.hasPendingReview ? `${course.submittedCount} Submitted` : `${course.totalEnrolled || 0} Enrolled`}
         </span>
       </div>
 
-      {/* Actions */}
+      {/* Streamlined Actions */}
       <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
         <Button
           variant="outline"
@@ -159,40 +171,77 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
           onClick={() => onAudit(course)}
         >
           <Eye className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-          Audit
+          Audit Scores
         </Button>
-
-        {course.hasPendingReview && (
-          <Button
-            size="sm"
-            className="h-8 px-3 text-xs font-bold bg-[#064e3b] hover:bg-[#065f46] text-white gap-1.5 shadow-2xs"
-            onClick={() => onApprove(course.id)}
-          >
-            <Check className="w-3.5 h-3.5" />
-            Approve
-          </Button>
-        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 rounded-lg"
+              className="h-8 px-2.5 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center gap-1 text-xs font-semibold"
             >
-              <MoreVertical className="w-4 h-4" />
+              <span>Actions</span>
+              <MoreVertical className="w-3.5 h-3.5 ml-0.5 text-slate-500" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
+          <DropdownMenuContent align="end" className="w-56">
             {course.hasPendingReview && (
+              isHod ? (
+                <DropdownMenuItem
+                  onClick={() => onApprove(course.id)}
+                  className="text-emerald-700 dark:text-emerald-400 font-semibold cursor-pointer text-xs"
+                >
+                  <Check className="w-3.5 h-3.5 mr-2 text-emerald-600" />
+                  Endorse to Senate
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  disabled
+                  className="opacity-60 cursor-not-allowed text-xs text-slate-400 flex items-center justify-between"
+                  title="Statutorily reserved for Head of Department (HOD)"
+                >
+                  <span className="flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Endorse to Senate</span>
+                  </span>
+                  <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-medium">HOD Only</span>
+                </DropdownMenuItem>
+              )
+            )}
+            {course.isSenatePending && isHod && (
               <DropdownMenuItem
-                onClick={() => onReturn(course)}
-                className="text-red-600 dark:text-red-400 cursor-pointer text-xs font-medium"
+                onClick={() => onApprove(course.id)}
+                className="text-emerald-700 dark:text-emerald-400 font-semibold cursor-pointer text-xs"
               >
-                <RotateCcw className="w-3.5 h-3.5 mr-2" />
-                Return to Lecturer
+                <Check className="w-3.5 h-3.5 mr-2 text-emerald-600" />
+                Authorize Senate Release
               </DropdownMenuItem>
             )}
+            {(course.hasPendingReview || course.isSenatePending) && (
+              isHod ? (
+                <DropdownMenuItem
+                  onClick={() => onReturn(course)}
+                  className="text-red-600 dark:text-red-400 cursor-pointer text-xs font-medium"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 mr-2" />
+                  Return for Remarking
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  disabled
+                  className="opacity-60 cursor-not-allowed text-xs text-slate-400 flex items-center justify-between"
+                  title="Statutorily reserved for Head of Department (HOD)"
+                >
+                  <span className="flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Return for Remarking</span>
+                  </span>
+                  <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-medium">HOD Only</span>
+                </DropdownMenuItem>
+              )
+            )}
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => onAudit(course)}
               className="cursor-pointer text-xs font-medium"
@@ -200,7 +249,6 @@ export const PendingCourseCard: React.FC<PendingCourseCardProps> = ({
               <FileSpreadsheet className="w-3.5 h-3.5 mr-2 text-slate-500" />
               View Broadsheet
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => onExport(course)}
               className="cursor-pointer text-xs font-medium"

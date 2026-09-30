@@ -76,7 +76,7 @@ export const DefinitionOfTermsSlide: React.FC = () => {
       acronym: 'Nigerian National Standard',
       category: 'Academic Rules',
       definition: 'The official 5-point Cumulative Grade Point Average (CGPA) computation model mandated by the National Universities Commission (NUC) of Nigeria for degree classifications.',
-      roleInProject: 'Represents the core logic of my academic engine. I mapped scores dynamically into quality points (A=5.0, B=4.0, C=3.0, D=2.0, F=0.0) and completely omitted the obsolete E grade per standard guidelines.',
+      roleInProject: 'Represents the core logic of my academic engine. I mapped scores dynamically into quality points (A=5.0, B=4.0, C=3.0, D=2.0, E=1.0, F=0.0) strictly honoring the NUC benchmark with Grade E (40%–44%) as the minimum pass threshold.',
       technicalDepth: 'Derived via: Sum of Quality Points (Credit Units × Grade Points) divided by the Sum of Credit Units, rounding strictly to two decimal places.',
       icon: GraduationCap,
     },

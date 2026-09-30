@@ -20,15 +20,16 @@ The system provides fully role-governed portals for Students, Lecturers, Chief E
 
 ## 🎓 Core Academic & Compliance Architecture
 
-The FUAZ SRMS implements the standard NUC 5-point scale, adhering strictly to the revised guidelines which completely eliminate the legacy "E" grade:
+The FUAZ SRMS implements the standard NUC 5-point scale, supporting the complete A–F grading spectrum with Grade E as the minimum pass threshold:
 
 *   **Assessment Splits:** Continuous Assessment (CA) is strictly capped at a maximum of `40` marks. The final Semester Examination is capped at a maximum of `60` marks. Total marks = `100`.
 *   **Deterministic Grading Logic:**
     *   **70% – 100%:** Grade `A` (5.0 Grade Points) — Excellent
     *   **60% – 69%:** Grade `B` (4.0 Grade Points) — Very Good
     *   **50% – 59%:** Grade `C` (3.0 Grade Points) — Good
-    *   **45% – 49%:** Grade `D` (2.0 Grade Points) — Pass
-    *   **0% – 44%:** Grade `F` (0.0 Grade Points) — Fail (Carryover Required)
+    *   **45% – 49%:** Grade `D` (2.0 Grade Points) — Fair / Moderate Pass
+    *   **40% – 44%:** Grade `E` (1.0 Grade Points) — Pass (Minimum Pass Threshold)
+    *   **0% – 39%:** Grade `F` (0.0 Grade Points) — Fail (Carryover Required)
 *   **CGPA Calculations:** Real-time calculation of Cumulative Grade Point Average (CGPA) based on semester Total Credit Registered (TCR), Total Credit Earned (TCE), and Total Weighted Points (TWP):
     $$\text{GPA} = \frac{\sum(\text{Credit Units} \times \text{Grade Points})}{\text{Total Credit Registered (TCR)}}$$
 

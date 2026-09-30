@@ -12,13 +12,16 @@ import {
   Filter, 
   Layers, 
   CheckCircle2, 
-  GraduationCap
+  GraduationCap,
+  Users,
+  Download,
 } from 'lucide-react';
 import { CourseResultModal } from './CourseResultModal';
 import { ExaminerCourseModal } from './ExaminerCourseModal';
 import { DepartmentCourseRow } from './DepartmentCourseRow';
 import { DepartmentCourseCard } from './DepartmentCourseCard';
 import { ModerationFeedbackModal } from './ModerationFeedbackModal';
+import { DepartmentLecturerAllocationModal } from './DepartmentLecturerAllocationModal';
 import { exportCourseRosterCSV } from './examinerUtils';
 
 interface DepartmentCoursesTableProps {
@@ -49,6 +52,7 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [rejectingCourse, setRejectingCourse] = useState<any | null>(null);
+  const [isAllocationModalOpen, setIsAllocationModalOpen] = useState(false);
 
   // Compute counts
   const coreCourses = departmentCourses.filter(c => c.department === department);
@@ -168,12 +172,21 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
               </CardDescription>
             </div>
             
-            <Button 
-              onClick={handleOpenAdd}
-              className="bg-[#064e3b] hover:bg-[#065f46] text-white shadow-xs gap-1.5 self-start md:self-auto"
-            >
-              <Plus className="w-4 h-4" /> Add New Course
-            </Button>
+            <div className="flex items-center gap-2 flex-wrap self-start md:self-auto">
+              <Button 
+                variant="outline"
+                onClick={() => setIsAllocationModalOpen(true)}
+                className="text-xs text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 gap-1.5 shadow-xs"
+              >
+                <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Lecturer Allocations & CSV
+              </Button>
+              <Button 
+                onClick={handleOpenAdd}
+                className="bg-[#064e3b] hover:bg-[#065f46] text-white shadow-xs gap-1.5 text-xs"
+              >
+                <Plus className="w-4 h-4" /> Add New Course
+              </Button>
+            </div>
           </div>
 
           {/* Filtering Controls */}
@@ -359,6 +372,16 @@ export const DepartmentCoursesTable: React.FC<DepartmentCoursesTableProps> = ({
         lecturers={lecturers}
         department={department}
         onSave={onSaveCourse}
+      />
+
+      {/* Lecturer Course Allocation & Workload Schedule Modal */}
+      <DepartmentLecturerAllocationModal
+        isOpen={isAllocationModalOpen}
+        onClose={() => setIsAllocationModalOpen(false)}
+        departmentName={department}
+        courses={departmentCourses}
+        lecturers={lecturers}
+        enrollments={[]}
       />
     </div>
   );

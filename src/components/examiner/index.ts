@@ -16,3 +16,4 @@ export * from './ExaminerAuditTrailModal';
 export * from './BatchModerationModal';
 export * from './ExaminerDisputeQueue';
 export * from './StudentProfileModal';
+export * from './DepartmentLecturerAllocationModal';

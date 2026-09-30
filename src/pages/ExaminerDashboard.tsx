@@ -10,11 +10,12 @@ import {
   ExaminerBroadSheetModal,
   ExaminerAuditTrailModal,
   ExaminerDisputeQueue,
+  DepartmentLecturerAllocationModal,
 } from '../components/examiner';
 import { AdminSenateAnalyticsTab } from '../components/admin';
 import { Course, User, ModerationLog, Department, Enrollment, Result } from '../types';
 import { Button } from '../components/ui/button';
-import { FileSpreadsheet, CheckCircle2, Info, History } from 'lucide-react';
+import { FileSpreadsheet, CheckCircle2, Info, History, Users } from 'lucide-react';
 
 export const ExaminerDashboard = () => {
   const { user } = useAuth();
@@ -40,6 +41,7 @@ export const ExaminerDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isBroadSheetOpen, setIsBroadSheetOpen] = useState(false);
   const [isAuditTrailOpen, setIsAuditTrailOpen] = useState(false);
+  const [isLecturerAllocationsOpen, setIsLecturerAllocationsOpen] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
 
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
@@ -113,27 +115,43 @@ export const ExaminerDashboard = () => {
       const submittedCount = detailedResults.filter(
         (r) => r.result?.status === 'Submitted'
       ).length;
+      const approvedCount = detailedResults.filter(
+        (r) => r.result?.status === 'Approved'
+      ).length;
       const publishedCount = detailedResults.filter(
         (r) => r.result?.status === 'Published'
+      ).length;
+      const rejectedCount = detailedResults.filter(
+        (r) => r.result?.status === 'Rejected'
       ).length;
       const totalEnrolled = relevantEnrollments.length;
 
       const isCore = course.department === user.department;
       const isTakenByDeptStudents = relevantEnrollments.length > 0;
       const hasPendingReview = submittedCount > 0;
+      const isSenatePending = approvedCount > 0 && publishedCount === 0;
       const isFullyPublished = publishedCount > 0 && publishedCount === totalEnrolled;
-      const isAwaitingLecturer = submittedCount === 0 && publishedCount === 0;
+      const isReturnedForRemarking = rejectedCount > 0 && submittedCount === 0;
+      const isAwaitingLecturer =
+        submittedCount === 0 &&
+        publishedCount === 0 &&
+        approvedCount === 0 &&
+        rejectedCount === 0;
 
       return {
         ...course,
         detailedResults,
         submittedCount,
+        approvedCount,
         publishedCount,
+        rejectedCount,
         totalEnrolled,
         isCore,
         isTakenByDeptStudents,
         hasPendingReview,
+        isSenatePending,
         isFullyPublished,
+        isReturnedForRemarking,
         isAwaitingLecturer,
       };
     });
@@ -160,11 +178,24 @@ export const ExaminerDashboard = () => {
   if (!user) return null;
 
   const handleApprove = (courseId: string) => {
-    db.moderateCourse(courseId, 'approve', undefined, user);
+    // Statutorily: Departmental Board (HOD) endorses and recommends to Senate
+    db.moderateCourse(courseId, 'endorse', undefined, user);
     loadData();
     const course = coursesWithResults.find((c) => c.id === courseId);
     showNotification(
-      `Results for ${course?.code || 'course'} successfully published to student portals.`
+      `Results for ${course?.code || 'course'} vetted & endorsed by Departmental Board! Recommended to University Senate for final ratification.`,
+      'success'
+    );
+  };
+
+  const handlePublishDirect = (courseId: string) => {
+    // Direct release when authorized by Senate
+    db.moderateCourse(courseId, 'publish', undefined, user);
+    loadData();
+    const course = coursesWithResults.find((c) => c.id === courseId);
+    showNotification(
+      `Results for ${course?.code || 'course'} ratified and officially released to student portals.`,
+      'success'
     );
   };
 
@@ -173,7 +204,7 @@ export const ExaminerDashboard = () => {
     loadData();
     const course = coursesWithResults.find((c) => c.id === courseId);
     showNotification(
-      `Results for ${course?.code || 'course'} returned to lecturer with revision feedback.`,
+      `Results for ${course?.code || 'course'} returned to lecturer for script remarking and rectification.`,
       'info'
     );
   };
@@ -183,14 +214,20 @@ export const ExaminerDashboard = () => {
     action: 'approve' | 'reject',
     notes?: string
   ) => {
-    db.batchModerateCourses(courseIds, action, notes, user);
+    if (action === 'approve') {
+      db.batchModerateCourses(courseIds, 'endorse', notes, user);
+      showNotification(
+        `Batch endorsed ${courseIds.length} course broadsheets to University Senate.`,
+        'success'
+      );
+    } else {
+      db.batchModerateCourses(courseIds, 'reject', notes, user);
+      showNotification(
+        `Batch returned ${courseIds.length} courses to lecturers for remarking and revision.`,
+        'info'
+      );
+    }
     loadData();
-    showNotification(
-      action === 'approve'
-        ? `Successfully approved and published ${courseIds.length} course batches to student portals.`
-        : `Returned ${courseIds.length} course batches for lecturer revision.`,
-      action === 'approve' ? 'success' : 'info'
-    );
   };
 
   const handleSaveCourse = (courseData: Partial<Course>) => {
@@ -248,15 +285,37 @@ export const ExaminerDashboard = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
         <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              {user.role === 'HOD'
+                ? 'Head of Department & Statutory Chief Examiner'
+                : user.role === 'Examiner'
+                ? 'Departmental Exam Officer / Internal Examiner'
+                : 'Chief Examiner Portal'}
+            </span>
+            <span className="text-xs text-slate-400">•</span>
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+              Dept. of {user.department || 'Computer Science'}
+            </span>
+          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#064e3b] dark:text-emerald-400 tracking-tight">
-            Chief Examiner Portal
+            {user.role === 'HOD' ? 'Head of Department Portal' : user.role === 'Examiner' ? 'Departmental Exam Officer Portal' : 'Chief Examiner Portal'}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">
-            Academic moderation, curriculum registry, and result validation for Dept. of {user.department}
+            {user.role === 'HOD'
+              ? `Departmental board score vetting, return for remarking, and Senate broadsheet endorsement`
+              : `Internal script auditing, continuous assessment cross-verification, and moderation audit logs`}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => setIsLecturerAllocationsOpen(true)}
+            className="gap-1.5 text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+          >
+            <Users className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Lecturer Allocations
+          </Button>
           <Button
             variant="outline"
             onClick={() => setIsAuditTrailOpen(true)}
@@ -346,6 +405,17 @@ export const ExaminerDashboard = () => {
         isOpen={isBroadSheetOpen}
         onClose={() => setIsBroadSheetOpen(false)}
         departmentName={user.department || 'Computer Science'}
+      />
+
+      {/* Departmental Lecturer Allocations & Workload Schedule Modal */}
+      <DepartmentLecturerAllocationModal
+        isOpen={isLecturerAllocationsOpen}
+        onClose={() => setIsLecturerAllocationsOpen(false)}
+        departmentName={user.department || 'Computer Science'}
+        courses={allCourses}
+        lecturers={lecturers}
+        enrollments={allEnrollments}
+        activeSession={selectedSession}
       />
 
       {/* Immutable Moderation Audit Trail Modal */}

@@ -29,11 +29,11 @@ export const CourseRegistrationView: React.FC<CourseRegistrationViewProps> = ({
   onSelectAllSemesterCourses,
   onRegisterCourses,
 }) => {
-  const currentActiveSession = settings.currentSession || '2025/2026';
+  const currentActiveSession = settings.currentSession || '2024/2025';
   const [selectedSession, setSelectedSession] = useState<string>(currentActiveSession);
 
   // Extract all distinct academic sessions from student records + current session
-  const sessionSet = new Set<string>([currentActiveSession, '2022/2023', '2023/2024', '2024/2025', '2025/2026', '2026/2027']);
+  const sessionSet = new Set<string>([currentActiveSession, '2021/2022', '2022/2023', '2023/2024', '2024/2025']);
   resultsData.forEach(item => {
     if (item.enrollment?.academicYear) {
       sessionSet.add(item.enrollment.academicYear);

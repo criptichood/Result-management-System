@@ -17,6 +17,7 @@ import {
   SenateBroadsheetTable,
   SenateDepartmentTable,
   SenateAnomalyTable,
+  SenateRatificationDesk,
 } from './senate';
 
 interface AdminSenateAnalyticsTabProps {
@@ -28,6 +29,8 @@ interface AdminSenateAnalyticsTabProps {
   session?: string;
   semester?: 1 | 2;
   lockedDepartment?: string;
+  onRefreshData?: () => void;
+  showToast?: (message: string, type?: 'success' | 'info') => void;
 }
 
 export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = ({
@@ -39,13 +42,26 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
   session = '2025/2026',
   semester = 1,
   lockedDepartment,
+  onRefreshData,
+  showToast,
 }) => {
   // Filters
   const [selectedDept, setSelectedDept] = useState<string>(lockedDepartment || 'all');
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const [selectedClass, setSelectedClass] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [activeSubTab, setActiveSubTab] = useState<'broadsheet' | 'departments' | 'anomalies'>('broadsheet');
+  const [activeSubTab, setActiveSubTab] = useState<'broadsheet' | 'departments' | 'anomalies' | 'ratification'>('broadsheet');
+
+  // Compute pending senate ratification count
+  const pendingSenateCount = useMemo(() => {
+    return courses.filter((c) => {
+      const cEnr = enrollments.filter((e) => e.courseId === c.id);
+      return cEnr.some((e) => {
+        const r = results.find((res) => res.enrollmentId === e.id);
+        return r?.status === 'Approved';
+      });
+    }).length;
+  }, [courses, enrollments, results]);
 
   // Modals state
   const [isBroadsheetModalOpen, setIsBroadsheetModalOpen] = useState(false);
@@ -148,6 +164,21 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
               Course Anomaly Radar (
               {analytics.courseAnomalies.filter((a) => a.anomalySeverity !== 'Normal').length})
             </button>
+            <button
+              onClick={() => setActiveSubTab('ratification')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                activeSubTab === 'ratification'
+                  ? 'bg-[#064e3b] text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
+            >
+              <span>Senate Ratification Portal</span>
+              {pendingSenateCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400 text-slate-950">
+                  {pendingSenateCount}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Department & Level Selector Filters */}
@@ -230,6 +261,20 @@ export const AdminSenateAnalyticsTab: React.FC<AdminSenateAnalyticsTabProps> = (
           <SenateAnomalyTable
             courseAnomalies={analytics.courseAnomalies}
             onSelectAnomaly={(a) => setSelectedAnomaly(a)}
+          />
+        )}
+
+        {/* Sub-view 4: Senate Clearance Desk */}
+        {activeSubTab === 'ratification' && (
+          <SenateRatificationDesk
+            courses={effectiveCourses}
+            departments={departments}
+            enrollments={enrollments}
+            results={results}
+            users={effectiveUsers}
+            session={session}
+            onRefreshData={onRefreshData}
+            showToast={showToast}
           />
         )}
       </div>

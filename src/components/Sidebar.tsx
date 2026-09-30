@@ -42,15 +42,34 @@ export function Sidebar({ user, isOpen = false, onClose, isCollapsed, onToggleCo
           { id: 'disputes', label: 'Grade Queries', icon: FileQuestion },
           { id: 'analytics', label: 'Analytics', icon: LineChart },
         ];
-      case 'Chief Examiner':
+      case 'HOD':
         activeTab = activeTab || 'pending';
         return [
-          { id: 'pending', label: 'Pending Approvals', icon: FileSearch },
+          { id: 'pending', label: 'Department Moderation', icon: FileSearch },
           { id: 'disputes', label: 'Grade Disputes', icon: FileQuestion },
           { id: 'courses', label: 'Department Courses', icon: BookMarked },
           { id: 'students', label: 'Department Students', icon: Users },
-          { id: 'broadsheet', label: 'Degree Broadsheet', icon: GraduationCap },
+          { id: 'broadsheet', label: 'Department Broadsheet', icon: GraduationCap },
           { id: 'published', label: 'Published Results', icon: BookOpen },
+        ];
+      case 'Examiner':
+      case 'Chief Examiner':
+        activeTab = activeTab || 'pending';
+        return [
+          { id: 'pending', label: 'Mark Audit & Roster', icon: FileSearch },
+          { id: 'disputes', label: 'Grade Disputes', icon: FileQuestion },
+          { id: 'courses', label: 'Department Courses', icon: BookMarked },
+          { id: 'students', label: 'Department Students', icon: Users },
+          { id: 'broadsheet', label: 'Department Broadsheet', icon: GraduationCap },
+          { id: 'published', label: 'Published Results', icon: BookOpen },
+        ];
+      case 'Senate':
+        activeTab = activeTab || 'senate';
+        return [
+          { id: 'senate', label: 'Senate Ratification', icon: GraduationCap },
+          { id: 'overview', label: 'System Overview', icon: LayoutDashboard },
+          { id: 'departments', label: 'Department Summaries', icon: Building2 },
+          { id: 'courses', label: 'Course Registry', icon: BookOpen },
         ];
       case 'Admin':
         activeTab = activeTab || 'overview';

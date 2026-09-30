@@ -34,7 +34,7 @@ export const InstitutionalGateways: React.FC = () => {
     {
       role: 'Lecturer',
       roleParam: 'Lecturer',
-      title: 'Lecturer Desk',
+      title: 'Lecturer Portal',
       tag: 'Academic Staff & Course Instructors',
       description: 'Record continuous assessment marks, batch upload final exam scores via CSV, and review grade distributions.',
       icon: BookOpen,
@@ -52,11 +52,11 @@ export const InstitutionalGateways: React.FC = () => {
       ],
     },
     {
-      role: 'Chief Examiner',
-      roleParam: 'Chief Examiner',
-      title: 'Examiner Review Desk',
-      tag: 'Departmental & Faculty Leadership',
-      description: 'Moderate departmental results, audit grade alterations, and generate Senate-ready broadsheets for official sign-off.',
+      role: 'HOD',
+      roleParam: 'HOD',
+      title: 'HOD & Chief Examiner Portal',
+      tag: 'Departmental Board of Examiners',
+      description: 'Statutory departmental vetting, return results for remarking with audit remarks, and endorse broadsheets to Senate.',
       icon: Users,
       badgeColor: 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-900',
       accentColor: 'text-amber-600 dark:text-amber-400',
@@ -65,16 +65,36 @@ export const InstitutionalGateways: React.FC = () => {
       buttonBg: 'bg-amber-600 hover:bg-amber-700 hover:shadow-lg hover:-translate-y-0.5 text-white',
       borderHover: 'hover:border-amber-500 dark:hover:border-amber-600',
       features: [
-        'Faculty-wide score moderation & anomaly alerts',
-        'Senate broadsheet preview & approval flow',
-        'Immutable grade change audit logs',
-        'Bulk result release & publication controls',
+        'Departmental board score moderation & vetting',
+        'Return results to lecturer for script remarking',
+        'Official endorsement of broadsheet to Senate',
+        'Immutable grade change audit trail records',
+      ],
+    },
+    {
+      role: 'Senate',
+      roleParam: 'Senate',
+      title: 'Senate Ratification Portal',
+      tag: 'Supreme Academic Authority',
+      description: 'Cross-faculty broadsheet review, graduating degree classifications, and university-wide official result release.',
+      icon: Shield,
+      badgeColor: 'bg-purple-500/10 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-900',
+      accentColor: 'text-purple-600 dark:text-purple-400',
+      activeRing: 'ring-2 ring-purple-500/40 border-purple-500 dark:border-purple-400 shadow-xl -translate-y-1.5 bg-purple-50/25 dark:bg-purple-950/25',
+      activeProgress: 'bg-purple-600',
+      buttonBg: 'bg-purple-700 hover:bg-purple-800 hover:shadow-lg hover:-translate-y-0.5 text-white',
+      borderHover: 'hover:border-purple-500 dark:hover:border-purple-600',
+      features: [
+        'Faculty-wide performance scrutiny & pass rates',
+        'Graduating class degree classification approval',
+        'Supreme ratification & university-wide release',
+        'Instant student portal publication authorization',
       ],
     },
     {
       role: 'Admin',
       roleParam: 'Admin',
-      title: 'System Administration',
+      title: 'System Administration Portal',
       tag: 'ICT & Academic Planning',
       description: 'Configure academic sessions, manage course catalogs and departmental curricula, and supervise institutional access.',
       icon: Shield,
@@ -140,7 +160,7 @@ export const InstitutionalGateways: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5">
           {gateways.map((gw, idx) => {
             const Icon = gw.icon;
             const isHighlighted = idx === activeHighlightIndex;
@@ -213,7 +233,7 @@ export const InstitutionalGateways: React.FC = () => {
                     isHighlighted ? 'ring-2 ring-offset-1 ring-emerald-600/30' : ''
                   }`}
                 >
-                  <span>Access {gw.role} Desk</span>
+                  <span>Access {gw.role} Portal</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>

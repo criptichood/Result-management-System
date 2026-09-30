@@ -51,7 +51,6 @@ export const AnimatedHeroDescription: React.FC = () => {
   }, [isPaused]);
 
   const activeMessage = HERO_MESSAGES[currentIndex];
-  const Icon = activeMessage.icon;
 
   return (
     <div
@@ -59,32 +58,15 @@ export const AnimatedHeroDescription: React.FC = () => {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Dynamic Category Square Badge (Square design, no smooth curves) */}
-      <div className="flex justify-center mb-3">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeMessage.badge}
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-emerald-50/90 dark:bg-emerald-950/80 border border-emerald-600/40 dark:border-emerald-500/40 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#064e3b] dark:text-emerald-300 shadow-2xs"
-          >
-            <Icon className="w-3.5 h-3.5 text-[#059669] dark:text-emerald-400 flex-shrink-0" />
-            <span>{activeMessage.badge}</span>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
       {/* Main Animated Message Text Area with Fixed Min-Height to Eliminate Layout Shift */}
       <div className="min-h-[4.5rem] sm:min-h-[3.75rem] flex items-center justify-center px-2">
         <AnimatePresence mode="wait">
           <motion.p
             key={activeMessage.id}
-            initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+            initial={{ opacity: 0, y: 8, filter: 'blur(3px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: -8, filter: 'blur(3px)' }}
+            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
             className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal text-center"
           >
             {activeMessage.text}
@@ -92,19 +74,19 @@ export const AnimatedHeroDescription: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* Interactive Navigation Stepper Blocks (Square design) */}
-      <div className="flex items-center justify-center gap-2 mt-3.5">
+      {/* Interactive Navigation Stepper Blocks */}
+      <div className="flex items-center justify-center gap-2 mt-3">
         {HERO_MESSAGES.map((msg, index) => {
           const isActive = index === currentIndex;
           return (
             <button
               key={msg.id}
               onClick={() => setCurrentIndex(index)}
-              aria-label={`Select message ${index + 1}: ${msg.badge}`}
+              aria-label={`Select message ${index + 1}`}
               className="group p-1 focus:outline-none cursor-pointer"
             >
               <div
-                className={`h-1.5 rounded-none transition-all duration-300 ${
+                className={`h-1.5 transition-all duration-300 ${
                   isActive
                     ? 'w-8 bg-[#059669] dark:bg-emerald-400'
                     : 'w-2.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'

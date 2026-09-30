@@ -51,13 +51,14 @@ export const GradeAnalyticsView: React.FC<GradeAnalyticsViewProps> = ({
     { name: 'B (60-69)', key: 'B', count: activeAnalyticsData.distribution.B, color: '#10b981', desc: 'Very Good' },
     { name: 'C (50-59)', key: 'C', count: activeAnalyticsData.distribution.C, color: '#3b82f6', desc: 'Good' },
     { name: 'D (45-49)', key: 'D', count: activeAnalyticsData.distribution.D, color: '#f59e0b', desc: 'Fair' },
-    { name: 'F (0-44)', key: 'F', count: activeAnalyticsData.distribution.F, color: '#ef4444', desc: 'Fail' },
+    { name: 'E (40-44)', key: 'E', count: activeAnalyticsData.distribution.E, color: '#ea580c', desc: 'Pass' },
+    { name: 'F (0-39)', key: 'F', count: activeAnalyticsData.distribution.F, color: '#ef4444', desc: 'Fail' },
   ];
 
-  // Count weak courses (C, D, F)
+  // Count weak courses (C, D, E, F)
   const weakCount = allPublishedResults.filter(r => {
     const g = r.result?.grade;
-    return g === 'C' || g === 'D' || g === 'F';
+    return g === 'C' || g === 'D' || g === 'E' || g === 'F';
   }).length;
 
   return (

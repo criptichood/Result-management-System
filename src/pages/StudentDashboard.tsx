@@ -126,7 +126,7 @@ export const StudentDashboard = () => {
   // Calculate Cumulative CGPA across all published courses
   let totalGradePoints = 0;
   let totalEarnedCredits = 0;
-  const cumulativeGradeDistribution = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+  const cumulativeGradeDistribution = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
 
   publishedResults.forEach(r => {
     const credits = r.course?.creditUnits || 0;
@@ -137,6 +137,7 @@ export const StudentDashboard = () => {
     else if (grade === 'B') { totalGradePoints += 4 * credits; cumulativeGradeDistribution.B++; }
     else if (grade === 'C') { totalGradePoints += 3 * credits; cumulativeGradeDistribution.C++; }
     else if (grade === 'D') { totalGradePoints += 2 * credits; cumulativeGradeDistribution.D++; }
+    else if (grade === 'E') { totalGradePoints += 1 * credits; cumulativeGradeDistribution.E++; }
     else if (grade === 'F') { totalGradePoints += 0 * credits; cumulativeGradeDistribution.F++; }
   });
 

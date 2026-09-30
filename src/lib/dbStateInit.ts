@@ -1,7 +1,7 @@
 import { Course, Department, Enrollment, GradeDispute, ModerationLog, Result, User } from '../types';
 import { mockCourses, mockDepartments, mockEnrollments, mockResults, mockUsers } from './mockData';
 
-export const DB_KEY = 'fuaz_srms_db_v16';
+export const DB_KEY = 'fuaz_srms_db_v18';
 
 export interface DBState {
   users: User[];

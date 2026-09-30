@@ -22,7 +22,7 @@ interface LecturerGradingTabProps {
   onSaveDraft: () => void;
   onSubmit: () => void;
   onDownloadCSV: () => void;
-  onApplyCsvScores: (importedScores: Record<string, { ca: string; exam: string }>) => void;
+  onApplyCsvScores: (importedScores: Record<string, { ca: string; exam: string }>, autoSubmit?: boolean) => void;
   calculateGrade: (total: number) => string;
   lecturerName?: string;
 }

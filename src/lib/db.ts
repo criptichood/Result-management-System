@@ -374,58 +374,98 @@ class MockDB {
     return newLog;
   }
 
-  moderateCourse(courseId: string, action: 'approve' | 'reject', notes?: string, examiner?: User) {
+  moderateCourse(
+    courseId: string,
+    action: 'endorse' | 'approve' | 'reject' | 'publish',
+    notes?: string,
+    examiner?: User
+  ) {
     const enrollments = this.from('enrollments').selectWhere((e) => e.courseId === courseId);
     const results = this.from('results').select();
     const course = this.from('courses').selectById(courseId);
 
     let updatedCount = 0;
+    const targetStatus =
+      action === 'publish'
+        ? 'Published'
+        : action === 'reject'
+        ? 'Rejected'
+        : 'Approved'; // 'endorse' or 'approve' sets status to 'Approved' (HOD endorsed, awaiting Senate)
+
     enrollments.forEach((e) => {
       const res = results.find((r) => r.enrollmentId === e.id);
       if (res) {
         updatedCount++;
-        if (action === 'approve') {
-          this.from('results').update(res.id, {
-            status: 'Published',
-            moderationNotes: undefined,
-            lastUpdated: new Date().toISOString(),
-          });
-        } else {
-          this.from('results').update(res.id, {
-            status: 'Rejected',
-            moderationNotes: notes || 'Returned for revision by Chief Examiner.',
-            lastUpdated: new Date().toISOString(),
-          });
-        }
+        this.from('results').update(res.id, {
+          status: targetStatus,
+          moderationNotes:
+            action === 'reject'
+              ? notes || 'Returned to lecturer by HOD for script remarking and score verification.'
+              : undefined,
+          lastUpdated: new Date().toISOString(),
+        });
       }
     });
 
     if (course) {
+      let logAction: ModerationLog['action'] = 'Departmentally Endorsed';
+      let defaultNotes = 'Vetted and endorsed by Departmental Board of Examiners (HOD). Recommended to Senate for ratification.';
+
+      if (action === 'publish') {
+        logAction = 'Senate Ratified & Released';
+        defaultNotes = 'Formally ratified by University Senate Examination Council. Released to student portals.';
+      } else if (action === 'reject') {
+        logAction = 'Returned for Remarking';
+        defaultNotes = 'Returned to lecturer by Departmental Board for script remarking and mark audit.';
+      }
+
       this.addModerationLog({
         courseId,
         courseCode: course.code,
         examinerId: examiner?.id || 'u2',
-        examinerName: examiner?.name || 'Dr. Aliyu Mohammed',
-        action: action === 'approve' ? 'Approved' : 'Rejected',
-        notes:
-          notes ||
-          (action === 'approve'
-            ? 'All student scores approved and published to portal.'
-            : 'Returned to lecturer for revision.'),
+        examinerName: examiner?.name || 'Prof. Bello Ibrahim (HOD & Chief Examiner)',
+        action: logAction,
+        notes: notes || defaultNotes,
         affectedStudentCount: updatedCount,
-        details: `Course: ${course.title} (${course.code})`,
+        details: `Course: ${course.title} (${course.code}) • Dept of ${course.department}`,
       });
     }
   }
 
   batchModerateCourses(
     courseIds: string[],
-    action: 'approve' | 'reject',
+    action: 'endorse' | 'approve' | 'reject' | 'publish',
     notes?: string,
     examiner?: User
   ) {
     courseIds.forEach((courseId) => {
       this.moderateCourse(courseId, action, notes, examiner);
+    });
+  }
+
+  ratifySenateCourses(courseIds: string[], senateOfficer?: User, notes?: string) {
+    courseIds.forEach((courseId) => {
+      this.moderateCourse(
+        courseId,
+        'publish',
+        notes || 'Formally ratified by University Senate. Published to student academic record.',
+        senateOfficer
+      );
+    });
+  }
+
+  getSenatePendingCourses() {
+    const allCourses = this.from('courses').select();
+    const allResults = this.from('results').select();
+    const allEnrollments = this.from('enrollments').select();
+
+    return allCourses.filter((course) => {
+      const courseEnrollments = allEnrollments.filter((e) => e.courseId === course.id);
+      if (courseEnrollments.length === 0) return false;
+      return courseEnrollments.some((e) => {
+        const r = allResults.find((res) => res.enrollmentId === e.id);
+        return r?.status === 'Approved';
+      });
     });
   }
 

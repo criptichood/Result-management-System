@@ -49,7 +49,7 @@ interface SubjectDomain {
   avgScore: number;
   avgGp: number;
   totalUnits: number;
-  gradeCounts: { A: number; B: number; C: number; D: number; F: number };
+  gradeCounts: { A: number; B: number; C: number; D: number; E: number; F: number };
   status: 'strength' | 'competent' | 'moderate' | 'critical';
   recommendation: string;
 }
@@ -61,15 +61,15 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
   const [selectedDomainFilter, setSelectedDomainFilter] = useState<string>('all');
   const [simulationTargetGrade, setSimulationTargetGrade] = useState<'A' | 'B'>('A');
 
-  // Identify all courses with C, D, F grades (most especially D, F)
+  // Identify all courses with C, D, E, F grades (most especially D, E, F)
   const weakCourses = allPublishedResults.filter(item => {
     const grade = item.result?.grade;
-    return grade === 'C' || grade === 'D' || grade === 'F';
+    return grade === 'C' || grade === 'D' || grade === 'E' || grade === 'F';
   }).sort((a, b) => {
-    // Sort D, F first, then C
-    const gradeOrder: Record<string, number> = { F: 1, D: 2, C: 3 };
-    const orderA = gradeOrder[a.result?.grade || 'C'] || 4;
-    const orderB = gradeOrder[b.result?.grade || 'C'] || 4;
+    // Sort F, E, D first, then C
+    const gradeOrder: Record<string, number> = { F: 1, E: 2, D: 3, C: 4 };
+    const orderA = gradeOrder[a.result?.grade || 'C'] || 5;
+    const orderB = gradeOrder[b.result?.grade || 'C'] || 5;
     return orderA - orderB;
   });
 
@@ -103,7 +103,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
       let scoreSum = 0;
       let pointsSum = 0;
       let totalUnits = 0;
-      const gradeCounts = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+      const gradeCounts = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
 
       items.forEach(it => {
         const score = it.result?.totalScore || 0;
@@ -117,6 +117,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
         else if (grade === 'B') { gp = 4; gradeCounts.B++; }
         else if (grade === 'C') { gp = 3; gradeCounts.C++; }
         else if (grade === 'D') { gp = 2; gradeCounts.D++; }
+        else if (grade === 'E') { gp = 1; gradeCounts.E++; }
         else if (grade === 'F') { gp = 0; gradeCounts.F++; }
 
         pointsSum += gp * units;
@@ -161,7 +162,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
   const currentTotalPoints = allPublishedResults.reduce((acc, curr) => {
     const units = curr.course?.creditUnits || 0;
     const grade = curr.result?.grade;
-    const gp = grade === 'A' ? 5 : grade === 'B' ? 4 : grade === 'C' ? 3 : grade === 'D' ? 2 : 0;
+    const gp = grade === 'A' ? 5 : grade === 'B' ? 4 : grade === 'C' ? 3 : grade === 'D' ? 2 : grade === 'E' ? 1 : 0;
     return acc + (gp * units);
   }, 0);
 
@@ -253,6 +254,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
                     {dom.gradeCounts.B > 0 && <span className="text-teal-700 dark:text-teal-400">{dom.gradeCounts.B} B</span>}
                     {dom.gradeCounts.C > 0 && <span className="text-blue-700 dark:text-blue-400">{dom.gradeCounts.C} C</span>}
                     {dom.gradeCounts.D > 0 && <span className="text-amber-700 dark:text-amber-400">{dom.gradeCounts.D} D</span>}
+                    {dom.gradeCounts.E > 0 && <span className="text-orange-700 dark:text-orange-400">{dom.gradeCounts.E} E</span>}
                     {dom.gradeCounts.F > 0 && <span className="text-rose-700 dark:text-rose-400">{dom.gradeCounts.F} F</span>}
                   </div>
                 </div>
@@ -273,10 +275,10 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500 dark:text-amber-400" /> Key Areas & Weakness Pinpoint Analysis (C & D Grades)
+                <AlertTriangle className="w-5 h-5 text-amber-500 dark:text-amber-400" /> Key Areas & Weakness Pinpoint Analysis (C, D & E Grades)
               </CardTitle>
               <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                In-depth assessment of courses with C or D grades, detailing CA vs. Exam root causes and tailored remedies
+                In-depth assessment of courses with C, D, or E grades, detailing CA vs. Exam root causes and tailored remedies
               </CardDescription>
             </div>
             <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -298,7 +300,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
                 // Diagnostic reasoning
                 let rootCause = '';
                 let actionPlan = '';
-                let priority: 'high' | 'medium' = grade === 'D' || grade === 'F' ? 'high' : 'medium';
+                let priority: 'high' | 'medium' = grade === 'D' || grade === 'E' || grade === 'F' ? 'high' : 'medium';
 
                 if (ca >= 28 && exam < 25) {
                   rootCause = `Exam Disparity: High Continuous Assessment (${ca}/40) but low Final Exam performance (${exam}/60).`;
@@ -332,6 +334,7 @@ export const SubjectDiagnosticsView: React.FC<SubjectDiagnosticsViewProps> = ({
                       <div className="text-right flex-shrink-0">
                         <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-extrabold ${
                           grade === 'D' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800' :
+                          grade === 'E' ? 'bg-orange-100 dark:bg-orange-950/80 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-800' :
                           grade === 'F' ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-200 border border-rose-300 dark:border-rose-800' :
                           'bg-blue-50 dark:bg-blue-950/80 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800'
                         }`}>

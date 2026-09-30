@@ -1,31 +1,91 @@
 import { Course, Department, Enrollment, Result, User } from '../types';
 
 export const mockUsers: User[] = [
-  { id: 'u1', name: 'Dr. Amina Yusuf', email: 'admin@fuaz.edu.ng', role: 'Admin', staffId: 'ADM001' },
-  { id: 'u2', name: 'Prof. Bello Ibrahim', email: 'chief@fuaz.edu.ng', role: 'Chief Examiner', college: 'Science', department: 'Computer Science', staffId: 'CE001' },
-  { id: 'u3', name: 'Dr. Chidi Okafor (Lecturer A)', email: 'lecturer1@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC001' },
-  { id: 'u4', name: 'Dr. Fatima Umar (Lecturer B)', email: 'lecturer2@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC002' },
-  
-  // Active Undergraduates (Computer Science)
+  // Institutional Executives & Academic Governance Officers
+  { id: 'u1', name: 'Dr. Amina Yusuf (System Admin)', email: 'admin@fuaz.edu.ng', role: 'Admin', staffId: 'ADM001' },
+  { id: 'u_senate', name: 'Prof. Abdullahi Ibrahim (Senate Secretariat / VC)', email: 'senate@fuaz.edu.ng', role: 'Senate', staffId: 'SEN001' },
+  { id: 'u2', name: 'Prof. Bello Ibrahim (Head of Department)', email: 'hod@fuaz.edu.ng', role: 'HOD', college: 'Science', department: 'Computer Science', staffId: 'HOD001' },
+  { id: 'u_examiner', name: 'Dr. Aliyu Mohammed (Departmental Exam Officer)', email: 'examiner@fuaz.edu.ng', role: 'Examiner', college: 'Science', department: 'Computer Science', staffId: 'EXM001' },
+
+  // Academic Teaching Faculty (Computer Science & Service Departments)
+  { id: 'u3', name: 'Dr. Chidi Okafor (Senior Lecturer)', email: 'lecturer1@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC001' },
+  { id: 'u4', name: 'Dr. Fatima Umar (Senior Lecturer)', email: 'lecturer2@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC002' },
+  { id: 'u_lec3', name: 'Dr. Shehu Danbatta (Senior Lecturer)', email: 'danbatta@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC003' },
+  { id: 'u_lec4', name: 'Dr. Ngozi Anyaoku (Lecturer I)', email: 'anyaoku@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC004' },
+  { id: 'u_lec5', name: 'Engr. Kabir Sani (Lecturer II)', email: 'ksani@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC005' },
+  { id: 'u_lec6', name: 'Dr. Yusuf Al-Amin (Lecturer I)', email: 'yalamin@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC006' },
+
+  // =========================================================================
+  // 100 LEVEL UNDERGRADUATES (12 Students, 2024/2025 Cohort)
+  // =========================================================================
+  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/001', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
+  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/002', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
+  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/003', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
+  { id: 'u100_4', name: 'Abdullahi Shehu', email: 'abdullahi.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/004', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 555 1234', address: 'Block B, Male Hostel' },
+  { id: 'u100_5', name: 'Joy Emmanuel', email: 'joy.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/005', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 998 7766', address: 'Block C, Female Hostel' },
+  { id: 'u100_6', name: 'Usman Farouk', email: 'usman.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 816 443 2211', address: 'Block A, Male Hostel' },
+  { id: 'u100_7', name: 'Halima Sani', email: 'halima.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 809 112 8899', address: 'Block D, Female Hostel' },
+  { id: 'u100_8', name: 'Daniel Kalu', email: 'daniel.k@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 805 776 5544', address: 'Block B, Male Hostel' },
+  { id: 'u100_9', name: 'Maryam Bello', email: 'maryam.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/009', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 813 665 4433', address: 'Block C, Female Hostel' },
+  { id: 'u100_10', name: 'Ibrahim Lawal', email: 'ibrahim.l@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/010', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 808 332 1199', address: 'Off-campus, Zuru Town' },
+  { id: 'u100_11', name: 'Chisom Eze', email: 'chisom.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/011', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 818 221 4455', address: 'Block D, Female Hostel' },
+  { id: 'u100_12', name: 'Kabiru Yahaya', email: 'kabiru.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/012', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 889 0011', address: 'Block A, Male Hostel' },
+
+  // =========================================================================
+  // 200 LEVEL UNDERGRADUATES (12 Students, 2023/2024 Cohort)
+  // =========================================================================
+  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/001', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
+  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/002', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/003', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u200_4', name: 'Hauwa Idris', email: 'hauwa.i@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 803 221 8877', address: 'Block C, Female Hostel' },
+  { id: 'u200_5', name: 'Victor Sunday', email: 'victor.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 814 887 6655', address: 'Block B, Male Hostel' },
+  { id: 'u200_6', name: 'Aminu Dangana', email: 'aminu.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/006', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 806 554 3322', address: 'Block A, Male Hostel' },
+  { id: 'u200_7', name: 'Racheal Adeleke', email: 'racheal.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/007', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 667 8899', address: 'Block D, Female Hostel' },
+  { id: 'u200_8', name: 'Abubakar Gwadabe', email: 'abubakar.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/008', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 332 5544', address: 'Block B, Male Hostel' },
+  { id: 'u200_9', name: 'Deborah Yakubu', email: 'deborah.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 813 776 2211', address: 'Block C, Female Hostel' },
+  { id: 'u200_10', name: 'Solomon Bassey', email: 'solomon.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/010', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 805 119 4433', address: 'Off-campus, Zuru Town' },
+  { id: 'u200_11', name: 'Bilkisu Mohammed', email: 'bilkisu.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/011', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 990 1122', address: 'Block D, Female Hostel' },
+  { id: 'u200_12', name: 'Godwin Peters', email: 'godwin.p@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/012', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 443 6677', address: 'Block A, Male Hostel' },
+
+  // =========================================================================
+  // 300 LEVEL UNDERGRADUATES (12 Students, 2022/2023 Cohort)
+  // =========================================================================
+  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/001', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
+  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/002', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
+  { id: 'u300_3', name: 'Samuel Adebayo', email: 'samuel.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 814 332 5566', address: 'Block A, Male Hostel' },
+  { id: 'u300_4', name: 'Khadijah Ahmed', email: 'khadijah.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/004', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 803 778 9900', address: 'Block D, Female Hostel' },
+  { id: 'u300_5', name: 'Chukwudi Nnamdi', email: 'chukwudi.n@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/005', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 816 887 1122', address: 'Block B, Male Hostel' },
+  { id: 'u300_6', name: 'Nafisat Aliyu', email: 'nafisat.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/006', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 809 665 4433', address: 'Block C, Female Hostel' },
+  { id: 'u300_7', name: 'Olamide Fashola', email: 'olamide.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/007', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 221 9988', address: 'Off-campus, Zuru Town' },
+  { id: 'u300_8', name: 'Haruna Jibril', email: 'haruna.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/008', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 813 445 7766', address: 'Block A, Male Hostel' },
+  { id: 'u300_9', name: 'Esther John', email: 'esther.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/009', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 119 3344', address: 'Block D, Female Hostel' },
+  { id: 'u300_10', name: 'Sadiq Tanko', email: 'sadiq.t@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 818 776 5544', address: 'Block B, Male Hostel' },
+  { id: 'u300_11', name: 'Chidiebere Okeke', email: 'chidiebere.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/011', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 808 554 2211', address: 'Block A, Male Hostel' },
+  { id: 'u300_12', name: 'Patrick Ogbonna', email: 'patrick.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/012', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 806 998 1122', address: 'Off-campus, Zuru Town' },
+
+  // =========================================================================
+  // 400 LEVEL UNDERGRADUATES (12 Students, 2021/2022 Cohort)
+  // =========================================================================
   { id: 'u5', name: 'Jeremiah Dantani', email: 'jeremiah@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/045', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 801 234 5678', emergencyContact: '+234 809 876 5432 (Father)', address: 'Block A, Male Hostel, FUAZ Campus' },
   { id: 'u19', name: 'Zubairu Adamu', email: 'zubairu.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/012', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 802 345 6789', emergencyContact: '+234 803 456 7891 (Father)', address: 'Block B, Male Hostel' },
   { id: 'u20', name: 'Grace Danjuma', email: 'grace.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/033', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 806 789 0123', emergencyContact: '+234 807 890 1234 (Mother)', address: 'Block C, Female Hostel' },
-  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
-  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
-  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
-  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
-  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
-  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
+  { id: 'u400_4', name: 'Emmanuel Audu', email: 'emmanuel.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/004', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 803 119 8877', address: 'Block A, Male Hostel' },
+  { id: 'u400_5', name: 'Hadiza Umar', email: 'hadiza.u@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/005', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 814 665 2211', address: 'Block C, Female Hostel' },
+  { id: 'u400_6', name: 'Kenneth Okafor', email: 'kenneth.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/006', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 806 778 4433', address: 'Block B, Male Hostel' },
+  { id: 'u400_7', name: 'Zainab Abdullahi', email: 'zainab.ab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/007', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 809 221 6655', address: 'Block D, Female Hostel' },
+  { id: 'u400_8', name: 'Peter Ayodele', email: 'peter.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/008', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 805 887 3322', address: 'Off-campus, Zuru Town' },
+  { id: 'u400_9', name: 'Fatima Garba', email: 'fatima.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/009', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 813 554 9988', address: 'Block C, Female Hostel' },
+  { id: 'u400_10', name: 'Paulinus Eze', email: 'paulinus.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/010', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 802 331 7766', address: 'Block A, Male Hostel' },
+  { id: 'u400_11', name: 'Mahmud Bello', email: 'mahmud.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/011', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 818 443 1100', address: 'Block B, Male Hostel' },
+  { id: 'u400_12', name: 'Christopher Bala', email: 'christopher.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2021/02/03/013', level: 400, isGraduated: false, entryYear: '2021/2022', phoneNumber: '+234 808 667 9900', address: 'Block A, Male Hostel' },
 
-  // Graduated Alumni (Computer Science)
+  // Graduated Alumni
   { id: 'u15', name: 'Ibrahim Yakubu', email: 'ibrahim.y@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2019/02/03/001', level: 400, isGraduated: true, graduationYear: '2023/2024', graduationSession: '2023/2024 Session', degreeClass: 'First Class Honours', finalCgpa: 4.74, entryYear: '2019/2020', phoneNumber: '+234 803 999 1122', emergencyContact: '+234 803 111 2233 (Father)', address: 'Plot 12, Garki II, Abuja' },
   { id: 'u16', name: 'Maryam Al-Hassan', email: 'maryam.a@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2019/02/03/018', level: 400, isGraduated: true, graduationYear: '2023/2024', graduationSession: '2023/2024 Session', degreeClass: 'Second Class Honours (Upper Division)', finalCgpa: 4.18, entryYear: '2019/2020', phoneNumber: '+234 812 444 5566', emergencyContact: '+234 802 888 9900 (Mother)', address: '14 Ahmadu Bello Way, Kaduna' },
   { id: 'u17', name: 'Chukwuma Obi', email: 'chukwuma.o@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2018/02/03/007', level: 400, isGraduated: true, graduationYear: '2022/2023', graduationSession: '2022/2023 Session', degreeClass: 'Second Class Honours (Upper Division)', finalCgpa: 3.82, entryYear: '2018/2019', phoneNumber: '+234 810 777 6655', emergencyContact: '+234 809 333 2211 (Brother)', address: 'Independence Layout, Enugu' },
   { id: 'u18', name: 'Kemi Adeleke', email: 'kemi.a@alumni.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2018/02/03/024', level: 400, isGraduated: true, graduationYear: '2022/2023', graduationSession: '2022/2023 Session', degreeClass: 'Second Class Honours (Lower Division)', finalCgpa: 3.12, entryYear: '2018/2019', phoneNumber: '+234 816 222 3344', emergencyContact: '+234 803 777 6655 (Guardian)', address: 'Bodija, Ibadan' },
 
-  // Non-Departmental Student (Demonstrates university-wide data isolation)
+  // Non-Departmental Student
   { id: 'u6', name: 'Sarah Musa', email: 'sarah@student.fuaz.edu.ng', role: 'Student', college: 'Agriculture', department: 'Crop Science', matricNumber: 'UG/2022/02/03/002', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 812 345 6789', emergencyContact: '+234 803 456 7890 (Mother)', address: 'Block C, Female Hostel, FUAZ Campus' },
 ];
 
@@ -43,377 +103,71 @@ export const mockCourses: Course[] = [
   { id: 'c_phy112', code: 'PHY 112', title: 'General Physics Laboratory I', creditUnits: 1, department: 'Physics', college: 'Science', level: 100, semester: 1 },
 
   // 100 Level - 2nd Semester
-  { id: 'c_csc123', code: 'CSC 123', title: 'ICT and Digital Skills Acquisition', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u3' },
+  { id: 'c_csc123', code: 'CSC 123', title: 'ICT and Digital Skills Acquisition', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec6' },
   { id: 'c_gst121', code: 'GST 121', title: 'Use of English II', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 2 },
   { id: 'c_gst122', code: 'GST 122', title: 'Nigeria: People and Culture', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 2 },
   { id: 'c_mth121', code: 'MTH 121', title: 'Calculus', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 2, lecturerId: 'u4' },
   { id: 'c_phy123', code: 'PHY 123', title: 'Electricity, Magnetism and Modern Physics', creditUnits: 3, department: 'Physics', college: 'Science', level: 100, semester: 2 },
   { id: 'c_mth123', code: 'MTH 123', title: 'General Mathematics II: Elementary Algebra II', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
   { id: 'c_mth125', code: 'MTH 125', title: 'Statistical Inference I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
-  { id: 'c_csc121', code: 'CSC 121', title: 'Introduction to Problem Solving', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc122', code: 'CSC 122', title: 'Fundamentals of Computer Network', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2 },
+  { id: 'c_csc121', code: 'CSC 121', title: 'Introduction to Problem Solving', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec4' },
+  { id: 'c_csc122', code: 'CSC 122', title: 'Fundamentals of Computer Network', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec3' },
   { id: 'c_mth126', code: 'MTH 126', title: 'Probability', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
 
-  // 200 Level - 2023/2024 1st Semester Courses
+  // 200 Level - 1st Semester
   { id: 'c_gst212', code: 'GST 212', title: 'Peace Studies and Conflict Resolution', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 1 },
   { id: 'c_csc211', code: 'CSC 211', title: 'Computer Programming I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
   { id: 'c_mth211', code: 'MTH 211', title: 'Mathematical Methods I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u4' },
   { id: 'c_csc213', code: 'CSC 213', title: 'Discrete Structure', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc214', code: 'CSC 214', title: 'Digital Logic Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc214', code: 'CSC 214', title: 'Digital Logic Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec5' },
   { id: 'c_mth214', code: 'MTH 214', title: 'Linear Algebra I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u4' },
   { id: 'c_gst211', code: 'GST 211', title: 'History and Philosophy of Science', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 1 },
-  { id: 'c_csc212', code: 'CSC 212', title: 'Operating System I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc212', code: 'CSC 212', title: 'Operating System I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec3' },
 
-  // 200 Level - 2023/2024 2nd Semester Courses
+  // 200 Level - 2nd Semester
   { id: 'c_mth222', code: 'MTH 222', title: 'Elementary Differential Equations I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u4' },
   { id: 'c_phy221', code: 'PHY 221', title: 'Electric Circuits and Electronics', creditUnits: 3, department: 'Physics', college: 'Science', level: 200, semester: 2 },
   { id: 'c_csc221', code: 'CSC 221', title: 'Computer Programming II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc222', code: 'CSC 222', title: 'Computer Hardware', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc223', code: 'CSC 223', title: 'Fundamentals of Data Structures', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc224', code: 'CSC 224', title: 'Introduction to Web Development', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u3' },
+  { id: 'c_csc222', code: 'CSC 222', title: 'Computer Hardware', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec5' },
+  { id: 'c_csc223', code: 'CSC 223', title: 'Fundamentals of Data Structures', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec4' },
+  { id: 'c_csc224', code: 'CSC 224', title: 'Introduction to Web Development', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec6' },
   { id: 'c_mth225', code: 'MTH 225', title: 'Linear Algebra II', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u4' },
   { id: 'c_gst223', code: 'GST 223', title: 'Entrepreneurship Studies I', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 2 },
 
-  // 300 Level - 1st Semester Courses (21 Units)
-  // CSC 213 (Discrete Structure - 3 units) already exists at 200L 1st Semester
+  // 300 Level - 1st Semester
   { id: 'c_csc311', code: 'CSC 311', title: 'Object-Oriented Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc312', code: 'CSC 312', title: 'Operating Systems II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc313', code: 'CSC 313', title: 'Compiler Construction I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc314', code: 'CSC 314', title: 'Computer Architecture and Organization I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc315', code: 'CSC 315', title: 'Systems Analysis and Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc312', code: 'CSC 312', title: 'Operating Systems II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec3' },
+  { id: 'c_csc313', code: 'CSC 313', title: 'Compiler Construction I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec6' },
+  { id: 'c_csc314', code: 'CSC 314', title: 'Computer Architecture and Organization I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec5' },
+  { id: 'c_csc315', code: 'CSC 315', title: 'Systems Analysis and Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u2' },
   { id: 'c_csc316', code: 'CSC 316', title: 'Algorithms and Complexity Analysis', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
 
-  // 300 Level - 2nd Semester Courses (18 Units)
-  { id: 'c_csc321', code: 'CSC 321', title: 'Data Management I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc322', code: 'CSC 322', title: 'Survey of Programming Language', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc323', code: 'CSC 323', title: 'Structured Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc324', code: 'CSC 324', title: 'Computer Architecture and Organization II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
+  // 300 Level - 2nd Semester
+  { id: 'c_csc321', code: 'CSC 321', title: 'Data Management I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec4' },
+  { id: 'c_csc322', code: 'CSC 322', title: 'Survey of Programming Language', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec6' },
+  { id: 'c_csc323', code: 'CSC 323', title: 'Structured Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec6' },
+  { id: 'c_csc324', code: 'CSC 324', title: 'Computer Architecture and Organization II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec5' },
   { id: 'c_csc325', code: 'CSC 325', title: 'Computational Science & Numerical Methods', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
   { id: 'c_gst321', code: 'GST 321', title: 'Entrepreneurship Studies II', creditUnits: 2, department: 'General Studies', college: 'Science', level: 300, semester: 2 },
 
-  // 400 Level - 1st Semester Courses (16 Units)
+  // 400 Level - 1st Semester
   { id: 'c_csc411', code: 'CSC 411', title: 'Organization of Programming Language', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
   { id: 'c_csc412', code: 'CSC 412', title: 'Software Engineering', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc414', code: 'CSC 414', title: 'Net-Centric Computing', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc415', code: 'CSC 415', title: 'Human Computer Interface', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc414', code: 'CSC 414', title: 'Net-Centric Computing', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u_lec3' },
+  { id: 'c_csc415', code: 'CSC 415', title: 'Human Computer Interface', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u2' },
   { id: 'c_csc418', code: 'CSC 418', title: 'Industrial Training', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
 
-  // 400 Level - 2nd Semester Courses (15 Units)
-  { id: 'c_csc421', code: 'CSC 421', title: 'Artificial Intelligence', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc422', code: 'CSC 422', title: 'Computer Networks / Communication', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc423', code: 'CSC 423', title: 'Data Management II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc424', code: 'CSC 424', title: 'Project', creditUnits: 6, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
+  // 400 Level - 2nd Semester
+  { id: 'c_csc421', code: 'CSC 421', title: 'Artificial Intelligence', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u2' },
+  { id: 'c_csc422', code: 'CSC 422', title: 'Computer Networks / Communication', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u_lec3' },
+  { id: 'c_csc423', code: 'CSC 423', title: 'Data Management II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u_lec4' },
+  { id: 'c_csc424', code: 'CSC 424', title: 'Project', creditUnits: 6, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u2' },
 
   { id: 'c_agr101', code: 'AGR 101', title: 'Introductory Agriculture', creditUnits: 2, department: 'Crop Science', college: 'Agriculture', level: 100, semester: 1 },
 ];
 
-export const mockEnrollments: Enrollment[] = [
-  // Jeremiah Dantani (u5) - 2021/2022 1st Semester (100 Level / UG1)
-  { id: 'e1_chm111', studentId: 'u5', courseId: 'c_chm111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_csc111', studentId: 'u5', courseId: 'c_csc111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_gst111', studentId: 'u5', courseId: 'c_gst111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_gst112', studentId: 'u5', courseId: 'c_gst112', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_gst113', studentId: 'u5', courseId: 'c_gst113', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_mth111', studentId: 'u5', courseId: 'c_mth111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_mth113', studentId: 'u5', courseId: 'c_mth113', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_mth114', studentId: 'u5', courseId: 'c_mth114', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_phy111', studentId: 'u5', courseId: 'c_phy111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e1_phy112', studentId: 'u5', courseId: 'c_phy112', semester: 1, academicYear: '2021/2022' },
-
-  // Jeremiah Dantani (u5) - 2021/2022 2nd Semester (100 Level / UG1)
-  { id: 'e2_csc123', studentId: 'u5', courseId: 'c_csc123', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_gst121', studentId: 'u5', courseId: 'c_gst121', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_gst122', studentId: 'u5', courseId: 'c_gst122', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_mth121', studentId: 'u5', courseId: 'c_mth121', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_phy123', studentId: 'u5', courseId: 'c_phy123', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_mth123', studentId: 'u5', courseId: 'c_mth123', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_mth125', studentId: 'u5', courseId: 'c_mth125', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_csc121', studentId: 'u5', courseId: 'c_csc121', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_csc122', studentId: 'u5', courseId: 'c_csc122', semester: 2, academicYear: '2021/2022' },
-  { id: 'e2_mth126', studentId: 'u5', courseId: 'c_mth126', semester: 2, academicYear: '2021/2022' },
-
-  // Jeremiah Dantani (u5) - 2022/2023 1st Semester (200 Level / UG2)
-  { id: 'e3_gst212', studentId: 'u5', courseId: 'c_gst212', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_csc211', studentId: 'u5', courseId: 'c_csc211', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_mth211', studentId: 'u5', courseId: 'c_mth211', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_csc213', studentId: 'u5', courseId: 'c_csc213', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_csc214', studentId: 'u5', courseId: 'c_csc214', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_mth214', studentId: 'u5', courseId: 'c_mth214', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_gst211', studentId: 'u5', courseId: 'c_gst211', semester: 1, academicYear: '2022/2023' },
-  { id: 'e3_csc212', studentId: 'u5', courseId: 'c_csc212', semester: 1, academicYear: '2022/2023' },
-
-  // Jeremiah Dantani (u5) - 2022/2023 2nd Semester (200 Level / UG2)
-  { id: 'e4_mth222', studentId: 'u5', courseId: 'c_mth222', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_phy221', studentId: 'u5', courseId: 'c_phy221', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_csc221', studentId: 'u5', courseId: 'c_csc221', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_csc222', studentId: 'u5', courseId: 'c_csc222', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_csc223', studentId: 'u5', courseId: 'c_csc223', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_csc224', studentId: 'u5', courseId: 'c_csc224', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_mth225', studentId: 'u5', courseId: 'c_mth225', semester: 2, academicYear: '2022/2023' },
-  { id: 'e4_gst223', studentId: 'u5', courseId: 'c_gst223', semester: 2, academicYear: '2022/2023' },
-
-  // Jeremiah Dantani (u5) - 2023/2024 1st Semester (300 Level / UG3)
-  { id: 'e5_csc311', studentId: 'u5', courseId: 'c_csc311', semester: 1, academicYear: '2023/2024' },
-  { id: 'e5_csc312', studentId: 'u5', courseId: 'c_csc312', semester: 1, academicYear: '2023/2024' },
-  { id: 'e5_csc313', studentId: 'u5', courseId: 'c_csc313', semester: 1, academicYear: '2023/2024' },
-  { id: 'e5_csc314', studentId: 'u5', courseId: 'c_csc314', semester: 1, academicYear: '2023/2024' },
-  { id: 'e5_csc315', studentId: 'u5', courseId: 'c_csc315', semester: 1, academicYear: '2023/2024' },
-  { id: 'e5_csc316', studentId: 'u5', courseId: 'c_csc316', semester: 1, academicYear: '2023/2024' },
-
-  // Jeremiah Dantani (u5) - 2023/2024 2nd Semester (300 Level / UG3)
-  { id: 'e6_csc321', studentId: 'u5', courseId: 'c_csc321', semester: 2, academicYear: '2023/2024' },
-  { id: 'e6_csc322', studentId: 'u5', courseId: 'c_csc322', semester: 2, academicYear: '2023/2024' },
-  { id: 'e6_csc323', studentId: 'u5', courseId: 'c_csc323', semester: 2, academicYear: '2023/2024' },
-  { id: 'e6_csc324', studentId: 'u5', courseId: 'c_csc324', semester: 2, academicYear: '2023/2024' },
-  { id: 'e6_csc325', studentId: 'u5', courseId: 'c_csc325', semester: 2, academicYear: '2023/2024' },
-  { id: 'e6_gst321', studentId: 'u5', courseId: 'c_gst321', semester: 2, academicYear: '2023/2024' },
-
-  // Jeremiah Dantani (u5) - 2024/2025 ACTIVE SESSION (400 Level / UG4)
-  // 1st Semester (Registered courses)
-  { id: 'e7_csc411', studentId: 'u5', courseId: 'c_csc411', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_csc412', studentId: 'u5', courseId: 'c_csc412', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_csc414', studentId: 'u5', courseId: 'c_csc414', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_csc415', studentId: 'u5', courseId: 'c_csc415', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_csc418', studentId: 'u5', courseId: 'c_csc418', semester: 1, academicYear: '2024/2025' },
-  // 2nd Semester
-  { id: 'e7_csc421', studentId: 'u5', courseId: 'c_csc421', semester: 2, academicYear: '2024/2025' },
-  { id: 'e7_csc422', studentId: 'u5', courseId: 'c_csc422', semester: 2, academicYear: '2024/2025' },
-  { id: 'e7_csc423', studentId: 'u5', courseId: 'c_csc423', semester: 2, academicYear: '2024/2025' },
-  { id: 'e7_csc424', studentId: 'u5', courseId: 'c_csc424', semester: 2, academicYear: '2024/2025' },
-
-  // Zubairu Adamu (u19) - 2024/2025 ACTIVE SESSION (400 Level / UG4)
-  { id: 'e7_zubairu_csc411', studentId: 'u19', courseId: 'c_csc411', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_zubairu_csc412', studentId: 'u19', courseId: 'c_csc412', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_zubairu_csc414', studentId: 'u19', courseId: 'c_csc414', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_zubairu_csc415', studentId: 'u19', courseId: 'c_csc415', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_zubairu_csc418', studentId: 'u19', courseId: 'c_csc418', semester: 1, academicYear: '2024/2025' },
-
-  // Grace Danjuma (u20) - 2024/2025 ACTIVE SESSION (400 Level / UG4)
-  { id: 'e7_grace_csc411', studentId: 'u20', courseId: 'c_csc411', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_grace_csc412', studentId: 'u20', courseId: 'c_csc412', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_grace_csc414', studentId: 'u20', courseId: 'c_csc414', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_grace_csc415', studentId: 'u20', courseId: 'c_csc415', semester: 1, academicYear: '2024/2025' },
-  { id: 'e7_grace_csc418', studentId: 'u20', courseId: 'c_csc418', semester: 1, academicYear: '2024/2025' },
-
-  // David Ojo (u7) - 300 Level
-  { id: 'e_david_csc311', studentId: 'u7', courseId: 'c_csc311', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_david_csc312', studentId: 'u7', courseId: 'c_csc312', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_david_csc211', studentId: 'u7', courseId: 'c_csc211', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_david_csc212', studentId: 'u7', courseId: 'c_csc212', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_david_csc221', studentId: 'u7', courseId: 'c_csc221', semester: 2, academicYear: '2022/2023' },
-  { id: 'e_david_csc224', studentId: 'u7', courseId: 'c_csc224', semester: 2, academicYear: '2022/2023' },
-  { id: 'e_david_csc111', studentId: 'u7', courseId: 'c_csc111', semester: 1, academicYear: '2021/2022' },
-  { id: 'e_david_mth111', studentId: 'u7', courseId: 'c_mth111', semester: 1, academicYear: '2021/2022' },
-
-  // Aisha Mohammed (u14) - 300 Level
-  { id: 'e_aisha_csc311', studentId: 'u14', courseId: 'c_csc311', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_aisha_csc312', studentId: 'u14', courseId: 'c_csc312', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_aisha_csc211', studentId: 'u14', courseId: 'c_csc211', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_aisha_csc212', studentId: 'u14', courseId: 'c_csc212', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_aisha_csc221', studentId: 'u14', courseId: 'c_csc221', semester: 2, academicYear: '2022/2023' },
-  { id: 'e_aisha_csc224', studentId: 'u14', courseId: 'c_csc224', semester: 2, academicYear: '2022/2023' },
-  { id: 'e_aisha_csc111', studentId: 'u14', courseId: 'c_csc111', semester: 1, academicYear: '2021/2022' },
-
-  // Zainab Ali (u8) - 200 Level
-  { id: 'e_zainab_csc211', studentId: 'u8', courseId: 'c_csc211', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_zainab_csc212', studentId: 'u8', courseId: 'c_csc212', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_zainab_csc221', studentId: 'u8', courseId: 'c_csc221', semester: 2, academicYear: '2023/2024' },
-  { id: 'e_zainab_csc224', studentId: 'u8', courseId: 'c_csc224', semester: 2, academicYear: '2023/2024' },
-  { id: 'e_zainab_csc111', studentId: 'u8', courseId: 'c_csc111', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_zainab_mth111', studentId: 'u8', courseId: 'c_mth111', semester: 1, academicYear: '2022/2023' },
-
-  // Emeka Uzo (u9) - 200 Level
-  { id: 'e_emeka_csc211', studentId: 'u9', courseId: 'c_csc211', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_emeka_csc111', studentId: 'u9', courseId: 'c_csc111', semester: 1, academicYear: '2022/2023' },
-  { id: 'e_emeka_mth111', studentId: 'u9', courseId: 'c_mth111', semester: 1, academicYear: '2022/2023' },
-
-  // 100 Level students (2024/2025 cohort)
-  { id: 'e_fatima_csc111', studentId: 'u10', courseId: 'c_csc111', semester: 1, academicYear: '2024/2025' },
-  { id: 'e_musa_csc111', studentId: 'u11', courseId: 'c_csc111', semester: 1, academicYear: '2024/2025' },
-  { id: 'e_blessing_csc111', studentId: 'u12', courseId: 'c_csc111', semester: 1, academicYear: '2024/2025' },
-  { id: 'e_tunde_csc111', studentId: 'u13', courseId: 'c_csc111', semester: 1, academicYear: '2023/2024' },
-  { id: 'e_sarah_agr101', studentId: 'u6', courseId: 'c_agr101', semester: 1, academicYear: '2022/2023' },
-
-  // Graduated Alumni Enrollments (Computer Science)
-  // Ibrahim Yakubu (u15) - Graduated 2023/2024 (First Class)
-  { id: 'e_ibrahim_csc111', studentId: 'u15', courseId: 'c_csc111', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_ibrahim_mth111', studentId: 'u15', courseId: 'c_mth111', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_ibrahim_chm111', studentId: 'u15', courseId: 'c_chm111', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_ibrahim_csc211', studentId: 'u15', courseId: 'c_csc211', semester: 1, academicYear: '2020/2021' },
-  { id: 'e_ibrahim_csc213', studentId: 'u15', courseId: 'c_csc213', semester: 1, academicYear: '2020/2021' },
-  { id: 'e_ibrahim_csc311', studentId: 'u15', courseId: 'c_csc311', semester: 1, academicYear: '2021/2022' },
-  { id: 'e_ibrahim_csc411', studentId: 'u15', courseId: 'c_csc411', semester: 1, academicYear: '2023/2024' },
-
-  // Maryam Al-Hassan (u16) - Graduated 2023/2024 (2:1)
-  { id: 'e_maryam_csc111', studentId: 'u16', courseId: 'c_csc111', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_maryam_mth111', studentId: 'u16', courseId: 'c_mth111', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_maryam_csc211', studentId: 'u16', courseId: 'c_csc211', semester: 1, academicYear: '2020/2021' },
-  { id: 'e_maryam_csc311', studentId: 'u16', courseId: 'c_csc311', semester: 1, academicYear: '2021/2022' },
-  { id: 'e_maryam_csc411', studentId: 'u16', courseId: 'c_csc411', semester: 1, academicYear: '2023/2024' },
-
-  // Chukwuma Obi (u17) - Graduated 2022/2023 (2:1)
-  { id: 'e_chukwuma_csc111', studentId: 'u17', courseId: 'c_csc111', semester: 1, academicYear: '2018/2019' },
-  { id: 'e_chukwuma_mth111', studentId: 'u17', courseId: 'c_mth111', semester: 1, academicYear: '2018/2019' },
-  { id: 'e_chukwuma_csc211', studentId: 'u17', courseId: 'c_csc211', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_chukwuma_csc311', studentId: 'u17', courseId: 'c_csc311', semester: 1, academicYear: '2020/2021' },
-  { id: 'e_chukwuma_csc411', studentId: 'u17', courseId: 'c_csc411', semester: 1, academicYear: '2022/2023' },
-
-  // Kemi Adeleke (u18) - Graduated 2022/2023 (2:2)
-  { id: 'e_kemi_csc111', studentId: 'u18', courseId: 'c_csc111', semester: 1, academicYear: '2018/2019' },
-  { id: 'e_kemi_mth111', studentId: 'u18', courseId: 'c_mth111', semester: 1, academicYear: '2018/2019' },
-  { id: 'e_kemi_csc211', studentId: 'u18', courseId: 'c_csc211', semester: 1, academicYear: '2019/2020' },
-  { id: 'e_kemi_csc311', studentId: 'u18', courseId: 'c_csc311', semester: 1, academicYear: '2020/2021' },
-  { id: 'e_kemi_csc411', studentId: 'u18', courseId: 'c_csc411', semester: 1, academicYear: '2022/2023' },
-];
-
-export const mockResults: Result[] = [
-  // ==========================================
-  // Jeremiah Dantani (u5) - 100 Level / UG1
-  // ==========================================
-  // 2021/2022 1st Semester (GPA 3.77, 22 Credits, 10 Courses)
-  { id: 'r1_chm111', enrollmentId: 'e1_chm111', caScore: 21, examScore: 35, totalScore: 56, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_csc111', enrollmentId: 'e1_csc111', caScore: 35, examScore: 45, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_gst111', enrollmentId: 'e1_gst111', caScore: 20, examScore: 31, totalScore: 51, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_gst112', enrollmentId: 'e1_gst112', caScore: 32, examScore: 40, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_gst113', enrollmentId: 'e1_gst113', caScore: 23, examScore: 42, totalScore: 65, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_mth111', enrollmentId: 'e1_mth111', caScore: 35, examScore: 13, totalScore: 48, grade: 'D', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_mth113', enrollmentId: 'e1_mth113', caScore: 29, examScore: 38, totalScore: 67, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_mth114', enrollmentId: 'e1_mth114', caScore: 32, examScore: 31, totalScore: 63, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_phy111', enrollmentId: 'e1_phy111', caScore: 27, examScore: 44, totalScore: 71, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r1_phy112', enrollmentId: 'e1_phy112', caScore: 35, examScore: 26, totalScore: 61, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-
-  // 2021/2022 2nd Semester (GPA 4.61, 23 Credits, 10 Courses)
-  { id: 'r2_csc123', enrollmentId: 'e2_csc123', caScore: 34, examScore: 48, totalScore: 82, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_gst121', enrollmentId: 'e2_gst121', caScore: 30, examScore: 42, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_gst122', enrollmentId: 'e2_gst122', caScore: 30, examScore: 34, totalScore: 64, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_mth121', enrollmentId: 'e2_mth121', caScore: 35, examScore: 30, totalScore: 65, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_phy123', enrollmentId: 'e2_phy123', caScore: 31, examScore: 45, totalScore: 76, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_mth123', enrollmentId: 'e2_mth123', caScore: 34, examScore: 45, totalScore: 79, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_mth125', enrollmentId: 'e2_mth125', caScore: 32, examScore: 43, totalScore: 75, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_csc121', enrollmentId: 'e2_csc121', caScore: 31, examScore: 44, totalScore: 75, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_csc122', enrollmentId: 'e2_csc122', caScore: 17, examScore: 37, totalScore: 54, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-10-20T10:00:00Z' },
-  { id: 'r2_mth126', enrollmentId: 'e2_mth126', caScore: 24, examScore: 50, totalScore: 74, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-10-20T10:00:00Z' },
-
-  // ==========================================
-  // Jeremiah Dantani (u5) - 200 Level / UG2
-  // ==========================================
-  // 2022/2023 1st Semester (200 Level) - GPA: 3.67, 21 Credits, 8 Courses
-  { id: 'r3_gst212', enrollmentId: 'e3_gst212', caScore: 20, examScore: 28, totalScore: 48, grade: 'D', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_csc211', enrollmentId: 'e3_csc211', caScore: 29, examScore: 31, totalScore: 60, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_mth211', enrollmentId: 'e3_mth211', caScore: 40, examScore: 37, totalScore: 77, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_csc213', enrollmentId: 'e3_csc213', caScore: 31, examScore: 19, totalScore: 50, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_csc214', enrollmentId: 'e3_csc214', caScore: 34, examScore: 26, totalScore: 60, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_mth214', enrollmentId: 'e3_mth214', caScore: 30, examScore: 38, totalScore: 68, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_gst211', enrollmentId: 'e3_gst211', caScore: 35, examScore: 43, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r3_csc212', enrollmentId: 'e3_csc212', caScore: 32, examScore: 42, totalScore: 74, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-
-  // 2022/2023 2nd Semester (200 Level) - GPA: 3.57, 21 Credits, 8 Courses
-  { id: 'r4_mth222', enrollmentId: 'e4_mth222', caScore: 29, examScore: 22, totalScore: 51, grade: 'C', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_phy221', enrollmentId: 'e4_phy221', caScore: 30, examScore: 34, totalScore: 64, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_csc221', enrollmentId: 'e4_csc221', caScore: 32, examScore: 21, totalScore: 53, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_csc222', enrollmentId: 'e4_csc222', caScore: 32, examScore: 40, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_csc223', enrollmentId: 'e4_csc223', caScore: 26, examScore: 21, totalScore: 47, grade: 'D', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_csc224', enrollmentId: 'e4_csc224', caScore: 34, examScore: 37, totalScore: 71, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_mth225', enrollmentId: 'e4_mth225', caScore: 25, examScore: 20, totalScore: 45, grade: 'D', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r4_gst223', enrollmentId: 'e4_gst223', caScore: 34, examScore: 47, totalScore: 81, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-
-  // ==========================================
-  // Jeremiah Dantani (u5) - 300 Level / UG3
-  // ==========================================
-  // 2023/2024 1st Semester (300 Level) - GPA: 4.67, 18 Credits, 6 Courses
-  { id: 'r5_csc311', enrollmentId: 'e5_csc311', caScore: 34, examScore: 46, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r5_csc312', enrollmentId: 'e5_csc312', caScore: 30, examScore: 42, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r5_csc313', enrollmentId: 'e5_csc313', caScore: 28, examScore: 37, totalScore: 65, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r5_csc314', enrollmentId: 'e5_csc314', caScore: 31, examScore: 39, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r5_csc315', enrollmentId: 'e5_csc315', caScore: 35, examScore: 43, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r5_csc316', enrollmentId: 'e5_csc316', caScore: 29, examScore: 38, totalScore: 67, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-
-  // 2023/2024 2nd Semester (300 Level) - GPA: 4.67, 18 Credits, 6 Courses
-  { id: 'r6_csc321', enrollmentId: 'e6_csc321', caScore: 35, examScore: 45, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-  { id: 'r6_csc322', enrollmentId: 'e6_csc322', caScore: 33, examScore: 41, totalScore: 74, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-  { id: 'r6_csc323', enrollmentId: 'e6_csc323', caScore: 29, examScore: 38, totalScore: 67, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-  { id: 'r6_csc324', enrollmentId: 'e6_csc324', caScore: 31, examScore: 44, totalScore: 75, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-  { id: 'r6_csc325', enrollmentId: 'e6_csc325', caScore: 30, examScore: 38, totalScore: 68, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-  { id: 'r6_gst321', enrollmentId: 'e6_gst321', caScore: 36, examScore: 48, totalScore: 84, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-22T10:00:00Z' },
-
-  // ==========================================
-  // Class Cohort Results (300L & 200L & 100L)
-  // ==========================================
-  // 300L 2023/2024 Results
-  { id: 'r_david_csc311', enrollmentId: 'e_david_csc311', caScore: 30, examScore: 41, totalScore: 71, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r_david_csc312', enrollmentId: 'e_david_csc312', caScore: 28, examScore: 38, totalScore: 66, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r_aisha_csc311', enrollmentId: 'e_aisha_csc311', caScore: 36, examScore: 46, totalScore: 82, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-  { id: 'r_aisha_csc312', enrollmentId: 'e_aisha_csc312', caScore: 34, examScore: 44, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-20T10:00:00Z' },
-
-  // 200L Cohort Results
-  { id: 'r_david_csc211', enrollmentId: 'e_david_csc211', caScore: 28, examScore: 35, totalScore: 63, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r_david_csc212', enrollmentId: 'e_david_csc212', caScore: 31, examScore: 40, totalScore: 71, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r_david_csc221', enrollmentId: 'e_david_csc221', caScore: 26, examScore: 38, totalScore: 64, grade: 'B', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r_david_csc224', enrollmentId: 'e_david_csc224', caScore: 35, examScore: 45, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-
-  { id: 'r_zainab_csc211', enrollmentId: 'e_zainab_csc211', caScore: 36, examScore: 42, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-22T10:00:00Z' },
-  { id: 'r_zainab_csc212', enrollmentId: 'e_zainab_csc212', caScore: 33, examScore: 46, totalScore: 79, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-03-22T10:00:00Z' },
-  { id: 'r_zainab_csc221', enrollmentId: 'e_zainab_csc221', caScore: 34, examScore: 41, totalScore: 75, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-18T10:00:00Z' },
-  { id: 'r_zainab_csc224', enrollmentId: 'e_zainab_csc224', caScore: 37, examScore: 48, totalScore: 85, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-09-18T10:00:00Z' },
-
-  { id: 'r_aisha_csc211', enrollmentId: 'e_aisha_csc211', caScore: 38, examScore: 47, totalScore: 85, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r_aisha_csc212', enrollmentId: 'e_aisha_csc212', caScore: 35, examScore: 45, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-03-22T10:00:00Z' },
-  { id: 'r_aisha_csc221', enrollmentId: 'e_aisha_csc221', caScore: 36, examScore: 46, totalScore: 82, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-  { id: 'r_aisha_csc224', enrollmentId: 'e_aisha_csc224', caScore: 38, examScore: 50, totalScore: 88, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-09-18T10:00:00Z' },
-
-  // 100L Cohort Results (2024/2025 Active Session - Submitted for Examiner Review)
-  { id: 'r_david_csc111', enrollmentId: 'e_david_csc111', caScore: 28, examScore: 42, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_zainab_csc111', enrollmentId: 'e_zainab_csc111', caScore: 35, examScore: 50, totalScore: 85, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
-  { id: 'r_aisha_csc111', enrollmentId: 'e_aisha_csc111', caScore: 38, examScore: 54, totalScore: 92, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_blessing_csc111', enrollmentId: 'e_blessing_csc111', caScore: 26, examScore: 40, totalScore: 66, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-  { id: 'r_tunde_csc111', enrollmentId: 'e_tunde_csc111', caScore: 22, examScore: 36, totalScore: 58, grade: 'C', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
-  { id: 'r_emeka_csc111', enrollmentId: 'e_emeka_csc111', caScore: 16, examScore: 29, totalScore: 45, grade: 'D', status: 'Published', lecturerId: 'u3', lastUpdated: '2023-04-15T10:00:00Z' },
-  { id: 'r_musa_csc111', enrollmentId: 'e_musa_csc111', caScore: 32, examScore: 40, totalScore: 72, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-  { id: 'r_fatima_csc111', enrollmentId: 'e_fatima_csc111', caScore: 28, examScore: 42, totalScore: 70, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-
-  // ==========================================
-  // Active 2024/2025 400 Level Results (Submitted by Dr. Chidi Okafor, Awaiting Chief Examiner Audit)
-  // ==========================================
-  // CSC 411 - Organization of Programming Language
-  { id: 'r_jeremiah_csc411', enrollmentId: 'e7_csc411', caScore: 35, examScore: 47, totalScore: 82, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
-  { id: 'r_zubairu_csc411', enrollmentId: 'e7_zubairu_csc411', caScore: 28, examScore: 44, totalScore: 72, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
-  { id: 'r_grace_csc411', enrollmentId: 'e7_grace_csc411', caScore: 31, examScore: 37, totalScore: 68, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-20T10:00:00Z' },
-
-  // CSC 412 - Software Engineering
-  { id: 'r_jeremiah_csc412', enrollmentId: 'e7_csc412', caScore: 33, examScore: 45, totalScore: 78, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
-  { id: 'r_zubairu_csc412', enrollmentId: 'e7_zubairu_csc412', caScore: 26, examScore: 38, totalScore: 64, grade: 'B', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
-  { id: 'r_grace_csc412', enrollmentId: 'e7_grace_csc412', caScore: 29, examScore: 42, totalScore: 71, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-22T10:00:00Z' },
-
-  // CSC 414 - Net-Centric Computing
-  { id: 'r_jeremiah_csc414', enrollmentId: 'e7_csc414', caScore: 30, examScore: 40, totalScore: 70, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
-  { id: 'r_zubairu_csc414', enrollmentId: 'e7_zubairu_csc414', caScore: 22, examScore: 35, totalScore: 57, grade: 'C', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
-  { id: 'r_grace_csc414', enrollmentId: 'e7_grace_csc414', caScore: 34, examScore: 48, totalScore: 82, grade: 'A', status: 'Submitted', lecturerId: 'u3', lastUpdated: '2025-01-23T10:00:00Z' },
-
-  // MTH 111 Cohort
-  { id: 'r_david_mth111', enrollmentId: 'e_david_mth111', caScore: 30, examScore: 35, totalScore: 65, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_zainab_mth111', enrollmentId: 'e_zainab_mth111', caScore: 33, examScore: 45, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-04-15T10:00:00Z' },
-  { id: 'r_emeka_mth111', enrollmentId: 'e_emeka_mth111', caScore: 10, examScore: 22, totalScore: 32, grade: 'F', status: 'Published', lecturerId: 'u4', lastUpdated: '2023-04-15T10:00:00Z' },
-
-  // Graduated Alumni Results
-  // Ibrahim Yakubu (u15)
-  { id: 'r_ibrahim_csc111', enrollmentId: 'e_ibrahim_csc111', caScore: 38, examScore: 54, totalScore: 92, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_mth111', enrollmentId: 'e_ibrahim_mth111', caScore: 36, examScore: 48, totalScore: 84, grade: 'A', status: 'Published', lecturerId: 'u4', lastUpdated: '2020-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_chm111', enrollmentId: 'e_ibrahim_chm111', caScore: 32, examScore: 45, totalScore: 77, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_csc211', enrollmentId: 'e_ibrahim_csc211', caScore: 35, examScore: 49, totalScore: 84, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_csc213', enrollmentId: 'e_ibrahim_csc213', caScore: 34, examScore: 46, totalScore: 80, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_csc311', enrollmentId: 'e_ibrahim_csc311', caScore: 37, examScore: 51, totalScore: 88, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_ibrahim_csc411', enrollmentId: 'e_ibrahim_csc411', caScore: 36, examScore: 50, totalScore: 86, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-
-  // Maryam Al-Hassan (u16)
-  { id: 'r_maryam_csc111', enrollmentId: 'e_maryam_csc111', caScore: 32, examScore: 46, totalScore: 78, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2020-04-15T10:00:00Z' },
-  { id: 'r_maryam_mth111', enrollmentId: 'e_maryam_mth111', caScore: 28, examScore: 40, totalScore: 68, grade: 'B', status: 'Published', lecturerId: 'u4', lastUpdated: '2020-04-15T10:00:00Z' },
-  { id: 'r_maryam_csc211', enrollmentId: 'e_maryam_csc211', caScore: 31, examScore: 45, totalScore: 76, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2021-04-15T10:00:00Z' },
-  { id: 'r_maryam_csc311', enrollmentId: 'e_maryam_csc311', caScore: 30, examScore: 42, totalScore: 72, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2022-04-15T10:00:00Z' },
-  { id: 'r_maryam_csc411', enrollmentId: 'e_maryam_csc411', caScore: 29, examScore: 41, totalScore: 70, grade: 'A', status: 'Published', lecturerId: 'u3', lastUpdated: '2024-04-15T10:00:00Z' },
-];
-
 export const mockDepartments: Department[] = [
-  { id: 'dept_1', name: 'Computer Science', code: 'CSC', college: 'Science', HOD: 'Dr. Abubakar Sadiq', description: 'Department of Computer Science & Information Technology' },
+  { id: 'dept_1', name: 'Computer Science', code: 'CSC', college: 'Science', HOD: 'Prof. Bello Ibrahim', description: 'Department of Computer Science & Information Technology' },
   { id: 'dept_2', name: 'Mathematics', code: 'MTH', college: 'Science', HOD: 'Prof. Bello Ahmed', description: 'Department of Mathematical Sciences' },
   { id: 'dept_3', name: 'Physics', code: 'PHY', college: 'Science', HOD: 'Dr. Kabir Aliyu', description: 'Department of Physics with Electronics' },
   { id: 'dept_4', name: 'Chemical Sciences', code: 'CHM', college: 'Science', HOD: 'Dr. Zainab Umar', description: 'Department of Chemical & Applied Chemistry' },
@@ -422,4 +176,233 @@ export const mockDepartments: Department[] = [
   { id: 'dept_7', name: 'Animal Science', code: 'ANS', college: 'Agriculture', HOD: 'Dr. Fatima Sanusi', description: 'Department of Animal Science & Livestock' },
 ];
 
+// Helper to determine NUC grade letter
+function getNucGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'E' | 'F' {
+  if (score >= 70) return 'A';
+  if (score >= 60) return 'B';
+  if (score >= 50) return 'C';
+  if (score >= 45) return 'D';
+  if (score >= 40) return 'E';
+  return 'F';
+}
 
+// Student Performance Profiles for Deterministic Dataset Generation
+type AcademicStanding = 'first_class' | 'second_upper' | 'second_lower' | 'third_class' | 'probation';
+
+interface CohortDefinition {
+  studentId: string;
+  level: number;
+  entryYear: string;
+  standing: AcademicStanding;
+}
+
+const cohorts: CohortDefinition[] = [
+  // 100 Level (2024/2025 Entry)
+  { studentId: 'u10', level: 100, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u11', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u12', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_4', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_5', level: 100, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u100_6', level: 100, entryYear: '2024/2025', standing: 'second_lower' },
+  { studentId: 'u100_7', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_8', level: 100, entryYear: '2024/2025', standing: 'second_lower' },
+  { studentId: 'u100_9', level: 100, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u100_10', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_11', level: 100, entryYear: '2024/2025', standing: 'third_class' },
+  { studentId: 'u100_12', level: 100, entryYear: '2024/2025', standing: 'probation' },
+
+  // 200 Level (2023/2024 Entry)
+  { studentId: 'u8', level: 200, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u9', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u13', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_4', level: 200, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u200_5', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_6', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_7', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_8', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_9', level: 200, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u200_10', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_11', level: 200, entryYear: '2023/2024', standing: 'third_class' },
+  { studentId: 'u200_12', level: 200, entryYear: '2023/2024', standing: 'probation' },
+
+  // 300 Level (2022/2023 Entry)
+  { studentId: 'u7', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u14', level: 300, entryYear: '2022/2023', standing: 'first_class' },
+  { studentId: 'u300_3', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_4', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_5', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_6', level: 300, entryYear: '2022/2023', standing: 'first_class' },
+  { studentId: 'u300_7', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_8', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_9', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_10', level: 300, entryYear: '2022/2023', standing: 'third_class' },
+  { studentId: 'u300_11', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_12', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+
+  // 400 Level (2021/2022 Entry)
+  { studentId: 'u5', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
+  { studentId: 'u19', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
+  { studentId: 'u20', level: 400, entryYear: '2021/2022', standing: 'first_class' },
+  { studentId: 'u400_4', level: 400, entryYear: '2021/2022', standing: 'first_class' },
+  { studentId: 'u400_5', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
+  { studentId: 'u400_6', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
+  { studentId: 'u400_7', level: 400, entryYear: '2021/2022', standing: 'second_lower' },
+  { studentId: 'u400_8', level: 400, entryYear: '2021/2022', standing: 'second_lower' },
+  { studentId: 'u400_9', level: 400, entryYear: '2021/2022', standing: 'first_class' },
+  { studentId: 'u400_10', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
+  { studentId: 'u400_11', level: 400, entryYear: '2021/2022', standing: 'third_class' },
+  { studentId: 'u400_12', level: 400, entryYear: '2021/2022', standing: 'probation' },
+];
+
+function getScoreForStanding(standing: AcademicStanding, seed: number): { ca: number; exam: number } {
+  const mod = (seed % 7) - 3; // -3 to +3 jitter
+  switch (standing) {
+    case 'first_class': {
+      const ca = Math.min(38, Math.max(30, 34 + mod));
+      const exam = Math.min(58, Math.max(42, 48 + mod));
+      return { ca, exam };
+    }
+    case 'second_upper': {
+      const ca = Math.min(34, Math.max(26, 30 + mod));
+      const exam = Math.min(48, Math.max(34, 38 + mod));
+      return { ca, exam };
+    }
+    case 'second_lower': {
+      const ca = Math.min(28, Math.max(20, 24 + mod));
+      const exam = Math.min(40, Math.max(28, 32 + mod));
+      return { ca, exam };
+    }
+    case 'third_class': {
+      const ca = Math.min(22, Math.max(16, 18 + mod));
+      const exam = Math.min(32, Math.max(22, 26 + mod));
+      return { ca, exam };
+    }
+    case 'probation': {
+      const ca = Math.min(18, Math.max(8, 12 + mod));
+      const exam = Math.min(24, Math.max(10, 16 + mod));
+      return { ca, exam };
+    }
+  }
+}
+
+// Generate comprehensive enrollments and results
+function generateAcademicRecords() {
+  const generatedEnrollments: Enrollment[] = [];
+  const generatedResults: Result[] = [];
+
+  const sessionMap: Record<number, Record<number, string>> = {
+    100: { 1: '2024/2025', 2: '2024/2025' },
+    200: { 1: '2023/2024', 2: '2023/2024' },
+    300: { 1: '2022/2023', 2: '2022/2023' },
+    400: { 1: '2021/2022', 2: '2021/2022' },
+  };
+
+  cohorts.forEach((cohort, studentIdx) => {
+    // Determine which academic levels this student has completed / is enrolled in
+    const levelsToProcess = [100];
+    if (cohort.level >= 200) levelsToProcess.push(200);
+    if (cohort.level >= 300) levelsToProcess.push(300);
+    if (cohort.level >= 400) levelsToProcess.push(400);
+
+    levelsToProcess.forEach((lvl) => {
+      // Calculate session for this level
+      const entryStartYear = parseInt(cohort.entryYear.split('/')[0], 10);
+      const levelOffset = (lvl - 100) / 100;
+      const academicSession = `${entryStartYear + levelOffset}/${entryStartYear + levelOffset + 1}`;
+
+      // Get all courses for this level
+      const lvlCourses = mockCourses.filter((c) => c.level === lvl);
+
+      lvlCourses.forEach((course, courseIdx) => {
+        // If 400L active 2024/2025 2nd semester courses, skip or make pending draft
+        const isCurrentActiveSession = academicSession === '2024/2025';
+        const isCurrentSecondSemester = isCurrentActiveSession && course.semester === 2;
+
+        const enrollmentId = `enr_${cohort.studentId}_${course.id}`;
+        generatedEnrollments.push({
+          id: enrollmentId,
+          studentId: cohort.studentId,
+          courseId: course.id,
+          semester: course.semester,
+          academicYear: academicSession,
+        });
+
+        // Generate results for 1st semester or completed sessions
+        if (!isCurrentSecondSemester) {
+          const { ca, exam } = getScoreForStanding(cohort.standing, studentIdx * 11 + courseIdx * 7);
+          const total = ca + exam;
+          const grade = getNucGrade(total);
+
+          // Active 2024/2025 1st semester courses have Submitted / Pending status for moderation
+          let status: 'Published' | 'Submitted' = 'Published';
+          if (isCurrentActiveSession && course.semester === 1) {
+            status = 'Submitted';
+          }
+
+          generatedResults.push({
+            id: `res_${cohort.studentId}_${course.id}`,
+            enrollmentId,
+            caScore: ca,
+            examScore: exam,
+            totalScore: total,
+            grade,
+            status,
+            lecturerId: course.lecturerId || 'u3',
+            lastUpdated: new Date(Date.now() - (400 - lvl) * 86400000 * 90).toISOString(),
+          });
+        }
+      });
+    });
+  });
+
+  // Add graduated alumni records
+  const alumniList = [
+    { id: 'u15', standing: 'first_class' as AcademicStanding, year: '2019/2020' },
+    { id: 'u16', standing: 'second_upper' as AcademicStanding, year: '2019/2020' },
+    { id: 'u17', standing: 'second_upper' as AcademicStanding, year: '2018/2019' },
+    { id: 'u18', standing: 'second_lower' as AcademicStanding, year: '2018/2019' },
+  ];
+
+  alumniList.forEach((alumnus, aIdx) => {
+    [100, 200, 300, 400].forEach((lvl) => {
+      const entryStart = parseInt(alumnus.year.split('/')[0], 10);
+      const lvlOffset = (lvl - 100) / 100;
+      const sess = `${entryStart + lvlOffset}/${entryStart + lvlOffset + 1}`;
+      const lvlCourses = mockCourses.filter((c) => c.level === lvl);
+
+      lvlCourses.forEach((course, cIdx) => {
+        const enrId = `enr_${alumnus.id}_${course.id}`;
+        generatedEnrollments.push({
+          id: enrId,
+          studentId: alumnus.id,
+          courseId: course.id,
+          semester: course.semester,
+          academicYear: sess,
+        });
+
+        const { ca, exam } = getScoreForStanding(alumnus.standing, aIdx * 13 + cIdx * 5);
+        const total = ca + exam;
+        const grade = getNucGrade(total);
+
+        generatedResults.push({
+          id: `res_${alumnus.id}_${course.id}`,
+          enrollmentId: enrId,
+          caScore: ca,
+          examScore: exam,
+          totalScore: total,
+          grade,
+          status: 'Published',
+          lecturerId: course.lecturerId || 'u3',
+          lastUpdated: '2023-10-15T10:00:00Z',
+        });
+      });
+    });
+  });
+
+  return { generatedEnrollments, generatedResults };
+}
+
+const { generatedEnrollments, generatedResults } = generateAcademicRecords();
+
+export const mockEnrollments: Enrollment[] = generatedEnrollments;
+export const mockResults: Result[] = generatedResults;

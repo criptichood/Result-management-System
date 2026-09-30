@@ -32,8 +32,9 @@ export const LecturerCohortRoster: React.FC<LecturerCohortRosterProps> = ({
       if (selectedGradeFilter === 'B' && item.grade !== 'B') return false;
       if (selectedGradeFilter === 'C' && item.grade !== 'C') return false;
       if (selectedGradeFilter === 'D' && item.grade !== 'D') return false;
+      if (selectedGradeFilter === 'E' && item.grade !== 'E') return false;
       if (selectedGradeFilter === 'F' && item.grade !== 'F') return false;
-      if (selectedGradeFilter === 'atRisk' && item.grade !== 'D' && item.grade !== 'F') return false;
+      if (selectedGradeFilter === 'atRisk' && item.grade !== 'D' && item.grade !== 'E' && item.grade !== 'F') return false;
       if (selectedGradeFilter === 'incomplete' && item.grade !== 'Incomplete') return false;
     }
 
@@ -63,7 +64,7 @@ export const LecturerCohortRoster: React.FC<LecturerCohortRosterProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5">
-            {['all', 'A', 'B', 'C', 'D', 'F', 'atRisk'].map((filter) => (
+            {['all', 'A', 'B', 'C', 'D', 'E', 'F', 'atRisk'].map((filter) => (
               <button
                 key={filter}
                 onClick={() => setSelectedGradeFilter(filter)}
@@ -76,7 +77,7 @@ export const LecturerCohortRoster: React.FC<LecturerCohortRosterProps> = ({
                 {filter === 'all'
                   ? 'All Grades'
                   : filter === 'atRisk'
-                  ? 'At Risk (D/F)'
+                  ? 'At Risk (D/E/F)'
                   : `Grade ${filter}`}
               </button>
             ))}
@@ -131,7 +132,7 @@ export const LecturerCohortRoster: React.FC<LecturerCohortRosterProps> = ({
                           ? 'success'
                           : s.grade === 'C'
                           ? 'default'
-                          : s.grade === 'D'
+                          : s.grade === 'D' || s.grade === 'E'
                           ? 'warning'
                           : s.grade === 'F'
                           ? 'destructive'

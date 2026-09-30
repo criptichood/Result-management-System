@@ -32,6 +32,7 @@ export const InteractiveGpaSandbox = () => {
     if (score >= 60) return { grade: 'B', gp: 4 };
     if (score >= 50) return { grade: 'C', gp: 3 };
     if (score >= 45) return { grade: 'D', gp: 2 };
+    if (score >= 40) return { grade: 'E', gp: 1 };
     return { grade: 'F', gp: 0 };
   };
 
@@ -224,6 +225,7 @@ export const InteractiveGpaSandbox = () => {
                         row.grade === 'B' ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300' :
                         row.grade === 'C' ? 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300' :
                         row.grade === 'D' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300' :
+                        row.grade === 'E' ? 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300' :
                         'bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300'
                       }`}>
                         {row.grade}

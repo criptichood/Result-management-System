@@ -32,6 +32,7 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
       case 'B': return 4;
       case 'C': return 3;
       case 'D': return 2;
+      case 'E': return 1;
       default: return 0;
     }
   };

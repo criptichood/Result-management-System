@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Building,
   GraduationCap,
+  Lock,
   User as UserIcon,
 } from 'lucide-react';
 import {
@@ -29,6 +30,7 @@ interface PendingTableRowProps {
   course: any;
   lecturer: User | null;
   isSelected: boolean;
+  isHod?: boolean;
   onToggleSelect: (courseId: string) => void;
   onAudit: (course: any) => void;
   onApprove: (courseId: string) => void;
@@ -40,6 +42,7 @@ export const PendingTableRow: React.FC<PendingTableRowProps> = ({
   course,
   lecturer,
   isSelected,
+  isHod = true,
   onToggleSelect,
   onAudit,
   onApprove,
@@ -128,16 +131,16 @@ export const PendingTableRow: React.FC<PendingTableRowProps> = ({
         {/* Lecturer Information */}
         <TableCell className="py-3 px-3">
           {lecturer ? (
-            <div className="flex items-start gap-2">
-              <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-[10px] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs flex items-center justify-center flex-shrink-0">
                 {lecturer.name.split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('')}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-tight">
+                <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-tight">
                   {lecturer.name}
                 </p>
-                <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                  {lecturer.staffId || lecturer.department || course.department}
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {lecturer.staffId ? `ID: ${lecturer.staffId}` : (lecturer.department || course.department)}
                 </p>
               </div>
             </div>
@@ -146,32 +149,14 @@ export const PendingTableRow: React.FC<PendingTableRowProps> = ({
           )}
         </TableCell>
 
-        {/* Submission Status & Candidate Count */}
-        <TableCell className="py-3 px-3 text-center whitespace-nowrap">
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium">
-            <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
-              {enrolledCount > 0 ? enrolledCount : '—'}
-            </span>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            {course.hasPendingReview ? (
-              <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 font-bold text-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                Submitted
-              </span>
-            ) : course.isFullyPublished ? (
-              <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold text-xs">
-                <Check className="w-3 h-3" />
-                Published
-              </span>
-            ) : (
-              <span className="text-slate-400 dark:text-slate-500 text-xs">
-                Awaiting
-              </span>
-            )}
-          </div>
+        {/* Clean Candidate Count (No redundant badge repetition) */}
+        <TableCell className="py-3 px-3 text-center">
+          <span className="font-mono font-bold text-sm text-slate-800 dark:text-slate-200">
+            {course.hasPendingReview ? course.submittedCount : enrolledCount > 0 ? enrolledCount : '0'}
+          </span>
         </TableCell>
 
-        {/* Moderation Actions */}
+        {/* Streamlined Moderation Actions */}
         <TableCell className="py-3 px-3 text-right">
           <div className="flex items-center justify-end gap-1.5">
             <Button
@@ -184,17 +169,6 @@ export const PendingTableRow: React.FC<PendingTableRowProps> = ({
               Audit
             </Button>
 
-            {course.hasPendingReview && (
-              <Button
-                size="sm"
-                className="h-7 px-2.5 text-xs font-semibold bg-[#064e3b] hover:bg-[#065f46] text-white"
-                onClick={() => onApprove(course.id)}
-              >
-                <Check className="w-3.5 h-3.5 mr-1" />
-                Approve
-              </Button>
-            )}
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -205,24 +179,70 @@ export const PendingTableRow: React.FC<PendingTableRowProps> = ({
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuContent align="end" className="w-56">
                 {course.hasPendingReview && (
+                  isHod ? (
+                    <DropdownMenuItem
+                      onClick={() => onApprove(course.id)}
+                      className="text-emerald-700 dark:text-emerald-400 font-semibold cursor-pointer text-xs"
+                    >
+                      <Check className="w-3.5 h-3.5 mr-2 text-emerald-600" />
+                      Endorse to Senate
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      disabled
+                      className="opacity-60 cursor-not-allowed text-xs text-slate-400 flex items-center justify-between"
+                      title="Statutorily reserved for Head of Department (HOD)"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Lock className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Endorse to Senate</span>
+                      </span>
+                      <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-medium">HOD Only</span>
+                    </DropdownMenuItem>
+                  )
+                )}
+                {course.isSenatePending && isHod && (
                   <DropdownMenuItem
-                    onClick={() => onReturn(course)}
-                    className="text-red-600 dark:text-red-400 cursor-pointer text-xs font-medium"
+                    onClick={() => onApprove(course.id)}
+                    className="text-emerald-700 dark:text-emerald-400 font-semibold cursor-pointer text-xs"
                   >
-                    <RotateCcw className="w-3.5 h-3.5 mr-2" />
-                    Return to Lecturer
+                    <Check className="w-3.5 h-3.5 mr-2 text-emerald-600" />
+                    Authorize Senate Release
                   </DropdownMenuItem>
                 )}
+                {(course.hasPendingReview || course.isSenatePending) && (
+                  isHod ? (
+                    <DropdownMenuItem
+                      onClick={() => onReturn(course)}
+                      className="text-red-600 dark:text-red-400 cursor-pointer text-xs font-medium"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 mr-2" />
+                      Return for Remarking
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      disabled
+                      className="opacity-60 cursor-not-allowed text-xs text-slate-400 flex items-center justify-between"
+                      title="Statutorily reserved for Head of Department (HOD)"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Lock className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Return for Remarking</span>
+                      </span>
+                      <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-medium">HOD Only</span>
+                    </DropdownMenuItem>
+                  )
+                )}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => onAudit(course)}
                   className="cursor-pointer text-xs font-medium"
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5 mr-2 text-slate-500" />
-                  View Broadsheet
+                  View Departmental Broadsheet
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => onExport(course)}
                   className="cursor-pointer text-xs font-medium"

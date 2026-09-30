@@ -77,7 +77,10 @@ export const Login = () => {
     switch (role) {
       case 'Student': return '/student';
       case 'Lecturer': return '/lecturer';
+      case 'HOD': return '/examiner';
+      case 'Examiner':
       case 'Chief Examiner': return '/examiner';
+      case 'Senate': return '/admin?tab=senate';
       case 'Admin': return '/admin';
       default: return '/student';
     }
@@ -291,7 +294,7 @@ export const Login = () => {
 
             {/* Filter Pills for quick demo accounts */}
             <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-              {['all', 'Student', 'Lecturer', 'Chief Examiner', 'Admin'].map((r) => (
+              {['all', 'Student', 'Lecturer', 'HOD', 'Examiner', 'Senate', 'Admin'].map((r) => (
                 <button
                   key={r}
                   type="button"
@@ -302,7 +305,7 @@ export const Login = () => {
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  {r === 'all' ? 'All Roles' : r}
+                  {r === 'all' ? 'All Roles' : r === 'HOD' ? 'HOD' : r}
                 </button>
               ))}
             </div>

@@ -4,3 +4,4 @@ export * from './GradingFiltersBar';
 export * from './GradingScoreTable';
 export * from './GradingRubricModal';
 export * from './GradingSubmitModal';
+export * from './GradingWorkflowBanner';

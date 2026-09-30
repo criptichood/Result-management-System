@@ -3,9 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { Users, Mail, Phone, MapPin, AlertCircle, ChevronRight, Search, Printer, Download } from 'lucide-react';
+import { Users, Mail, Phone, MapPin, AlertCircle, ChevronRight, Search, Printer, Download, Upload } from 'lucide-react';
 import { Course } from '../../types';
+import { calculateLetterGrade } from '../../lib/academicOperations';
 import { LecturerAttendanceModal } from './LecturerAttendanceModal';
 
 interface LecturerClassListTabProps {
@@ -15,12 +17,18 @@ interface LecturerClassListTabProps {
     lecturerViewEmail: boolean;
     lecturerViewPhone: boolean;
   };
+  scores?: Record<string, { ca: string; exam: string }>;
+  calculateGrade?: (total: number) => string;
+  onOpenCsvModal?: () => void;
 }
 
 export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
   selectedCourse,
   students,
   settings,
+  scores,
+  calculateGrade = calculateLetterGrade,
+  onOpenCsvModal,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
@@ -35,29 +43,39 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
 
   const handleExportRosterCsv = () => {
     if (!selectedCourse) return;
-    const headers = ['S/N', 'Matric Number', 'Student Name', 'Department', 'Level', 'Email', 'Phone'];
-    const rows = filteredStudents.map((s, idx) => [
-      idx + 1,
-      `"${s.student?.matricNumber || ''}"`,
-      `"${s.student?.name || ''}"`,
-      `"${s.student?.department || ''}"`,
-      s.student?.level || selectedCourse.level,
-      `"${settings.lecturerViewEmail ? s.student?.email || '' : '[Confidential]'}"`,
-      `"${settings.lecturerViewPhone ? s.student?.phoneNumber || '' : '[Confidential]'}"`,
-    ]);
+    const headers = ['S/N', 'Matric Number', 'Student Name', 'Department', 'Level', 'CA Score (40)', 'Exam Score (60)', 'Total (100)', 'Grade'];
+    const rows = filteredStudents.map((s, idx) => {
+      const caVal = scores ? scores[s.enrollmentId]?.ca : (s.result?.caScore !== null && s.result?.caScore !== undefined ? s.result.caScore.toString() : '');
+      const examVal = scores ? scores[s.enrollmentId]?.exam : (s.result?.examScore !== null && s.result?.examScore !== undefined ? s.result.examScore.toString() : '');
+      const hasScore = (caVal !== '' && caVal !== undefined) || (examVal !== '' && examVal !== undefined);
+      const total = hasScore ? (parseFloat(caVal || '0') || 0) + (parseFloat(examVal || '0') || 0) : '';
+      const grade = hasScore ? calculateGrade(Number(total)) : '';
+
+      return [
+        idx + 1,
+        `"${s.student?.matricNumber || ''}"`,
+        `"${s.student?.name || ''}"`,
+        `"${s.student?.department || selectedCourse.department}"`,
+        s.student?.level || selectedCourse.level,
+        caVal || '',
+        examVal || '',
+        hasScore ? total : '',
+        grade,
+      ];
+    });
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${selectedCourse.code}_Class_Roster.csv`);
+    link.setAttribute('download', `${selectedCourse.code}_Class_Grading_Roster.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <Card id="lecturer-class-list-tab" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <Card id="lecturer-class-list-tab" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
       <CardHeader className="border-b border-slate-100 dark:border-slate-800 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <CardTitle className="text-xl text-slate-900 dark:text-slate-100">
@@ -71,21 +89,33 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
         </div>
 
         {selectedCourse && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={handleExportRosterCsv}
-              className="text-xs gap-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700"
+              className="text-xs gap-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50"
+              title="Download pre-populated class roster CSV for offline grading"
             >
-              <Download className="w-3.5 h-3.5" /> Export Roster
+              <Download className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Export Grading Roster
             </Button>
+            {onOpenCsvModal && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onOpenCsvModal}
+                className="text-xs gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100"
+                title="Import completed scores from CSV"
+              >
+                <Upload className="w-3.5 h-3.5" /> Import Results CSV
+              </Button>
+            )}
             <Button
               size="sm"
               onClick={() => setIsAttendanceModalOpen(true)}
               className="text-xs gap-1.5 bg-[#064e3b] dark:bg-emerald-700 hover:bg-[#053d2e] text-white"
             >
-              <Printer className="w-3.5 h-3.5" /> Official Attendance Register
+              <Printer className="w-3.5 h-3.5" /> Attendance Register
             </Button>
           </div>
         )}
@@ -111,108 +141,166 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-800/50">
                   <TableHead className="w-12 text-center">#</TableHead>
-                  <TableHead className="w-40">Matric No.</TableHead>
+                  <TableHead className="w-36">Matric No.</TableHead>
                   <TableHead>Student Name</TableHead>
                   <TableHead>Department</TableHead>
-                  <TableHead className="text-center w-20">Level</TableHead>
-                  {settings.lecturerViewEmail && <TableHead>Email</TableHead>}
-                  {settings.lecturerViewPhone && <TableHead>Phone</TableHead>}
-                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="text-center w-16">Level</TableHead>
+                  <TableHead className="text-center w-20">CA (40)</TableHead>
+                  <TableHead className="text-center w-20">Exam (60)</TableHead>
+                  <TableHead className="text-center w-20">Total (100)</TableHead>
+                  <TableHead className="text-center w-16">Grade</TableHead>
+                  <TableHead className="w-[50px] text-right"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((s, idx) => (
-                  <Dialog key={s.enrollmentId}>
-                    <DialogTrigger asChild>
-                      <TableRow className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                        <TableCell className="text-center text-slate-400 text-xs">{idx + 1}</TableCell>
-                        <TableCell className="font-mono font-medium text-emerald-700 dark:text-emerald-400">
-                          {s.student?.matricNumber}
-                        </TableCell>
-                        <TableCell className="font-medium text-slate-800 dark:text-slate-200">
-                          {s.student?.name}
-                        </TableCell>
-                        <TableCell className="text-slate-500 dark:text-slate-400 text-xs">
-                          {s.student?.department}
-                        </TableCell>
-                        <TableCell className="text-center font-semibold text-xs text-slate-700 dark:text-slate-300">
-                          {s.student?.level || selectedCourse.level}L
-                        </TableCell>
-                        {settings.lecturerViewEmail && (
+                {filteredStudents.map((s, idx) => {
+                  const caVal = scores ? scores[s.enrollmentId]?.ca : (s.result?.caScore !== null && s.result?.caScore !== undefined ? s.result.caScore.toString() : '');
+                  const examVal = scores ? scores[s.enrollmentId]?.exam : (s.result?.examScore !== null && s.result?.examScore !== undefined ? s.result.examScore.toString() : '');
+                  const hasScore = (caVal !== '' && caVal !== undefined) || (examVal !== '' && examVal !== undefined);
+                  const total = hasScore ? (parseFloat(caVal || '0') || 0) + (parseFloat(examVal || '0') || 0) : null;
+                  const grade = total !== null ? calculateGrade(total) : null;
+
+                  return (
+                    <Dialog key={s.enrollmentId}>
+                      <DialogTrigger asChild>
+                        <TableRow className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                          <TableCell className="text-center text-slate-400 text-xs">{idx + 1}</TableCell>
+                          <TableCell className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-xs">
+                            {s.student?.matricNumber}
+                          </TableCell>
+                          <TableCell className="font-medium text-slate-800 dark:text-slate-200">
+                            {s.student?.name}
+                          </TableCell>
                           <TableCell className="text-slate-500 dark:text-slate-400 text-xs">
-                            {s.student?.email}
+                            {s.student?.department}
                           </TableCell>
-                        )}
-                        {settings.lecturerViewPhone && (
-                          <TableCell className="text-slate-500 dark:text-slate-400 text-xs font-mono">
-                            {s.student?.phoneNumber || '-'}
+                          <TableCell className="text-center font-semibold text-xs text-slate-700 dark:text-slate-300">
+                            {s.student?.level || selectedCourse.level}L
                           </TableCell>
-                        )}
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                            aria-label={`View profile for ${s.student?.name}`}
-                          >
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                      <DialogHeader>
-                        <DialogTitle className="text-slate-900 dark:text-slate-100">Student Profile</DialogTitle>
-                        <DialogDescription className="text-slate-500 dark:text-slate-400 font-mono text-xs">
-                          {s.student?.matricNumber}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <div className="flex items-center space-x-4 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800">
-                          <div className="w-12 h-12 rounded-full bg-[#059669] text-white flex items-center justify-center font-bold text-xl">
-                            {s.student?.name.charAt(0)}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-slate-900 dark:text-slate-100">{s.student?.name}</h3>
-                            <p className="text-xs text-[#059669] dark:text-emerald-400 font-medium">
-                              {s.student?.department} • {s.student?.level || selectedCourse.level} Level
-                            </p>
-                          </div>
-                        </div>
-                        <div className="space-y-3 text-xs">
-                          {settings.lecturerViewEmail && (
-                            <div className="flex items-center text-slate-700 dark:text-slate-300">
-                              <Mail className="w-4 h-4 text-slate-400 mr-3" />
-                              <span>{s.student?.email}</span>
+                          <TableCell className="text-center font-mono text-slate-700 dark:text-slate-300 text-xs">
+                            {caVal !== '' && caVal !== undefined ? caVal : '-'}
+                          </TableCell>
+                          <TableCell className="text-center font-mono text-slate-700 dark:text-slate-300 text-xs">
+                            {examVal !== '' && examVal !== undefined ? examVal : '-'}
+                          </TableCell>
+                          <TableCell className="text-center font-mono font-bold text-slate-900 dark:text-slate-100 text-xs">
+                            {total !== null ? total : '-'}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {grade ? (
+                              <Badge
+                                variant={
+                                  grade === 'A' || grade === 'B'
+                                    ? 'success'
+                                    : grade === 'C'
+                                    ? 'default'
+                                    : grade === 'D' || grade === 'E'
+                                    ? 'warning'
+                                    : 'destructive'
+                                }
+                                className="font-extrabold text-[10px]"
+                              >
+                                {grade}
+                              </Badge>
+                            ) : (
+                              <span className="text-slate-400 text-xs font-mono">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                              aria-label={`View profile for ${s.student?.name}`}
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                        <DialogHeader>
+                          <DialogTitle className="text-slate-900 dark:text-slate-100">Student Profile & Score Record</DialogTitle>
+                          <DialogDescription className="text-slate-500 dark:text-slate-400 font-mono text-xs">
+                            {s.student?.matricNumber}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="flex items-center space-x-4 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800">
+                            <div className="w-12 h-12 rounded-full bg-[#059669] text-white flex items-center justify-center font-bold text-xl">
+                              {s.student?.name.charAt(0)}
                             </div>
-                          )}
-                          {settings.lecturerViewPhone && (
-                            <div className="flex items-center text-slate-700 dark:text-slate-300">
-                              <Phone className="w-4 h-4 text-slate-400 mr-3" />
-                              <span>{s.student?.phoneNumber || 'Not provided'}</span>
+                            <div>
+                              <h3 className="font-bold text-slate-900 dark:text-slate-100">{s.student?.name}</h3>
+                              <p className="text-xs text-[#059669] dark:text-emerald-400 font-medium">
+                                {s.student?.department} • {s.student?.level || selectedCourse.level} Level
+                              </p>
                             </div>
-                          )}
-                          <div className="flex items-center text-slate-700 dark:text-slate-300">
-                            <MapPin className="w-4 h-4 text-slate-400 mr-3" />
-                            <span>{s.student?.address || 'Campus Residence'}</span>
                           </div>
-                          <div className="flex items-center pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
-                            <AlertCircle className="w-4 h-4 text-amber-500 mr-3" />
-                            <span className="text-slate-700 dark:text-slate-300 flex-1">
-                              <span className="font-semibold block text-slate-900 dark:text-slate-100">
-                                Emergency Contact
+
+                          {/* Academic Score Summary Box */}
+                          <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800/60 grid grid-cols-4 gap-2 text-center">
+                            <div>
+                              <div className="text-[10px] text-slate-500 uppercase font-semibold">CA (40)</div>
+                              <div className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                                {caVal !== '' && caVal !== undefined ? caVal : '-'}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-slate-500 uppercase font-semibold">Exam (60)</div>
+                              <div className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                                {examVal !== '' && examVal !== undefined ? examVal : '-'}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-slate-500 uppercase font-semibold">Total (100)</div>
+                              <div className="text-sm font-mono font-bold text-slate-900 dark:text-white mt-0.5">
+                                {total !== null ? total : '-'}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-slate-500 uppercase font-semibold">Grade</div>
+                              <div className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                                {grade || '-'}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3 text-xs">
+                            {settings.lecturerViewEmail && (
+                              <div className="flex items-center text-slate-700 dark:text-slate-300">
+                                <Mail className="w-4 h-4 text-slate-400 mr-3" />
+                                <span>{s.student?.email}</span>
+                              </div>
+                            )}
+                            {settings.lecturerViewPhone && (
+                              <div className="flex items-center text-slate-700 dark:text-slate-300">
+                                <Phone className="w-4 h-4 text-slate-400 mr-3" />
+                                <span>{s.student?.phoneNumber || 'Not provided'}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center text-slate-700 dark:text-slate-300">
+                              <MapPin className="w-4 h-4 text-slate-400 mr-3" />
+                              <span>{s.student?.address || 'Campus Residence'}</span>
+                            </div>
+                            <div className="flex items-center pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                              <AlertCircle className="w-4 h-4 text-amber-500 mr-3" />
+                              <span className="text-slate-700 dark:text-slate-300 flex-1">
+                                <span className="font-semibold block text-slate-900 dark:text-slate-100">
+                                  Emergency Contact
+                                </span>
+                                {s.student?.emergencyContact || 'Campus Security / Dean of Student Affairs'}
                               </span>
-                              {s.student?.emergencyContact || 'Campus Security / Dean of Student Affairs'}
-                            </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
+                      </DialogContent>
+                    </Dialog>
+                  );
+                })}
                 {filteredStudents.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-slate-500 py-10 text-xs">
+                    <TableCell colSpan={10} className="text-center text-slate-500 py-10 text-xs">
                       No registered students found matching your criteria.
                     </TableCell>
                   </TableRow>
@@ -237,3 +325,4 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
     </Card>
   );
 };
+

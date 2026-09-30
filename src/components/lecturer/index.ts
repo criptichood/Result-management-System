@@ -8,3 +8,4 @@ export { LecturerCohortCards } from './LecturerCohortCards';
 export { LecturerCohortRoster } from './LecturerCohortRoster';
 export { LecturerBatchFillModal } from './LecturerBatchFillModal';
 export { LecturerPrintableGradeSheet } from './LecturerPrintableGradeSheet';
+export { CsvPreviewTable } from './CsvPreviewTable';

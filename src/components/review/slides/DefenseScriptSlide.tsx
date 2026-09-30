@@ -50,7 +50,7 @@ const DEFENSE_SLIDES: DefenseSlide[] = [
       'Formula: Weighted Points = CU × GP; GPA = TWP ÷ TCR; CGPA = Cumulative TWP ÷ Cumulative TCR.',
       'Automated Degree Classifications: First Class (4.50-5.00) down to Probation (< 1.00).',
     ],
-    spokenScript: 'My grading engine strictly implements the National Universities Commission 5.0 scale, with the legacy E grade completely eliminated. Whether through single-entry form or bulk CSV upload, the system validates that CA never exceeds 40 and Exam never exceeds 60. When scores are adjusted, TCR, TCE, TWP, GPA, and CGPA recalculate instantaneously in real time without discrepancies.',
+    spokenScript: 'My grading engine strictly implements the National Universities Commission 5.0 scale, incorporating the full grading spectrum from A down to E (40%–44% pass threshold) and F. Whether through single-entry form or bulk CSV upload, the system validates that CA never exceeds 40 and Exam never exceeds 60. When scores are adjusted, TCR, TCE, TWP, GPA, and CGPA recalculate instantaneously in real time without discrepancies.',
     likelyQuestion: 'How does the system treat carryover courses and their impact on CGPA?',
     suggestedAnswer: 'Failed courses carry a grade point of 0.0 with the credit units still counting in Total Credit Registered (TCR). When retaken, both attempts are recorded in the cumulative credits according to university academic regulations.',
   },

@@ -20,7 +20,10 @@ export const DemoAccountSelector: React.FC<DemoAccountSelectorProps> = ({
     switch (role) {
       case 'Student': return GraduationCap;
       case 'Lecturer': return BookOpen;
+      case 'HOD': return Users;
+      case 'Examiner':
       case 'Chief Examiner': return Users;
+      case 'Senate': return Shield;
       default: return Shield;
     }
   };
@@ -29,7 +32,10 @@ export const DemoAccountSelector: React.FC<DemoAccountSelectorProps> = ({
     switch (role) {
       case 'Student': return 'default';
       case 'Lecturer': return 'success';
-      case 'Chief Examiner': return 'warning';
+      case 'HOD': return 'warning';
+      case 'Examiner':
+      case 'Chief Examiner': return 'secondary';
+      case 'Senate': return 'default';
       default: return 'secondary';
     }
   };

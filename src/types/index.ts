@@ -1,4 +1,11 @@
-export type Role = 'Admin' | 'Chief Examiner' | 'Lecturer' | 'Student';
+export type Role = 
+  | 'Admin' 
+  | 'Senate' 
+  | 'HOD' 
+  | 'Chief Examiner' 
+  | 'Examiner' 
+  | 'Lecturer' 
+  | 'Student';
 
 export interface User {
   id: string;
@@ -95,7 +102,15 @@ export interface ModerationLog {
   courseCode: string;
   examinerId: string;
   examinerName: string;
-  action: 'Approved' | 'Rejected' | 'Score Override' | 'Batch Approved' | 'Batch Rejected';
+  action: 
+    | 'Approved' 
+    | 'Rejected' 
+    | 'Score Override' 
+    | 'Batch Approved' 
+    | 'Batch Rejected'
+    | 'Departmentally Endorsed'
+    | 'Returned for Remarking'
+    | 'Senate Ratified & Released';
   timestamp: string;
   notes?: string;
   affectedStudentCount?: number;

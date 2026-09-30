@@ -142,6 +142,8 @@ export const PendingResultsTable: React.FC<PendingResultsTableProps> = ({
     exportCourseRosterCSV(course);
   };
 
+  const isHodUser = examiner?.role === 'HOD' || examiner?.role === 'Chief Examiner' || examiner?.role === 'Admin';
+
   return (
     <>
       <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs overflow-hidden">
@@ -167,7 +169,7 @@ export const PendingResultsTable: React.FC<PendingResultsTableProps> = ({
           onLevelChange={setSelectedLevel}
           selectedCount={selectedCourseIds.length}
           onBatchApprove={
-            reviewableFilteredCourses.length > 0
+            reviewableFilteredCourses.length > 0 && isHodUser
               ? () => {
                   setSelectedCourseIds(reviewableFilteredCourses.map((c) => c.id));
                   setBatchActionType('approve');
@@ -186,6 +188,7 @@ export const PendingResultsTable: React.FC<PendingResultsTableProps> = ({
                 course={course}
                 lecturer={getCourseLecturer(course)}
                 isSelected={selectedCourseIds.includes(course.id)}
+                isHod={isHodUser}
                 onToggleSelect={toggleSelectCourse}
                 onAudit={handleOpenModal}
                 onApprove={onApprove}
@@ -236,9 +239,9 @@ export const PendingResultsTable: React.FC<PendingResultsTableProps> = ({
                     </div>
                   </TableHead>
                   <TableHead className="font-bold text-slate-700 dark:text-slate-300">Course Title</TableHead>
-                  <TableHead className="w-44 font-bold text-slate-700 dark:text-slate-300">Lecturer / Grader</TableHead>
-                  <TableHead className="w-36 text-center font-bold text-slate-700 dark:text-slate-300">Candidates & Status</TableHead>
-                  <TableHead className="w-32 text-right pr-4 font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
+                  <TableHead className="w-52 font-bold text-slate-700 dark:text-slate-300">Lecturer / Grader</TableHead>
+                  <TableHead className="w-28 text-center font-bold text-slate-700 dark:text-slate-300">Candidates</TableHead>
+                  <TableHead className="w-28 text-right pr-4 font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -248,6 +251,7 @@ export const PendingResultsTable: React.FC<PendingResultsTableProps> = ({
                     course={course}
                     lecturer={getCourseLecturer(course)}
                     isSelected={selectedCourseIds.includes(course.id)}
+                    isHod={isHodUser}
                     onToggleSelect={toggleSelectCourse}
                     onAudit={handleOpenModal}
                     onApprove={onApprove}

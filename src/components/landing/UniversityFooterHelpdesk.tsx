@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Building2, Mail, Phone, MapPin, Clock, ShieldCheck, 
-  Calculator, FileText, CheckCircle2, ArrowRight, Presentation, Sparkles 
+  Building2, Mail, Phone, MapPin, Clock, 
+  Calculator, FileText, ArrowRight, Presentation 
 } from 'lucide-react';
+import { Button } from '../ui/button';
 import { FuazLogo } from '../ui/FuazLogo';
 
 export const UniversityFooterHelpdesk: React.FC = () => {
@@ -11,14 +12,14 @@ export const UniversityFooterHelpdesk: React.FC = () => {
 
   return (
     <footer id="university-footer-helpdesk" className="bg-slate-900 text-slate-300 border-t border-slate-800 transition-colors">
-      {/* Main Footer Links & Directory */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      {/* Main Footer Directory */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
           {/* Col 1: University Identity */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="p-1.5 bg-white rounded-lg inline-block">
-                <FuazLogo size={42} />
+                <FuazLogo size={40} />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white uppercase tracking-tight">
@@ -34,7 +35,7 @@ export const UniversityFooterHelpdesk: React.FC = () => {
               Established by the Federal Government of Nigeria to foster agricultural innovation, applied sciences, and national self-reliance through rigorous academic and research standards.
             </p>
 
-            <div className="pt-2 space-y-2 text-xs text-slate-400">
+            <div className="pt-1 space-y-1.5 text-xs text-slate-400">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <span>P.M.B. 28, Zuru, Kebbi State, Nigeria</span>
@@ -46,49 +47,45 @@ export const UniversityFooterHelpdesk: React.FC = () => {
             </div>
           </div>
 
-          {/* Col 2: ICT & Academic Helpdesk */}
+          {/* Col 2: Official Support & Communications */}
           <div className="space-y-4">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-emerald-400" /> ICT & Records Support
+              <Building2 className="w-4 h-4 text-emerald-400" /> Support & Inquiries
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Official contact channels for student registration errors, lecturer score submission inquiries, and examiner approval verifications.
+              Institutional contact channels for student course registration assistance, score submission support, and academic verifications.
             </p>
 
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span className="text-slate-400">ICT Helpdesk:</span>
-                <a href="mailto:ict-helpdesk@fuaz.edu.ng" className="text-white hover:text-emerald-300 font-medium hover:underline">
-                  ict-helpdesk@fuaz.edu.ng
-                </a>
+                <span className="text-slate-400">ICT Support:</span>
+                <span className="text-slate-200 font-mono font-medium">***@fuaz.edu.ng</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                 <span className="text-slate-400">Academic Affairs:</span>
-                <a href="mailto:academic.records@fuaz.edu.ng" className="text-white hover:text-emerald-300 font-medium hover:underline">
-                  records@fuaz.edu.ng
-                </a>
+                <span className="text-slate-200 font-mono font-medium">***@fuaz.edu.ng</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span className="text-slate-400">Hotline:</span>
-                <span className="text-white font-mono font-medium">+234 (0) 803 456 7890</span>
+                <span className="text-slate-400">Support Line:</span>
+                <span className="text-slate-200 font-mono font-medium">+234 (0) *** *** ****</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                 <span className="text-slate-400">Examinations Unit:</span>
-                <span className="text-white font-mono font-medium">+234 (0) 814 987 6543</span>
+                <span className="text-slate-200 font-mono font-medium">+234 (0) *** *** ****</span>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Academic Standards & Quick Portals */}
+          {/* Col 3: Academic Portals & Quick Links */}
           <div className="space-y-4">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <FileText className="w-4 h-4 text-emerald-400" /> Academic Quick Links
+              <FileText className="w-4 h-4 text-emerald-400" /> Academic Portals
             </h4>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2.5 text-xs">
               <li>
                 <button
                   onClick={() => navigate('/gpa-guide')}
@@ -100,101 +97,64 @@ export const UniversityFooterHelpdesk: React.FC = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/project-review')}
-                  className="text-emerald-300 hover:text-emerald-200 flex items-center gap-1.5 transition-colors font-semibold text-left cursor-pointer"
-                >
-                  <Presentation className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>System Architecture & Defense Review Deck</span>
-                </button>
-              </li>
-              <li>
-                <button
                   onClick={() => navigate('/login?role=Student')}
                   className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Student Result Checker & Transcript Slips</span>
+                  <span>Student Portal & Results</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => navigate('/login?role=Lecturer')}
-                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left"
+                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Lecturer Continuous Assessment Portal</span>
+                  <span>Lecturer Grading Portal</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => navigate('/login?role=Chief%20Examiner')}
-                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left"
+                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Departmental Broadsheet Moderation Queue</span>
+                  <span>Chief Examiner Portal</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => navigate('/login?role=Admin')}
-                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left"
+                  className="text-slate-300 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-medium text-left cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Course Management & Departmental Pools</span>
+                  <span>System Administration Portal</span>
                 </button>
+              </li>
+              <li>
+                <div className="pt-2">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate('/project-review')}
+                    className="w-full justify-between bg-emerald-950/90 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 hover:text-white font-semibold text-xs py-2.5 px-3.5 rounded-xl shadow-xs cursor-pointer group transition-all"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Presentation className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                      <span>System Architecture & Review</span>
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+                  </Button>
+                </div>
               </li>
             </ul>
           </div>
-
-          {/* Col 4: Trust, Security & Compliance */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Institutional Trust
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              FUAZ SRMS enforces National Universities Commission (NUC) benchmark standards with immutable audit logging across all semester grade calculations.
-            </p>
-
-            <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-white">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>NUC 5-Point Scale Certified</span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-snug">
-                Verified weighted calculation: <span className="text-emerald-300 font-mono">CGPA = Total Quality Points ÷ Total Units</span>.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 text-[11px] text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Portal Status: <strong className="text-slate-200">Online & Secure</strong></span>
-            </div>
-
-            {/* Interactive Review Button in Footer */}
-            <button
-              onClick={() => navigate('/project-review')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-700/60 text-emerald-200 transition-all text-xs font-bold shadow-xs cursor-pointer group"
-            >
-              <div className="flex items-center gap-2">
-                <Presentation className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-                <span>Architecture & Review Deck</span>
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
         </div>
 
-        {/* Bottom Legal & Version Strip */}
-        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        {/* Bottom Legal & Clean Minimal Version */}
+        <div className="mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
           <p>© 2026 Federal University of Agriculture, Zuru. All rights reserved.</p>
-          <div className="flex flex-wrap items-center gap-4 text-[11px]">
-            <span>Student Results Management System (SRMS)</span>
-            <span>•</span>
-            <span className="font-mono text-emerald-400">Release v2.4.0 (Enterprise)</span>
-            <span>•</span>
-            <button onClick={() => navigate('/gpa-guide')} className="hover:text-emerald-400 transition-colors cursor-pointer">
-              Grading Benchmark
-            </button>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+            <span>SRMS v1.5</span>
           </div>
         </div>
       </div>

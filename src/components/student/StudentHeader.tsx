@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/button';
-import { Download, Printer, Calculator, Loader2, ShieldCheck } from 'lucide-react';
+import { Download, Printer, Calculator, Loader2, ShieldCheck, GraduationCap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../types';
 
@@ -28,19 +28,23 @@ export const StudentHeader: React.FC<StudentHeaderProps> = ({
       <div>
         <div className="flex items-center gap-2.5 flex-wrap">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{user.name}</h1>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-            Student Portal
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+            <GraduationCap className="w-3.5 h-3.5" />
+            {user.isGraduated ? 'Graduated Alumnus' : `${user.level || 100} Level`}
+          </span>
+          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+            {user.matricNumber || 'N/A'}
           </span>
           <button
             onClick={() => navigate('/gpa-guide')}
-            className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline ml-1"
           >
             <Calculator className="w-3.5 h-3.5" />
-            GPA Calculation Guide
+            GPA Guide
           </button>
         </div>
         <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
-          Matric: <span className="font-bold text-slate-800 dark:text-slate-200">{user.matricNumber || 'N/A'}</span> • Department: <span className="font-semibold text-slate-700 dark:text-slate-300">{user.department}</span> • College of {user.college}
+          B.Sc. <span className="font-semibold text-slate-700 dark:text-slate-300">{user.department}</span> • College of {user.college}
         </p>
       </div>
 

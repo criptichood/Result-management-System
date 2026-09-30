@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from '../ui/dropdown-menu';
 import { Course, User } from '../../types';
 
@@ -168,16 +169,6 @@ export const DepartmentCourseRow: React.FC<DepartmentCourseRowProps> = ({
                   <Eye className="w-3.5 h-3.5 mr-1 text-emerald-600 dark:text-emerald-400" />
                   Audit
                 </Button>
-                {onApprove && (
-                  <Button
-                    size="sm"
-                    className="h-7 px-2.5 text-xs font-semibold bg-[#064e3b] hover:bg-[#065f46] text-white"
-                    onClick={() => onApprove(course.id)}
-                  >
-                    <Check className="w-3.5 h-3.5 mr-1" />
-                    Approve
-                  </Button>
-                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -188,20 +179,30 @@ export const DepartmentCourseRow: React.FC<DepartmentCourseRowProps> = ({
                       <MoreVertical className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44">
-                    <DropdownMenuItem onClick={() => onEdit(course)} className="cursor-pointer text-xs font-medium">
-                      <Edit3 className="w-3.5 h-3.5 mr-2 text-slate-500" />
-                      Edit Course
-                    </DropdownMenuItem>
+                  <DropdownMenuContent align="end" className="w-52">
+                    {onApprove && (
+                      <DropdownMenuItem
+                        onClick={() => onApprove(course.id)}
+                        className="text-emerald-700 dark:text-emerald-400 font-semibold cursor-pointer text-xs"
+                      >
+                        <Check className="w-3.5 h-3.5 mr-2 text-emerald-600" />
+                        Endorse to Senate
+                      </DropdownMenuItem>
+                    )}
                     {onReturn && (
                       <DropdownMenuItem
                         onClick={() => onReturn(course)}
                         className="text-red-600 dark:text-red-400 cursor-pointer text-xs font-medium"
                       >
                         <RotateCcw className="w-3.5 h-3.5 mr-2" />
-                        Return to Lecturer
+                        Return for Remarking
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => onEdit(course)} className="cursor-pointer text-xs font-medium">
+                      <Edit3 className="w-3.5 h-3.5 mr-2 text-slate-500" />
+                      Edit Course
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onAudit(course)} className="cursor-pointer text-xs font-medium">
                       <FileSpreadsheet className="w-3.5 h-3.5 mr-2 text-slate-500" />
                       View Broadsheet

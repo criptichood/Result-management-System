@@ -157,6 +157,8 @@ export const AdminDashboard = () => {
           results={results}
           session={settings.currentSession}
           semester={settings.currentSemester}
+          onRefreshData={reloadData}
+          showToast={showNotification}
         />
       )}
 

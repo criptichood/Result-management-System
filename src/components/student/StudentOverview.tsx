@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { Bell, Calendar, BookMarked, FileText, CheckCircle2, AlertCircle, Clock, Award, ArrowRight } from 'lucide-react';
+import { Bell, Calendar, BookMarked, FileText, CheckCircle2, AlertCircle, Clock, Award, ArrowRight, GraduationCap } from 'lucide-react';
 import { StudentSummaryMetrics } from './StudentSummaryMetrics';
 import { AcademicProgressRings } from './AcademicProgressRings';
 import { useNavigate } from 'react-router-dom';
@@ -60,37 +60,55 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
   return (
     <div id="student-overview-view" className="space-y-6">
       {/* Welcome Hero Card */}
-      <Card className="border-emerald-200 dark:border-emerald-900 bg-gradient-to-r from-emerald-900 to-[#064e3b] text-white shadow-md rounded-2xl overflow-hidden">
+      <Card className="border-emerald-700/40 dark:border-emerald-900 bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#042f23] text-white shadow-lg rounded-2xl overflow-hidden">
         <CardContent className="p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Badge variant="success" className="bg-emerald-500/30 text-emerald-200 border-emerald-400/40">
-                FUAZ Student Portal
-              </Badge>
-              <span className="text-emerald-300 text-xs font-semibold">• Session: {settings.currentSession || '2025/2026'}</span>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-400/20 text-emerald-200 border border-emerald-400/40 shadow-2xs">
+                <GraduationCap className="w-3.5 h-3.5 text-emerald-300" />
+                {user.isGraduated
+                  ? 'Graduated (Alumnus)'
+                  : `${user.level || 100} Level • ${
+                      user.level === 100
+                        ? 'Freshman'
+                        : user.level === 200
+                        ? 'Sophomore'
+                        : user.level === 300
+                        ? 'Penultimate Year'
+                        : 'Final Year'
+                    }`}
+              </span>
+              <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-black/30 text-emerald-200 border border-emerald-400/30">
+                Matric: {user.matricNumber || 'N/A'}
+              </span>
+              <span className="text-emerald-300 text-xs font-semibold">
+                • {settings?.currentSession || '2024/2025'} Session (Sem {settings?.currentSemester || 1})
+              </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
-              Welcome back, {user.name}!
-            </h2>
-            <p className="text-emerald-100 text-xs sm:text-sm max-w-xl">
-              Federal University of Agriculture, Zuru • {user.department || 'Department of Computer Science'} • {user.matricNumber || 'FUAZ/SCI/22/1042'}
-            </p>
+
+            <div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                Welcome back, {user.name}!
+              </h2>
+              <p className="text-emerald-100/90 text-xs sm:text-sm mt-1 max-w-xl font-medium">
+                B.Sc. {user.department || 'Computer Science'} • College of {user.college || 'Science'} • {classification?.label || 'In Good Standing'} ({cumulativeCgpa.toFixed(2)} CGPA)
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
             <Button
               onClick={() => navigate('/student?tab=results')}
-              className="bg-white text-emerald-950 hover:bg-emerald-50 font-bold text-xs gap-2"
+              className="bg-white hover:bg-slate-100 text-[#064e3b] font-extrabold text-xs gap-2 h-10 px-4 rounded-xl shadow-md hover:shadow-lg transition-all"
             >
-              <FileText className="w-4 h-4 text-emerald-700" /> View My Results
+              <FileText className="w-4 h-4 text-[#064e3b]" /> View My Results
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
             <Button
               onClick={() => navigate('/student?tab=registration')}
-              variant="outline"
-              className="border-emerald-400 text-white hover:bg-emerald-800/60 font-bold text-xs gap-2"
+              className="bg-[#053d2e] hover:bg-[#042f23] text-white border border-emerald-400/60 font-extrabold text-xs gap-2 h-10 px-4 rounded-xl shadow-md hover:shadow-lg transition-all"
             >
-              <BookMarked className="w-4 h-4" /> Course Registration
+              <BookMarked className="w-4 h-4 text-emerald-300" /> Course Registration
             </Button>
           </div>
         </CardContent>

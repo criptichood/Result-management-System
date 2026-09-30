@@ -10,10 +10,11 @@ interface PendingTableHeaderProps {
   activeSystemSession: string;
   selectedSemester: number | 'ALL';
   onSemesterChange?: (semester: number | 'ALL') => void;
-  workflowTab: 'pending' | 'awaiting' | 'published' | 'all';
-  onWorkflowTabChange: (tab: 'pending' | 'awaiting' | 'published' | 'all') => void;
+  workflowTab: 'pending' | 'endorsed' | 'awaiting' | 'published' | 'all';
+  onWorkflowTabChange: (tab: 'pending' | 'endorsed' | 'awaiting' | 'published' | 'all') => void;
   counts: {
     pending: number;
+    endorsed?: number;
     awaiting: number;
     published: number;
     all: number;
@@ -130,6 +131,26 @@ export const PendingTableHeader: React.FC<PendingTableHeaderProps> = ({
             }`}
           >
             {counts.pending}
+          </span>
+        </button>
+
+        <button
+          onClick={() => onWorkflowTabChange('endorsed')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
+            workflowTab === 'endorsed'
+              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 dark:border-emerald-400 bg-white dark:bg-slate-800/80 rounded-t-md'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+          }`}
+        >
+          <span>Dept Endorsed (Senate Pending)</span>
+          <span
+            className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+              workflowTab === 'endorsed'
+                ? 'bg-blue-100 text-blue-900 dark:bg-blue-900/60 dark:text-blue-200'
+                : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+            }`}
+          >
+            {counts.endorsed || 0}
           </span>
         </button>
 

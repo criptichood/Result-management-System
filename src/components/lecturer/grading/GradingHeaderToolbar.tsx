@@ -78,26 +78,26 @@ export const GradingHeaderToolbar: React.FC<GradingHeaderToolbarProps> = ({
         </Button>
 
         <Button
-          id="btn-lecturer-import-csv"
-          variant="outline"
-          size="sm"
-          onClick={onOpenCsvModal}
-          disabled={isLocked}
-          className="gap-1.5 text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700"
-          title="Import scores from CSV"
-        >
-          <Upload className="h-3.5 w-3.5" /> Import CSV
-        </Button>
-
-        <Button
           id="btn-lecturer-export-csv"
           variant="outline"
           size="sm"
           onClick={onDownloadCSV}
           className="gap-1.5 text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700"
-          title="Download CSV score sheet"
+          title="Download official pre-populated class roster CSV (CA & Exam)"
         >
-          <Download className="h-3.5 w-3.5" /> Export CSV
+          <Download className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> Export Roster
+        </Button>
+
+        <Button
+          id="btn-lecturer-import-csv"
+          variant="outline"
+          size="sm"
+          onClick={onOpenCsvModal}
+          disabled={isLocked}
+          className="gap-1.5 text-xs bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100"
+          title="Import completed scores from roster CSV"
+        >
+          <Upload className="h-3.5 w-3.5" /> Import Results
         </Button>
 
         <Button

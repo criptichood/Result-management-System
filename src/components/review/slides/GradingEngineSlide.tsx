@@ -9,6 +9,7 @@ export const computeGradeDetails = (total: number) => {
   if (total >= 60) return { grade: 'B', gradePoint: 4.0, remark: 'Very Good' };
   if (total >= 50) return { grade: 'C', gradePoint: 3.0, remark: 'Good / Credit' };
   if (total >= 45) return { grade: 'D', gradePoint: 2.0, remark: 'Fair / Pass' };
+  if (total >= 40) return { grade: 'E', gradePoint: 1.0, remark: 'Pass (Minimum Pass Threshold)' };
   return { grade: 'F', gradePoint: 0.0, remark: 'Fail (Carryover Required)' };
 };
 
@@ -57,8 +58,9 @@ export const GradingEngineSlide: React.FC = () => {
     { range: '70% – 100%', grade: 'A', point: '5.0', desc: 'Excellent / Distinction', badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300' },
     { range: '60% – 69%', grade: 'B', point: '4.0', desc: 'Very Good', badge: 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border-blue-300' },
     { range: '50% – 59%', grade: 'C', point: '3.0', desc: 'Good / Satisfactory', badge: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300 border-cyan-300' },
-    { range: '45% – 49%', grade: 'D', point: '2.0', desc: 'Fair / Pass', badge: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border-amber-300' },
-    { range: '0% – 44%', grade: 'F', point: '0.0', desc: 'Fail (Carryover Required)', badge: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300 border-red-300' },
+    { range: '45% – 49%', grade: 'D', point: '2.0', desc: 'Fair / Moderate Pass', badge: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border-amber-300' },
+    { range: '40% – 44%', grade: 'E', point: '1.0', desc: 'Pass (Minimum Pass Threshold)', badge: 'bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300 border-orange-300' },
+    { range: '0% – 39%', grade: 'F', point: '0.0', desc: 'Fail (Carryover Required)', badge: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300 border-red-300' },
   ];
 
   const degreeClasses = [
@@ -83,7 +85,7 @@ export const GradingEngineSlide: React.FC = () => {
           5.0 CGPA Grading Engine & Academic Rules
         </h2>
         <p className="text-sm sm:text-base text-emerald-100 max-w-3xl leading-relaxed">
-          The core arithmetic engine executing National Universities Commission (NUC) standards, with E grade fully eliminated. Every score below 45% automatically resolves to F.
+          The core arithmetic engine executing National Universities Commission (NUC) standards across the complete A–F scale, incorporating Grade E (40%–44%) as the pass threshold. Every score below 40% automatically resolves to F.
         </p>
       </div>
 
@@ -268,10 +270,13 @@ export const GradingEngineSlide: React.FC = () => {
                     if (total &gt;= 50) return 'C'; <span className="text-slate-500">// Good</span>
                   </p>
                   <p className={`pl-4 transition-all duration-200 ${totalScore >= 45 && totalScore < 50 ? 'bg-emerald-950/60 text-white font-bold border-l-2 border-emerald-500 pl-3' : ''}`}>
-                    if (total &gt;= 45) return 'D'; <span className="text-slate-500">// Pass</span>
+                    if (total &gt;= 45) return 'D'; <span className="text-slate-500">// Fair / Moderate Pass</span>
                   </p>
-                  <p className={`pl-4 transition-all duration-200 ${totalScore < 45 ? 'bg-red-950/60 text-white font-bold border-l-2 border-red-500 pl-3' : ''}`}>
-                    return 'F'; <span className="text-slate-500">// Fail (E grade eliminated)</span>
+                  <p className={`pl-4 transition-all duration-200 ${totalScore >= 40 && totalScore < 45 ? 'bg-orange-950/60 text-white font-bold border-l-2 border-orange-500 pl-3' : ''}`}>
+                    if (total &gt;= 40) return 'E'; <span className="text-slate-500">// Pass (40-44%)</span>
+                  </p>
+                  <p className={`pl-4 transition-all duration-200 ${totalScore < 40 ? 'bg-red-950/60 text-white font-bold border-l-2 border-red-500 pl-3' : ''}`}>
+                    return 'F'; <span className="text-slate-500">// Fail (Carryover Required)</span>
                   </p>
                   <p className="text-emerald-400">&#125;</p>
                 </>
@@ -294,8 +299,11 @@ export const GradingEngineSlide: React.FC = () => {
                   <p className={`pl-8 ${grade === 'D' ? 'bg-emerald-950/60 text-white font-bold border-l-2 border-emerald-500 pl-7' : ''}`}>
                     case 'D': return 2.0;
                   </p>
+                  <p className={`pl-8 ${grade === 'E' ? 'bg-orange-950/60 text-white font-bold border-l-2 border-orange-500 pl-7' : ''}`}>
+                    case 'E': return 1.0;
+                  </p>
                   <p className={`pl-8 ${grade === 'F' ? 'bg-red-950/60 text-white font-bold border-l-2 border-red-500 pl-7' : ''}`}>
-                    default: return 0.0; <span className="text-slate-500">// All other grades fail</span>
+                    default: return 0.0; <span className="text-slate-500">// All other scores fail</span>
                   </p>
                   <p className="pl-4">&#125;</p>
                   <p className="text-emerald-400">&#125;</p>
@@ -332,7 +340,7 @@ export const GradingEngineSlide: React.FC = () => {
         {/* Letter Grades (FUAZ Official Standard) */}
         <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-4">
           <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-            <Award className="w-4 h-4 text-emerald-600" /> Official FUAZ NUC Grading Scale (No E Grade)
+            <Award className="w-4 h-4 text-emerald-600" /> Official FUAZ NUC Grading Scale (Complete A–F Scale)
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
