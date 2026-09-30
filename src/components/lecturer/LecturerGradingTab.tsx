@@ -3,7 +3,6 @@ import { Card, CardContent } from '../ui/card';
 import { Edit } from 'lucide-react';
 import { Course } from '../../types';
 import { LecturerCsvUploadModal } from './LecturerCsvUploadModal';
-import { LecturerBatchFillModal } from './LecturerBatchFillModal';
 import { LecturerPrintableGradeSheet } from './LecturerPrintableGradeSheet';
 import {
   GradingHeaderToolbar,
@@ -16,6 +15,8 @@ import {
 
 interface LecturerGradingTabProps {
   selectedCourse: Course | null;
+  /** Course picker, rendered inside the sheet header rather than above it. */
+  courseSelector?: React.ReactNode;
   students: any[];
   scores: Record<string, { ca: string; exam: string }>;
   onScoreChange: (enrollmentId: string, type: 'ca' | 'exam', value: string) => void;
@@ -29,6 +30,7 @@ interface LecturerGradingTabProps {
 
 export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
   selectedCourse,
+  courseSelector,
   students,
   scores,
   onScoreChange,
@@ -40,7 +42,6 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
   lecturerName = 'Course Lecturer',
 }) => {
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
-  const [isBatchFillOpen, setIsBatchFillOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isRubricOpen, setIsRubricOpen] = useState(false);
@@ -77,6 +78,7 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
   let hasInvalidCa = false;
   let hasInvalidExam = false;
   let filledCount = 0;
+  let completeCount = 0;
   let totalScoreSum = 0;
   let highestScore = 0;
   let passCount = 0;
@@ -94,7 +96,14 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
       if (isNaN(exam) || exam < 0 || exam > 60) hasInvalidExam = true;
     }
 
-    const hasAny = (caStr !== '' && caStr !== undefined) || (examStr !== '' && examStr !== undefined);
+    const hasCa = caStr !== '' && caStr !== undefined && !isNaN(ca);
+    const hasExam = examStr !== '' && examStr !== undefined && !isNaN(exam);
+
+    // "Complete" means both components present — the bar a sheet must clear
+    // before it can go to the Chief Examiner.
+    if (hasCa && hasExam) completeCount++;
+
+    const hasAny = hasCa || hasExam;
     if (hasAny) {
       filledCount++;
       const total = (isNaN(ca) ? 0 : ca) + (isNaN(exam) ? 0 : exam);
@@ -106,6 +115,22 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
 
   const classMean = filledCount > 0 ? (totalScoreSum / filledCount).toFixed(1) : '0.0';
   const passRate = filledCount > 0 ? Math.round((passCount / filledCount) * 100) : 0;
+
+  /**
+   * Mirrors the check in `db.saveCourseScores`. The button is disabled on this
+   * so the rule is visible before the click; the data layer is what actually
+   * enforces it.
+   */
+  const missingCount = students.length - completeCount;
+  const hasInvalidScores = hasInvalidCa || hasInvalidExam;
+  const submitBlockReason = hasInvalidScores
+    ? 'Correct the out-of-range scores before submitting.'
+    : students.length === 0
+    ? 'This course has no enrolled candidates.'
+    : missingCount > 0
+    ? `${missingCount} of ${students.length} candidates still need a CA and Exam score.`
+    : null;
+  const canSubmit = submitBlockReason === null;
 
   // Filtered Students List
   const filteredStudents = students.filter((s) => {
@@ -138,19 +163,17 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
     onSubmit();
   };
 
-  const handleBatchApply = (updates: Record<string, { ca: string; exam: string }>) => {
-    onApplyCsvScores(updates);
-  };
-
   return (
     <Card id="lecturer-grading-tab" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
       <GradingHeaderToolbar
         selectedCourse={selectedCourse}
+        courseSelector={courseSelector}
         isAllPublished={isAllPublished}
         isSubmitted={isSubmitted}
         isRejected={isRejected}
         isLocked={isLocked}
-        onOpenBatchFill={() => setIsBatchFillOpen(true)}
+        canSubmit={canSubmit}
+        submitBlockReason={submitBlockReason}
         onOpenCsvModal={() => setIsCsvModalOpen(true)}
         onDownloadCSV={onDownloadCSV}
         onOpenPrintModal={() => setIsPrintModalOpen(true)}
@@ -195,16 +218,8 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
         onClose={() => setIsCsvModalOpen(false)}
         selectedCourse={selectedCourse}
         students={students}
+        draftScores={scores}
         onApplyScores={onApplyCsvScores}
-      />
-
-      <LecturerBatchFillModal
-        isOpen={isBatchFillOpen}
-        onClose={() => setIsBatchFillOpen(false)}
-        selectedCourse={selectedCourse}
-        students={students}
-        scores={scores}
-        onBatchApply={handleBatchApply}
       />
 
       <LecturerPrintableGradeSheet
@@ -228,8 +243,10 @@ export const LecturerGradingTab: React.FC<LecturerGradingTabProps> = ({
         selectedCourse={selectedCourse}
         totalStudents={students.length}
         filledCount={filledCount}
+        completeCount={completeCount}
         passRate={passRate}
-        hasInvalidScores={hasInvalidCa || hasInvalidExam}
+        hasInvalidScores={hasInvalidScores}
+        blockReason={submitBlockReason}
         onConfirmSubmit={handleConfirmSubmit}
       />
     </Card>

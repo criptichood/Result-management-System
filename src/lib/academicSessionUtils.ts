@@ -109,6 +109,17 @@ export function getAcademicSessionOptions(anchorSession?: string): { value: stri
 }
 
 /**
+ * Sorts academic session strings (e.g. "2024/2025") newest-first.
+ * Unparseable strings simply sink to the bottom instead of throwing.
+ */
+export function sortSessionsDescending(sessions: string[]): string[] {
+  return [...sessions].sort((a, b) => {
+    const diff = parseAcademicSession(b).startYear - parseAcademicSession(a).startYear;
+    return diff !== 0 ? diff : a.localeCompare(b);
+  });
+}
+
+/**
  * Formats a full term title cleanly.
  */
 export function formatTermDisplay(session: string, semester: 1 | 2): string {

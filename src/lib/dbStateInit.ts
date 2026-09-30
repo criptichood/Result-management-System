@@ -1,7 +1,12 @@
 import { Course, Department, Enrollment, GradeDispute, ModerationLog, Result, User } from '../types';
 import { mockCourses, mockDepartments, mockEnrollments, mockResults, mockUsers } from './mockData';
 
-export const DB_KEY = 'fuaz_srms_db_v18';
+// Bump to invalidate existing localStorage when seed data changes materially.
+// v19: teaching load rebalanced to <=2 courses per lecturer per semester, and
+// all CS/Math courses given an explicit owning lecturer. loadAndMigrateDBState
+// only *back-fills missing* courses, so without a bump a returning browser
+// would keep the old course->lecturer mappings and see the old workload.
+export const DB_KEY = 'fuaz_srms_db_v19';
 
 export interface DBState {
   users: User[];

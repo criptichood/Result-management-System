@@ -1,19 +1,10 @@
 import React from 'react';
 import { CheckCircle2, AlertTriangle } from 'lucide-react';
+import type { ParsedRow } from '../../lib/gradingRosterCsv';
 
-export interface ParsedRow {
-  matricNumber: string;
-  studentName?: string;
-  department?: string;
-  level?: number | string;
-  enrollmentId?: string;
-  caScore: string;
-  examScore: string;
-  totalScore?: number | null;
-  grade?: string | null;
-  isValid: boolean;
-  errors: string[];
-}
+// The shape now lives with the parser so the file path and this preview share
+// one definition. Re-exported for any remaining importers.
+export type { ParsedRow };
 
 interface CsvPreviewTableProps {
   displayRows: ParsedRow[];

@@ -22,8 +22,8 @@ export const GradingFiltersBar: React.FC<GradingFiltersBarProps> = ({
   passCount,
 }) => {
   return (
-    <div className="px-6 pt-4 pb-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div className="relative w-full sm:w-64">
+    <div className="px-4 sm:px-5 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800">
+      <div className="relative w-full sm:w-56">
         <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
         <Input
           placeholder="Search by matric or name..."

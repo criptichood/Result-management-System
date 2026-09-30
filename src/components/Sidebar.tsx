@@ -5,8 +5,22 @@ import {
   LayoutDashboard, Users, BookOpen, Settings, FileSearch, 
   LineChart, FileText, ClipboardList, BookMarked, Calculator, 
   X, PanelLeftClose, PanelLeftOpen, Bell, Building2, Database,
-  UserCheck, FileQuestion, GraduationCap
+  UserCheck, FileQuestion, GraduationCap, Archive, type LucideIcon
 } from 'lucide-react';
+import type { LecturerTabId } from './lecturer/lecturerTabs';
+
+/**
+ * Lecturer navigation. The ids are typed as `LecturerTabId`, so adding a view to
+ * `lecturerTabs.ts` without adding it here (or vice versa) fails the build.
+ * Labels are portal-level wording and differ from the page headings.
+ */
+const LECTURER_NAV: { id: LecturerTabId; label: string; icon: LucideIcon }[] = [
+  { id: 'grading', label: 'Grading & Courses', icon: ClipboardList },
+  { id: 'class-list', label: 'Class List', icon: Users },
+  { id: 'disputes', label: 'Grade Queries', icon: FileQuestion },
+  { id: 'analytics', label: 'Analytics', icon: LineChart },
+  { id: 'archive', label: 'Course Archive', icon: Archive },
+];
 
 interface SidebarProps {
   user: User;
@@ -36,12 +50,7 @@ export function Sidebar({ user, isOpen = false, onClose, isCollapsed, onToggleCo
         ];
       case 'Lecturer':
         activeTab = activeTab || 'grading';
-        return [
-          { id: 'grading', label: 'Grading & Courses', icon: ClipboardList },
-          { id: 'class-list', label: 'Class List', icon: Users },
-          { id: 'disputes', label: 'Grade Queries', icon: FileQuestion },
-          { id: 'analytics', label: 'Analytics', icon: LineChart },
-        ];
+        return LECTURER_NAV;
       case 'HOD':
         activeTab = activeTab || 'pending';
         return [

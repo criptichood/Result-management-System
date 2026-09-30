@@ -8,12 +8,20 @@ export const mockUsers: User[] = [
   { id: 'u_examiner', name: 'Dr. Aliyu Mohammed (Departmental Exam Officer)', email: 'examiner@fuaz.edu.ng', role: 'Examiner', college: 'Science', department: 'Computer Science', staffId: 'EXM001' },
 
   // Academic Teaching Faculty (Computer Science & Service Departments)
+  // Teaching-load rule: no lecturer carries more than 2 courses per semester
+  // (so at most 4 per academic session). See LECTURER_WORKLOAD_CAP below.
   { id: 'u3', name: 'Dr. Chidi Okafor (Senior Lecturer)', email: 'lecturer1@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC001' },
   { id: 'u4', name: 'Dr. Fatima Umar (Senior Lecturer)', email: 'lecturer2@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC002' },
   { id: 'u_lec3', name: 'Dr. Shehu Danbatta (Senior Lecturer)', email: 'danbatta@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC003' },
   { id: 'u_lec4', name: 'Dr. Ngozi Anyaoku (Lecturer I)', email: 'anyaoku@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC004' },
   { id: 'u_lec5', name: 'Engr. Kabir Sani (Lecturer II)', email: 'ksani@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC005' },
   { id: 'u_lec6', name: 'Dr. Yusuf Al-Amin (Lecturer I)', email: 'yalamin@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC006' },
+  { id: 'u_lec7', name: 'Dr. Amina Bello (Senior Lecturer)', email: 'amina.bello@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC007' },
+  { id: 'u_lec8', name: 'Mr. Bala Umar (Lecturer I)', email: 'bala.umar@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC008' },
+  { id: 'u_lec9', name: 'Dr. Hauwa Jega (Lecturer I)', email: 'hauwa.jega@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC009' },
+  { id: 'u_lec10', name: 'Mr. Sadiq Lawal (Lecturer II)', email: 'sadiq.lawal@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Computer Science', staffId: 'LEC010' },
+  { id: 'u_math2', name: 'Dr. Musa Ibrahim (Lecturer I)', email: 'musa.ibrahim@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC011' },
+  { id: 'u_math3', name: 'Dr. Aisha Mohammed (Lecturer II)', email: 'aisha.mohammed@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC012' },
 
   // =========================================================================
   // 100 LEVEL UNDERGRADUATES (12 Students, 2024/2025 Cohort)
@@ -92,76 +100,76 @@ export const mockUsers: User[] = [
 export const mockCourses: Course[] = [
   // 100 Level - 1st Semester
   { id: 'c_chm111', code: 'CHM 111', title: 'General Physical Chemistry', creditUnits: 3, department: 'Chemical Sciences', college: 'Science', level: 100, semester: 1 },
-  { id: 'c_csc111', code: 'CSC 111', title: 'Introduction to Computer Science', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc111', code: 'CSC 111', title: 'Introduction to Computer Science', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 1, lecturerId: 'u_lec7' },
   { id: 'c_gst111', code: 'GST 111', title: 'Use of English I', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 1 },
   { id: 'c_gst112', code: 'GST 112', title: 'Use of Library and Study Skills', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 1 },
   { id: 'c_gst113', code: 'GST 113', title: 'Logic and Critical Thinking', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 1 },
   { id: 'c_mth111', code: 'MTH 111', title: 'Elementary Algebra I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 1, lecturerId: 'u4' },
-  { id: 'c_mth113', code: 'MTH 113', title: 'Geometry', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 1 },
-  { id: 'c_mth114', code: 'MTH 114', title: 'Elements of Statistics', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 1 },
+  { id: 'c_mth113', code: 'MTH 113', title: 'Geometry', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 1, lecturerId: 'u4' },
+  { id: 'c_mth114', code: 'MTH 114', title: 'Elements of Statistics', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 1, lecturerId: 'u_math2' },
   { id: 'c_phy111', code: 'PHY 111', title: 'General Physics I: Mechanics and Properties of Matter I', creditUnits: 2, department: 'Physics', college: 'Science', level: 100, semester: 1 },
   { id: 'c_phy112', code: 'PHY 112', title: 'General Physics Laboratory I', creditUnits: 1, department: 'Physics', college: 'Science', level: 100, semester: 1 },
 
   // 100 Level - 2nd Semester
-  { id: 'c_csc123', code: 'CSC 123', title: 'ICT and Digital Skills Acquisition', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec6' },
+  { id: 'c_csc123', code: 'CSC 123', title: 'ICT and Digital Skills Acquisition', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec8' },
   { id: 'c_gst121', code: 'GST 121', title: 'Use of English II', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 2 },
   { id: 'c_gst122', code: 'GST 122', title: 'Nigeria: People and Culture', creditUnits: 2, department: 'General Studies', college: 'Science', level: 100, semester: 2 },
   { id: 'c_mth121', code: 'MTH 121', title: 'Calculus', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 2, lecturerId: 'u4' },
   { id: 'c_phy123', code: 'PHY 123', title: 'Electricity, Magnetism and Modern Physics', creditUnits: 3, department: 'Physics', college: 'Science', level: 100, semester: 2 },
-  { id: 'c_mth123', code: 'MTH 123', title: 'General Mathematics II: Elementary Algebra II', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
-  { id: 'c_mth125', code: 'MTH 125', title: 'Statistical Inference I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
-  { id: 'c_csc121', code: 'CSC 121', title: 'Introduction to Problem Solving', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec4' },
-  { id: 'c_csc122', code: 'CSC 122', title: 'Fundamentals of Computer Network', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec3' },
-  { id: 'c_mth126', code: 'MTH 126', title: 'Probability', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2 },
+  { id: 'c_mth123', code: 'MTH 123', title: 'General Mathematics II: Elementary Algebra II', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 100, semester: 2, lecturerId: 'u4' },
+  { id: 'c_mth125', code: 'MTH 125', title: 'Statistical Inference I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2, lecturerId: 'u_math2' },
+  { id: 'c_csc121', code: 'CSC 121', title: 'Introduction to Problem Solving', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec7' },
+  { id: 'c_csc122', code: 'CSC 122', title: 'Fundamentals of Computer Network', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 100, semester: 2, lecturerId: 'u_lec8' },
+  { id: 'c_mth126', code: 'MTH 126', title: 'Probability', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 100, semester: 2, lecturerId: 'u_math2' },
 
   // 200 Level - 1st Semester
   { id: 'c_gst212', code: 'GST 212', title: 'Peace Studies and Conflict Resolution', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 1 },
-  { id: 'c_csc211', code: 'CSC 211', title: 'Computer Programming I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
-  { id: 'c_mth211', code: 'MTH 211', title: 'Mathematical Methods I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u4' },
-  { id: 'c_csc213', code: 'CSC 213', title: 'Discrete Structure', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc214', code: 'CSC 214', title: 'Digital Logic Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec5' },
-  { id: 'c_mth214', code: 'MTH 214', title: 'Linear Algebra I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u4' },
+  { id: 'c_csc211', code: 'CSC 211', title: 'Computer Programming I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec4' },
+  { id: 'c_mth211', code: 'MTH 211', title: 'Mathematical Methods I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u_math2' },
+  { id: 'c_csc213', code: 'CSC 213', title: 'Discrete Structure', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec4' },
+  { id: 'c_csc214', code: 'CSC 214', title: 'Digital Logic Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec6' },
+  { id: 'c_mth214', code: 'MTH 214', title: 'Linear Algebra I', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 1, lecturerId: 'u_math3' },
   { id: 'c_gst211', code: 'GST 211', title: 'History and Philosophy of Science', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 1 },
-  { id: 'c_csc212', code: 'CSC 212', title: 'Operating System I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec3' },
+  { id: 'c_csc212', code: 'CSC 212', title: 'Operating System I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 1, lecturerId: 'u_lec6' },
 
   // 200 Level - 2nd Semester
-  { id: 'c_mth222', code: 'MTH 222', title: 'Elementary Differential Equations I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u4' },
+  { id: 'c_mth222', code: 'MTH 222', title: 'Elementary Differential Equations I', creditUnits: 3, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u_math3' },
   { id: 'c_phy221', code: 'PHY 221', title: 'Electric Circuits and Electronics', creditUnits: 3, department: 'Physics', college: 'Science', level: 200, semester: 2 },
-  { id: 'c_csc221', code: 'CSC 221', title: 'Computer Programming II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u3' },
-  { id: 'c_csc222', code: 'CSC 222', title: 'Computer Hardware', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec5' },
+  { id: 'c_csc221', code: 'CSC 221', title: 'Computer Programming II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec4' },
+  { id: 'c_csc222', code: 'CSC 222', title: 'Computer Hardware', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec6' },
   { id: 'c_csc223', code: 'CSC 223', title: 'Fundamentals of Data Structures', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec4' },
   { id: 'c_csc224', code: 'CSC 224', title: 'Introduction to Web Development', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 200, semester: 2, lecturerId: 'u_lec6' },
-  { id: 'c_mth225', code: 'MTH 225', title: 'Linear Algebra II', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u4' },
+  { id: 'c_mth225', code: 'MTH 225', title: 'Linear Algebra II', creditUnits: 2, department: 'Mathematics', college: 'Science', level: 200, semester: 2, lecturerId: 'u_math3' },
   { id: 'c_gst223', code: 'GST 223', title: 'Entrepreneurship Studies I', creditUnits: 2, department: 'General Studies', college: 'Science', level: 200, semester: 2 },
 
   // 300 Level - 1st Semester
-  { id: 'c_csc311', code: 'CSC 311', title: 'Object-Oriented Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc311', code: 'CSC 311', title: 'Object-Oriented Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec3' },
   { id: 'c_csc312', code: 'CSC 312', title: 'Operating Systems II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec3' },
-  { id: 'c_csc313', code: 'CSC 313', title: 'Compiler Construction I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec6' },
+  { id: 'c_csc313', code: 'CSC 313', title: 'Compiler Construction I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec5' },
   { id: 'c_csc314', code: 'CSC 314', title: 'Computer Architecture and Organization I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec5' },
-  { id: 'c_csc315', code: 'CSC 315', title: 'Systems Analysis and Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u2' },
-  { id: 'c_csc316', code: 'CSC 316', title: 'Algorithms and Complexity Analysis', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc315', code: 'CSC 315', title: 'Systems Analysis and Design', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec9' },
+  { id: 'c_csc316', code: 'CSC 316', title: 'Algorithms and Complexity Analysis', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 1, lecturerId: 'u_lec9' },
 
   // 300 Level - 2nd Semester
-  { id: 'c_csc321', code: 'CSC 321', title: 'Data Management I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec4' },
-  { id: 'c_csc322', code: 'CSC 322', title: 'Survey of Programming Language', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec6' },
-  { id: 'c_csc323', code: 'CSC 323', title: 'Structured Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec6' },
+  { id: 'c_csc321', code: 'CSC 321', title: 'Data Management I', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec3' },
+  { id: 'c_csc322', code: 'CSC 322', title: 'Survey of Programming Language', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec3' },
+  { id: 'c_csc323', code: 'CSC 323', title: 'Structured Programming', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec5' },
   { id: 'c_csc324', code: 'CSC 324', title: 'Computer Architecture and Organization II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec5' },
-  { id: 'c_csc325', code: 'CSC 325', title: 'Computational Science & Numerical Methods', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u3' },
+  { id: 'c_csc325', code: 'CSC 325', title: 'Computational Science & Numerical Methods', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 300, semester: 2, lecturerId: 'u_lec9' },
   { id: 'c_gst321', code: 'GST 321', title: 'Entrepreneurship Studies II', creditUnits: 2, department: 'General Studies', college: 'Science', level: 300, semester: 2 },
 
   // 400 Level - 1st Semester
   { id: 'c_csc411', code: 'CSC 411', title: 'Organization of Programming Language', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
   { id: 'c_csc412', code: 'CSC 412', title: 'Software Engineering', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
-  { id: 'c_csc414', code: 'CSC 414', title: 'Net-Centric Computing', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u_lec3' },
+  { id: 'c_csc414', code: 'CSC 414', title: 'Net-Centric Computing', creditUnits: 2, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u2' },
   { id: 'c_csc415', code: 'CSC 415', title: 'Human Computer Interface', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u2' },
-  { id: 'c_csc418', code: 'CSC 418', title: 'Industrial Training', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u3' },
+  { id: 'c_csc418', code: 'CSC 418', title: 'Industrial Training', creditUnits: 4, department: 'Computer Science', college: 'Science', level: 400, semester: 1, lecturerId: 'u_lec10' },
 
   // 400 Level - 2nd Semester
-  { id: 'c_csc421', code: 'CSC 421', title: 'Artificial Intelligence', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u2' },
-  { id: 'c_csc422', code: 'CSC 422', title: 'Computer Networks / Communication', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u_lec3' },
-  { id: 'c_csc423', code: 'CSC 423', title: 'Data Management II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u_lec4' },
-  { id: 'c_csc424', code: 'CSC 424', title: 'Project', creditUnits: 6, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u2' },
+  { id: 'c_csc421', code: 'CSC 421', title: 'Artificial Intelligence', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
+  { id: 'c_csc422', code: 'CSC 422', title: 'Computer Networks / Communication', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u3' },
+  { id: 'c_csc423', code: 'CSC 423', title: 'Data Management II', creditUnits: 3, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u2' },
+  { id: 'c_csc424', code: 'CSC 424', title: 'Project', creditUnits: 6, department: 'Computer Science', college: 'Science', level: 400, semester: 2, lecturerId: 'u_lec10' },
 
   { id: 'c_agr101', code: 'AGR 101', title: 'Introductory Agriculture', creditUnits: 2, department: 'Crop Science', college: 'Agriculture', level: 100, semester: 1 },
 ];
@@ -347,7 +355,7 @@ function generateAcademicRecords() {
             totalScore: total,
             grade,
             status,
-            lecturerId: course.lecturerId || 'u3',
+            lecturerId: course.lecturerId || '',
             lastUpdated: new Date(Date.now() - (400 - lvl) * 86400000 * 90).toISOString(),
           });
         }
@@ -392,7 +400,7 @@ function generateAcademicRecords() {
           totalScore: total,
           grade,
           status: 'Published',
-          lecturerId: course.lecturerId || 'u3',
+          lecturerId: course.lecturerId || '',
           lastUpdated: '2023-10-15T10:00:00Z',
         });
       });

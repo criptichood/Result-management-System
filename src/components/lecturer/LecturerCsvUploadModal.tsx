@@ -10,8 +10,14 @@ import {
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Course } from '../../types';
-import { calculateLetterGrade } from '../../lib/academicOperations';
-import { CsvPreviewTable, ParsedRow } from './CsvPreviewTable';
+import { CsvPreviewTable } from './CsvPreviewTable';
+import type { ParsedRow } from '../../lib/gradingRosterCsv';
+import {
+  buildGradingRosterCsv,
+  downloadRosterCsv,
+  parseGradingRosterCsv,
+  validateRosterRow,
+} from '../../lib/gradingRosterCsv';
 import {
   Upload,
   Download,
@@ -21,6 +27,7 @@ import {
   RefreshCw,
   Sparkles,
   CheckCircle,
+  Info,
 } from 'lucide-react';
 
 interface LecturerCsvUploadModalProps {
@@ -28,6 +35,12 @@ interface LecturerCsvUploadModalProps {
   onClose: () => void;
   selectedCourse: Course | null;
   students: any[];
+  /**
+   * Live sheet state. When supplied, the exported roster reflects what is on
+   * screen, including unsaved edits — keep this in step with the toolbar
+   * export so the two never disagree.
+   */
+  draftScores?: Record<string, { ca: string; exam: string }>;
   onApplyScores: (importedScores: Record<string, { ca: string; exam: string }>, autoSubmit?: boolean) => void;
 }
 
@@ -36,6 +49,7 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
   onClose,
   selectedCourse,
   students,
+  draftScores,
   onApplyScores,
 }) => {
   const [dragActive, setDragActive] = useState(false);
@@ -43,9 +57,18 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
   const [parsedRows, setParsedRows] = useState<ParsedRow[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showErrorsOnly, setShowErrorsOnly] = useState(false);
+  const [ignoredLines, setIgnoredLines] = useState(0);
+  const [parseError, setParseError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!selectedCourse) return null;
+
+  const matricMap = new Map<string, any>();
+  students.forEach((s) => {
+    if (s.student?.matricNumber) {
+      matricMap.set(s.student.matricNumber.trim().toUpperCase(), s);
+    }
+  });
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -57,104 +80,14 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
     }
   };
 
-  const validateRow = (
-    matric: string,
-    caStr: string,
-    examStr: string,
-    matricMap: Map<string, any>
-  ): ParsedRow => {
-    const errors: string[] = [];
-    const normalizedMatric = matric.trim().toUpperCase();
-    const studentMatch = matricMap.get(normalizedMatric);
+  const rebuildFromRows = (rows: ParsedRow[]): ParsedRow[] =>
+    rows.map((row) => validateRosterRow(row.matricNumber, row.caScore, row.examScore, matricMap, selectedCourse));
 
-    if (!studentMatch) {
-      errors.push(`Matric No "${normalizedMatric}" is not enrolled in this course`);
-    }
-
-    const caNum = parseFloat(caStr);
-    if (caStr !== '' && caStr !== undefined) {
-      if (isNaN(caNum)) {
-        errors.push('CA score must be a number');
-      } else if (caNum < 0 || caNum > 40) {
-        errors.push(`CA score (${caNum}) exceeds 0-40 range`);
-      }
-    }
-
-    const examNum = parseFloat(examStr);
-    if (examStr !== '' && examStr !== undefined) {
-      if (isNaN(examNum)) {
-        errors.push('Exam score must be a number');
-      } else if (examNum < 0 || examNum > 60) {
-        errors.push(`Exam score (${examNum}) exceeds 0-60 range`);
-      }
-    }
-
-    const hasCa = caStr !== '' && caStr !== undefined && !isNaN(caNum);
-    const hasExam = examStr !== '' && examStr !== undefined && !isNaN(examNum);
-    const totalScore = hasCa || hasExam ? (hasCa ? caNum : 0) + (hasExam ? examNum : 0) : null;
-    const grade = totalScore !== null ? calculateLetterGrade(totalScore) : null;
-
-    return {
-      matricNumber: normalizedMatric,
-      studentName: studentMatch?.student?.name || 'Unmatched',
-      department: studentMatch?.student?.department || selectedCourse.department,
-      level: studentMatch?.student?.level || selectedCourse.level,
-      enrollmentId: studentMatch?.enrollmentId,
-      caScore: caStr,
-      examScore: examStr,
-      totalScore,
-      grade,
-      isValid: errors.length === 0 && !!studentMatch,
-      errors,
-    };
-  };
-
-  const parseCsvText = (text: string) => {
-    const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    if (lines.length <= 1) {
-      setParsedRows([]);
-      return;
-    }
-
-    const matricMap = new Map<string, any>();
-    students.forEach((s) => {
-      if (s.student?.matricNumber) {
-        matricMap.set(s.student.matricNumber.trim().toUpperCase(), s);
-      }
-    });
-
-    const rawHeaders = lines[0].split(',').map((h) => h.replace(/['"]/g, '').trim().toLowerCase());
-
-    let matricIdx = rawHeaders.findIndex((h) =>
-      h.includes('matric') || h.includes('reg') || h.includes('id') || h.includes('student no')
-    );
-    if (matricIdx === -1) {
-      matricIdx = rawHeaders[0].includes('s/n') || rawHeaders[0].includes('sn') || rawHeaders[0] === '#' ? 1 : 0;
-    }
-
-    let caIdx = rawHeaders.findIndex(
-      (h) => (h.includes('ca') && !h.includes('candidate')) || h.includes('assessment') || h.includes('test') || h.includes('(40)')
-    );
-    let examIdx = rawHeaders.findIndex(
-      (h) => h.includes('exam') || h.includes('examination') || h.includes('final') || h.includes('(60)')
-    );
-
-    if (caIdx === -1) caIdx = rawHeaders.length >= 7 ? 5 : 2;
-    if (examIdx === -1) examIdx = rawHeaders.length >= 7 ? 6 : 3;
-
-    const results: ParsedRow[] = [];
-    for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(',').map((c) => c.replace(/['"]/g, '').trim());
-      if (cols.length === 0 || cols.every((c) => c === '')) continue;
-
-      const matricNumber = cols[matricIdx] || '';
-      const caStr = cols[caIdx] || '';
-      const examStr = cols[examIdx] || '';
-
-      results.push(validateRow(matricNumber, caStr, examStr, matricMap));
-    }
-
-    setParsedRows(results);
+  const handleRowChange = (index: number, field: 'matricNumber' | 'caScore' | 'examScore', val: string) => {
+    // Re-validate through the same rules the file path uses, so the preview
+    // and an import can never disagree about what is valid.
+    const next = parsedRows.map((r, i) => (i === index ? { ...r, [field]: val } : r));
+    setParsedRows(rebuildFromRows(next));
   };
 
   const processFile = (file: File) => {
@@ -163,26 +96,13 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
-      parseCsvText(text);
+      const result = parseGradingRosterCsv(text, { course: selectedCourse, students });
+      setParsedRows(result.rows);
+      setIgnoredLines(result.ignoredLines);
+      setParseError(result.error || null);
       setIsProcessing(false);
     };
     reader.readAsText(file);
-  };
-
-  const handleRowChange = (index: number, field: 'matricNumber' | 'caScore' | 'examScore', val: string) => {
-    const matricMap = new Map<string, any>();
-    students.forEach((s) => {
-      if (s.student?.matricNumber) {
-        matricMap.set(s.student.matricNumber.trim().toUpperCase(), s);
-      }
-    });
-
-    setParsedRows((prev) => {
-      const updated = [...prev];
-      const target = { ...updated[index], [field]: val };
-      updated[index] = validateRow(target.matricNumber, target.caScore, target.examScore, matricMap);
-      return updated;
-    });
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -201,69 +121,44 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    // Official standard format omitting confidential phone and email:
-    // S/N, Matric Number, Student Name, Department, Level, CA Score (40), Exam Score (60), Total (100), Grade
-    const headers = [
-      'S/N',
-      'Matric Number',
-      'Student Name',
-      'Department',
-      'Level',
-      'CA Score (40)',
-      'Exam Score (60)',
-      'Total (100)',
-      'Grade',
-    ];
-    const rows = students.map((s, idx) => {
-      const ca = s.result?.caScore !== null && s.result?.caScore !== undefined ? s.result.caScore.toString() : '';
-      const exam = s.result?.examScore !== null && s.result?.examScore !== undefined ? s.result.examScore.toString() : '';
-      const hasScores = ca !== '' || exam !== '';
-      const total = hasScores ? (parseFloat(ca) || 0) + (parseFloat(exam) || 0) : '';
-      const grade = hasScores ? calculateLetterGrade(Number(total)) : '';
-      return [
-        idx + 1,
-        `"${s.student?.matricNumber || ''}"`,
-        `"${s.student?.name || ''}"`,
-        `"${s.student?.department || selectedCourse.department}"`,
-        s.student?.level || selectedCourse.level,
-        ca,
-        exam,
-        total,
-        grade,
-      ];
+    // Same builder and same score source as the toolbar export, so both buttons
+    // produce byte-identical files. Unsaved edits on the sheet are included,
+    // because the sheet is what the lecturer is looking at.
+    const csv = buildGradingRosterCsv({
+      course: selectedCourse,
+      students,
+      getScores: (enrollmentId: string) => {
+        const draft = draftScores?.[enrollmentId];
+        if (draft) return { ca: draft.ca, exam: draft.exam };
+        const result = students.find((s: any) => s.enrollmentId === enrollmentId)?.result;
+        return {
+          ca: result?.caScore !== null && result?.caScore !== undefined ? String(result.caScore) : '',
+          exam:
+            result?.examScore !== null && result?.examScore !== undefined
+              ? String(result.examScore)
+              : '',
+        };
+      },
     });
-
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${selectedCourse.code}_Class_Grading_Roster.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadRosterCsv(`${selectedCourse.code}_Class_Grading_Roster.csv`, csv);
   };
 
   // Quick helper to populate sample scores directly for demo/testing
   const handleLoadSampleScores = () => {
     setFileName(`${selectedCourse.code}_Filled_Sample_Scores.csv`);
-    const matricMap = new Map<string, any>();
-    students.forEach((s) => {
-      if (s.student?.matricNumber) {
-        matricMap.set(s.student.matricNumber.trim().toUpperCase(), s);
-      }
-    });
+    setIgnoredLines(0);
+    setParseError(null);
 
     const sampleRows: ParsedRow[] = students.map((s, idx) => {
       // Deterministic realistic scores spanning A down to E & F
       const sampleCA = [32, 28, 25, 20, 18, 35, 22, 16][idx % 8];
       const sampleExam = [52, 44, 38, 28, 23, 56, 32, 21][idx % 8];
-      return validateRow(
+      return validateRosterRow(
         s.student?.matricNumber || `FUAZ/SAMPLE/${idx + 1}`,
         sampleCA.toString(),
         sampleExam.toString(),
-        matricMap
+        matricMap,
+        selectedCourse
       );
     });
 
@@ -290,6 +185,8 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
     setFileName(null);
     setParsedRows([]);
     setShowErrorsOnly(false);
+    setIgnoredLines(0);
+    setParseError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -379,6 +276,24 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
+              {parseError && (
+                <div className="flex items-center gap-2 p-3 text-xs bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl text-red-800 dark:text-red-200">
+                  <Info className="w-4 h-4 flex-shrink-0" />
+                  {parseError}
+                </div>
+              )}
+
+              {ignoredLines > 0 && !parseError && (
+                <div className="flex items-start gap-2 p-3 text-xs bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl text-blue-800 dark:text-blue-200">
+                  <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>
+                    Skipped {ignoredLines} non-roster {ignoredLines === 1 ? 'line' : 'lines'}{' '}
+                    (the NUC grading key travels in the same file). Totals and grades are
+                    recalculated from CA and Exam, so formula text in the file is ignored.
+                  </span>
+                </div>
+              )}
+
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 gap-3">
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
@@ -393,6 +308,14 @@ export const LecturerCsvUploadModal: React.FC<LecturerCsvUploadModalProps> = ({
                   <Badge variant={invalidCount === 0 ? 'success' : 'warning'}>
                     {validCount} Valid / {invalidCount} Invalid
                   </Badge>
+                  {ignoredLines > 0 && (
+                    <span
+                      className="text-[10px] text-slate-500 dark:text-slate-400"
+                      title="The NUC grading key exported alongside the roster is not student data."
+                    >
+                      {ignoredLines} non-roster {ignoredLines === 1 ? 'line' : 'lines'} skipped
+                    </span>
+                  )}
                   {invalidCount > 0 && (
                     <Button
                       variant="outline"

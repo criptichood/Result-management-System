@@ -5,13 +5,16 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { Users, Mail, Phone, MapPin, AlertCircle, ChevronRight, Search, Printer, Download, Upload } from 'lucide-react';
+import { Users, Mail, Phone, MapPin, ChevronRight, Search, Printer, Download, Upload } from 'lucide-react';
 import { Course } from '../../types';
 import { calculateLetterGrade } from '../../lib/academicOperations';
+import { buildGradingRosterCsv, downloadRosterCsv } from '../../lib/gradingRosterCsv';
 import { LecturerAttendanceModal } from './LecturerAttendanceModal';
 
 interface LecturerClassListTabProps {
   selectedCourse: Course | null;
+  /** Course picker, rendered in this sheet's header rather than above it. */
+  courseSelector?: React.ReactNode;
   students: any[];
   settings: {
     lecturerViewEmail: boolean;
@@ -24,6 +27,7 @@ interface LecturerClassListTabProps {
 
 export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
   selectedCourse,
+  courseSelector,
   students,
   settings,
   scores,
@@ -43,53 +47,45 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
 
   const handleExportRosterCsv = () => {
     if (!selectedCourse) return;
-    const headers = ['S/N', 'Matric Number', 'Student Name', 'Department', 'Level', 'CA Score (40)', 'Exam Score (60)', 'Total (100)', 'Grade'];
-    const rows = filteredStudents.map((s, idx) => {
-      const caVal = scores ? scores[s.enrollmentId]?.ca : (s.result?.caScore !== null && s.result?.caScore !== undefined ? s.result.caScore.toString() : '');
-      const examVal = scores ? scores[s.enrollmentId]?.exam : (s.result?.examScore !== null && s.result?.examScore !== undefined ? s.result.examScore.toString() : '');
-      const hasScore = (caVal !== '' && caVal !== undefined) || (examVal !== '' && examVal !== undefined);
-      const total = hasScore ? (parseFloat(caVal || '0') || 0) + (parseFloat(examVal || '0') || 0) : '';
-      const grade = hasScore ? calculateGrade(Number(total)) : '';
-
-      return [
-        idx + 1,
-        `"${s.student?.matricNumber || ''}"`,
-        `"${s.student?.name || ''}"`,
-        `"${s.student?.department || selectedCourse.department}"`,
-        s.student?.level || selectedCourse.level,
-        caVal || '',
-        examVal || '',
-        hasScore ? total : '',
-        grade,
-      ];
+    // Shared builder, so this export is byte-identical to the grading tab's
+    // (formulas + NUC key included) except that it covers the filtered subset.
+    const csv = buildGradingRosterCsv({
+      course: selectedCourse,
+      students: filteredStudents,
+      getScores: (enrollmentId: string) => {
+        const draft = scores?.[enrollmentId];
+        if (draft) return { ca: draft.ca, exam: draft.exam };
+        const result = filteredStudents.find((s: any) => s.enrollmentId === enrollmentId)?.result;
+        return {
+          ca: result?.caScore !== null && result?.caScore !== undefined ? String(result.caScore) : '',
+          exam:
+            result?.examScore !== null && result?.examScore !== undefined
+              ? String(result.examScore)
+              : '',
+        };
+      },
     });
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${selectedCourse.code}_Class_Grading_Roster.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadRosterCsv(`${selectedCourse.code}_Class_Grading_Roster.csv`, csv);
   };
 
   return (
     <Card id="lecturer-class-list-tab" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-      <CardHeader className="border-b border-slate-100 dark:border-slate-800 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <CardTitle className="text-xl text-slate-900 dark:text-slate-100">
-            Class Roster: {selectedCourse ? selectedCourse.code : 'Select a course'}
-          </CardTitle>
-          <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+      <CardHeader className="border-b border-slate-100 dark:border-slate-800 p-6 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div className="min-w-0">
+          {courseSelector ?? (
+            <CardTitle className="text-xl text-slate-900 dark:text-slate-100">
+              Class Roster: {selectedCourse ? selectedCourse.code : 'Select a course'}
+            </CardTitle>
+          )}
+          <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-2">
             {selectedCourse
-              ? `${selectedCourse.title} • ${students.length} Enrolled Candidates`
+              ? `${students.length} Enrolled Candidates`
               : 'View all students registered for this course.'}
           </CardDescription>
         </div>
 
         {selectedCourse && (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <Button
               variant="outline"
               size="sm"
@@ -110,6 +106,7 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
                 <Upload className="w-3.5 h-3.5" /> Import Results CSV
               </Button>
             )}
+            <span className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-slate-700" aria-hidden="true" />
             <Button
               size="sm"
               onClick={() => setIsAttendanceModalOpen(true)}
@@ -283,15 +280,14 @@ export const LecturerClassListTab: React.FC<LecturerClassListTabProps> = ({
                               <MapPin className="w-4 h-4 text-slate-400 mr-3" />
                               <span>{s.student?.address || 'Campus Residence'}</span>
                             </div>
-                            <div className="flex items-center pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
-                              <AlertCircle className="w-4 h-4 text-amber-500 mr-3" />
-                              <span className="text-slate-700 dark:text-slate-300 flex-1">
-                                <span className="font-semibold block text-slate-900 dark:text-slate-100">
-                                  Emergency Contact
-                                </span>
-                                {s.student?.emergencyContact || 'Campus Security / Dean of Student Affairs'}
-                              </span>
-                            </div>
+                            {/*
+                              Emergency contact is deliberately absent. It names
+                              and numbers a student's parent or guardian, recorded
+                              for campus welfare and shown to the Dean of Student
+                              Affairs — not teaching staff. Unlike email/phone
+                              there is no admin toggle for it on purpose; do not
+                              add one back without a policy decision.
+                            */}
                           </div>
                         </div>
                       </DialogContent>

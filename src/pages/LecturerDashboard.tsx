@@ -3,37 +3,41 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/db';
 import { useSearchParams } from 'react-router-dom';
 import { Course } from '../types';
+import { LecturerCourseOffering } from '../lib/dbStudentCourses';
 import {
-  LecturerCourseList,
+  LecturerTabHeader,
+  LecturerCourseArchive,
+  LecturerCourseSwitcher,
   LecturerGradingTab,
   LecturerClassListTab,
   LecturerAnalyticsTab,
   LecturerCsvUploadModal,
 } from '../components/lecturer';
-import { ExaminerDisputeQueue } from '../components/examiner';
 import {
-  CheckCircle2,
-  Info,
-  ClipboardList,
-  Users,
-  LineChart,
-  FileQuestion,
-  Download,
-  Upload,
-} from 'lucide-react';
-import { Button } from '../components/ui/button';
+  getLecturerTab,
+  getLecturerTabId,
+  type LecturerTabId,
+} from '../components/lecturer/lecturerTabs';
+import { ExaminerDisputeQueue } from '../components/examiner';
+import { buildGradingRosterCsv, downloadRosterCsv } from '../lib/gradingRosterCsv';
+import { CheckCircle2, Info } from 'lucide-react';
 
 export const LecturerDashboard = () => {
   const { user } = useAuth();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [courses, setCourses] = useState<LecturerCourseOffering[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<LecturerCourseOffering | null>(null);
   const [students, setStudents] = useState<any[]>([]);
   const [scores, setScores] = useState<Record<string, { ca: string; exam: string }>>({});
   const [settings, setSettings] = useState({ lecturerViewEmail: false, lecturerViewPhone: false });
   const [notification, setNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'grading';
+  const activeTabId = getLecturerTabId(searchParams.get('tab'));
+  const activeTabConfig = getLecturerTab(activeTabId);
+
+  const handleSelectTab = (tab: LecturerTabId) => {
+    setSearchParams({ tab });
+  };
 
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
@@ -42,9 +46,14 @@ export const LecturerDashboard = () => {
     }, 4500);
   };
 
-  const loadCourseData = (course: Course) => {
+  const loadCourseData = (course: LecturerCourseOffering) => {
     setSelectedCourse(course);
-    const enrollments = db.from('enrollments').select().filter((e) => e.courseId === course.id);
+    // Only the cohort enrolled in this course's resolved session belongs on
+    // this sheet — a catalog course is reused by every cohort that ever took it.
+    const enrollments = db
+      .from('enrollments')
+      .select()
+      .filter((e) => e.courseId === course.id && e.academicYear === course.session);
     const users = db.from('users').select();
     const results = db.from('results').select();
 
@@ -70,16 +79,35 @@ export const LecturerDashboard = () => {
     setScores(initialScores);
   };
 
+  /**
+   * A lecturer should land on the course that needs them, not simply the first
+   * one alphabetically: returned sheets first, then unscored drafts, then
+   * whatever is left in the live session.
+   */
+  const pickDefaultCourse = (activeCourses: LecturerCourseOffering[]) => {
+    if (activeCourses.length === 0) return null;
+    const priority = { Rejected: 0, Draft: 1, Submitted: 2, Published: 3 };
+    return [...activeCourses].sort(
+      (a, b) => priority[a.submissionStatus] - priority[b.submissionStatus]
+    )[0];
+  };
+
   useEffect(() => {
     if (user) {
       const refresh = () => {
-        const lecturerCourses = db.getLecturerCourses(user.id);
+        const lecturerCourses = db.getLecturerCourses(user.id) as LecturerCourseOffering[];
         setCourses(lecturerCourses);
-        if (selectedCourse) {
+
+        const liveNow = lecturerCourses.filter((c) => c.isCurrentOffering);
+        const selectable = liveNow.length > 0 ? liveNow : lecturerCourses;
+
+        const stillSelectable = lecturerCourses.some((c) => c.id === selectedCourse?.id);
+        if (selectedCourse && stillSelectable) {
           const fresh = lecturerCourses.find((c) => c.id === selectedCourse.id);
           if (fresh) loadCourseData(fresh);
-        } else if (lecturerCourses.length > 0) {
-          loadCourseData(lecturerCourses[0]);
+        } else {
+          const fallback = pickDefaultCourse(selectable);
+          if (fallback) loadCourseData(fallback);
         }
         setSettings(db.getSettings());
       };
@@ -89,9 +117,30 @@ export const LecturerDashboard = () => {
     }
   }, [user]);
 
+  const liveCourses = courses.filter((c) => c.isCurrentOffering);
+  // A lecturer allocated a course before its cohort registers has nothing live
+  // yet; fall back to the whole allocation so the page is not blank.
+  const activeCourses = liveCourses.length > 0 ? liveCourses : courses;
+  const pastOfferingCount = courses.reduce((n, c) => n + c.previousOfferings.length, 0);
+  const currentSession = db.getSettings().currentSession || '2025/2026';
+
   const handleSelectCourse = (course: Course) => {
-    loadCourseData(course);
+    const offering = courses.find((c) => c.id === course.id);
+    if (offering) loadCourseData(offering);
   };
+
+  // One picker, rendered either in the page header or inside the sheet that
+  // owns it, depending on the tab. Built here so both placements stay identical.
+  const courseSelectorNode = (
+    <LecturerCourseSwitcher
+      activeCourses={activeCourses}
+      selectedCourse={selectedCourse}
+      onSelectCourse={handleSelectCourse}
+      currentSession={currentSession}
+      archivedCount={pastOfferingCount}
+      onOpenArchive={() => handleSelectTab('archive')}
+    />
+  );
 
   const handleScoreChange = (enrollmentId: string, type: 'ca' | 'exam', value: string) => {
     if (value === '') {
@@ -131,7 +180,13 @@ export const LecturerDashboard = () => {
 
   const handleSubmit = () => {
     if (!selectedCourse || !user) return;
-    db.saveCourseScores(selectedCourse.id, scores, user.id, 'Submitted');
+    const result = db.saveCourseScores(selectedCourse.id, scores, user.id, 'Submitted');
+    if (!result.ok) {
+      // Refused by the data layer. Should not be reachable from the button,
+      // which is disabled on the same rule, but never report a false success.
+      showNotification(result.reason || 'Submission refused: the sheet is incomplete.', 'info');
+      return;
+    }
     loadCourseData(selectedCourse);
     showNotification(`Results for ${selectedCourse.code} submitted to Chief Examiner for moderation.`);
   };
@@ -142,9 +197,23 @@ export const LecturerDashboard = () => {
   ) => {
     if (!selectedCourse || !user) return;
     const merged = { ...scores, ...importedScores };
-    setScores(merged);
     const newStatus = autoSubmit ? 'Submitted' : 'Draft';
-    db.saveCourseScores(selectedCourse.id, merged, user.id, newStatus);
+    const result = db.saveCourseScores(selectedCourse.id, merged, user.id, newStatus);
+
+    if (!result.ok) {
+      // A refused submission writes nothing. Land the same scores as a draft so
+      // the lecturer keeps the work they just imported and can finish the rest.
+      const asDraft = db.saveCourseScores(selectedCourse.id, merged, user.id, 'Draft');
+      setScores(merged);
+      loadCourseData(selectedCourse);
+      showNotification(
+        `${result.reason} ${asDraft.written} ${asDraft.written === 1 ? 'score was' : 'scores were'} saved as a draft instead.`,
+        'info'
+      );
+      return;
+    }
+
+    setScores(merged);
     loadCourseData(selectedCourse);
     const count = Object.keys(importedScores).length;
     if (autoSubmit) {
@@ -156,49 +225,17 @@ export const LecturerDashboard = () => {
 
   const handleDownloadCSV = () => {
     if (!selectedCourse || students.length === 0) return;
-    // Pre-populated official Class Roster omitting confidential email/phone and providing CA (40) & Exam (60)
-    const headers = [
-      'S/N',
-      'Matric Number',
-      'Student Name',
-      'Department',
-      'Level',
-      'CA Score (40)',
-      'Exam Score (60)',
-      'Total (100)',
-      'Grade',
-    ];
-    const rows = students.map((s, idx) => {
-      const caVal = scores[s.enrollmentId]?.ca || '';
-      const examVal = scores[s.enrollmentId]?.exam || '';
-      const hasScore = caVal !== '' || examVal !== '';
-      const ca = parseFloat(caVal) || 0;
-      const exam = parseFloat(examVal) || 0;
-      const total = hasScore ? ca + exam : '';
-      const grade = hasScore ? calculateGrade(Number(total)) : '';
-      return [
-        idx + 1,
-        `"${s.student?.matricNumber || ''}"`,
-        `"${s.student?.name || ''}"`,
-        `"${s.student?.department || selectedCourse.department}"`,
-        s.student?.level || selectedCourse.level,
-        caVal,
-        examVal,
-        total,
-        grade,
-      ];
+    // Totals and grades ship as live formulas, and the NUC grading key rides
+    // alongside in extra columns. See src/lib/gradingRosterCsv.ts.
+    const csv = buildGradingRosterCsv({
+      course: selectedCourse,
+      students,
+      getScores: (enrollmentId) => ({
+        ca: scores[enrollmentId]?.ca || '',
+        exam: scores[enrollmentId]?.exam || '',
+      }),
     });
-
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${selectedCourse.code}_Class_Grading_Roster.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadRosterCsv(`${selectedCourse.code}_Class_Grading_Roster.csv`, csv);
   };
 
   // Compute Analytics Data with detailed student cohort breakdown
@@ -311,7 +348,7 @@ export const LecturerDashboard = () => {
   if (!user) return null;
 
   return (
-    <div id="lecturer-dashboard-page" className="p-4 sm:p-8 max-w-6xl mx-auto w-full">
+    <div id="lecturer-dashboard-page" className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
       {/* Toast Notification Banner */}
       {notification && (
         <div
@@ -332,161 +369,81 @@ export const LecturerDashboard = () => {
         </div>
       )}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#064e3b] dark:text-emerald-400 tracking-tight">Lecturer Dashboard</h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">
-          {user.name} • Dept. of {user.department || 'Computer Science'} ({user.staffId || 'Staff'})
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <LecturerCourseList
-          courses={courses}
+      {/* Each tab brings its own heading; only the landing tab names the lecturer */}
+      <div className="space-y-3">
+        <LecturerTabHeader
+          tab={activeTabConfig}
+          identity={{
+            name: user.name,
+            department: user.department,
+            staffId: user.staffId,
+          }}
           selectedCourse={selectedCourse}
+          activeCourses={activeCourses}
+          archivedCount={pastOfferingCount}
           onSelectCourse={handleSelectCourse}
+          onOpenArchive={() => handleSelectTab('archive')}
+          currentSession={currentSession}
         />
 
-        <div className="lg:col-span-3 space-y-4">
-          {/* In-Page Sub-Navigation Tab Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
-            <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto py-1">
-              <button
-                onClick={() => setSearchParams({ tab: 'grading' })}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'grading'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <ClipboardList className="w-4 h-4" />
-                <span>Grading Sheet</span>
-                {students.length > 0 && (
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      activeTab === 'grading'
-                        ? 'bg-white/20 text-white'
-                        : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    {students.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => setSearchParams({ tab: 'class-list' })}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'class-list'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                <span>Class Roster</span>
-              </button>
-
-              <button
-                onClick={() => setSearchParams({ tab: 'analytics' })}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'analytics'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <LineChart className="w-4 h-4" />
-                <span>Cohort Analytics</span>
-              </button>
-
-              <button
-                onClick={() => setSearchParams({ tab: 'disputes' })}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'disputes'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <FileQuestion className="w-4 h-4" />
-                <span>Grade Queries</span>
-              </button>
-            </div>
-
-            {selectedCourse && (
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleDownloadCSV}
-                  className="text-xs gap-1.5 h-8 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                  title="Download pre-populated class roster CSV (CA & Exam)"
-                >
-                  <Download className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  <span>Export Roster</span>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setIsCsvModalOpen(true)}
-                  className="text-xs gap-1.5 h-8 bg-[#059669] hover:bg-emerald-700 text-white font-medium shadow-xs"
-                  title="Upload completed scores for automated grading"
-                >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Import Results</span>
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {activeTab === 'grading' && (
-            <LecturerGradingTab
-              selectedCourse={selectedCourse}
-              students={students}
-              scores={scores}
-              onScoreChange={handleScoreChange}
-              onSaveDraft={handleSaveDraft}
-              onSubmit={handleSubmit}
-              onDownloadCSV={handleDownloadCSV}
-              onApplyCsvScores={handleApplyCsvScores}
-              calculateGrade={calculateGrade}
-              lecturerName={user.name}
-            />
-          )}
-
-          {activeTab === 'class-list' && (
-            <LecturerClassListTab
-              selectedCourse={selectedCourse}
-              students={students}
-              settings={settings}
-              scores={scores}
-              calculateGrade={calculateGrade}
-              onOpenCsvModal={() => setIsCsvModalOpen(true)}
-            />
-          )}
-
-          {activeTab === 'analytics' && (
-            <LecturerAnalyticsTab
-              selectedCourse={selectedCourse}
-              totalEnrolled={students.length}
-              analytics={analytics}
-            />
-          )}
-
-          {activeTab === 'disputes' && (
-            <ExaminerDisputeQueue
-              currentUser={user}
-              onRefresh={() => {
-                if (selectedCourse) loadCourseData(selectedCourse);
-              }}
-            />
-          )}
-
-          {/* Global CSV Upload Modal accessible from toolbar and class-list */}
-          <LecturerCsvUploadModal
-            isOpen={isCsvModalOpen}
-            onClose={() => setIsCsvModalOpen(false)}
+        {activeTabId === 'grading' && (
+          <LecturerGradingTab
             selectedCourse={selectedCourse}
+            courseSelector={courseSelectorNode}
             students={students}
-            onApplyScores={handleApplyCsvScores}
+            scores={scores}
+            onScoreChange={handleScoreChange}
+            onSaveDraft={handleSaveDraft}
+            onSubmit={handleSubmit}
+            onDownloadCSV={handleDownloadCSV}
+            onApplyCsvScores={handleApplyCsvScores}
+            calculateGrade={calculateGrade}
+            lecturerName={user.name}
           />
-        </div>
+        )}
+
+        {activeTabId === 'class-list' && (
+          <LecturerClassListTab
+            selectedCourse={selectedCourse}
+            courseSelector={courseSelectorNode}
+            students={students}
+            settings={settings}
+            scores={scores}
+            calculateGrade={calculateGrade}
+            onOpenCsvModal={() => setIsCsvModalOpen(true)}
+          />
+        )}
+
+        {activeTabId === 'analytics' && (
+          <LecturerAnalyticsTab
+            selectedCourse={selectedCourse}
+            totalEnrolled={students.length}
+            analytics={analytics}
+          />
+        )}
+
+        {activeTabId === 'disputes' && (
+          <ExaminerDisputeQueue
+            currentUser={user}
+            onRefresh={() => {
+              if (selectedCourse) loadCourseData(selectedCourse);
+            }}
+          />
+        )}
+
+        {activeTabId === 'archive' && (
+          <LecturerCourseArchive courses={courses} currentSession={currentSession} />
+        )}
+
+        {/* Global CSV Upload Modal accessible from toolbar and class-list */}
+        <LecturerCsvUploadModal
+          isOpen={isCsvModalOpen}
+          onClose={() => setIsCsvModalOpen(false)}
+          selectedCourse={selectedCourse}
+          students={students}
+          draftScores={scores}
+          onApplyScores={handleApplyCsvScores}
+        />
       </div>
     </div>
   );

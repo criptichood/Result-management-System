@@ -2,6 +2,7 @@ import { GradeDispute, ModerationLog, User } from '../types';
 import { DB_KEY, DBState, loadAndMigrateDBState, createInitialDBState } from './dbStateInit';
 import { syncStateToSqliteBridge, reloadStateFromSqliteBridge } from './dbSqliteBridge';
 import { calculateLetterGrade } from './academicOperations';
+import { CA_MAX, EXAM_MAX } from './gradingRosterCsv';
 import { computeLecturersWorkload } from './dbWorkload';
 import {
   computeStudentResults,
@@ -25,6 +26,18 @@ import {
   importSqliteBinaryData,
 } from './dbSqliteProxy';
 import { sqliteEngine } from './sqliteEngine';
+
+export interface SaveCourseScoresResult {
+  /** False when a submission was refused for being incomplete. */
+  ok: boolean;
+  /** Result rows written. */
+  written: number;
+  /** Candidates with no CA and/or Exam score. */
+  missingCount: number;
+  totalEnrolled: number;
+  /** Human-readable explanation, set only when `ok` is false. */
+  reason?: string;
+}
 
 class MockDB {
   private state: DBState;
@@ -231,13 +244,13 @@ class MockDB {
   }
 
   getLecturerCourses(lecturerId: string) {
-    const user = this.from('users').selectById(lecturerId);
+    const settings = this.getSettings();
     return computeLecturerCourses(
       lecturerId,
-      user,
       this.from('courses').select(),
       this.from('enrollments').select(),
-      this.from('results').select()
+      this.from('results').select(),
+      { currentSession: settings.currentSession || '2025/2026' }
     );
   }
 
@@ -271,6 +284,7 @@ class MockDB {
     academicYear?: string
   ) {
     const session = academicYear || this.getSettings().currentSession || '2025/2026';
+    const courses = this.from('courses').select();
     courseIds.forEach((courseId) => {
       const enrollmentId = `e_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       this.from('enrollments').insert({
@@ -280,6 +294,9 @@ class MockDB {
         semester,
         academicYear: session,
       });
+      // Attribute the new sheet to the course's allocated lecturer, not a
+      // hardcoded one — otherwise every registration lands on u3 regardless.
+      const course = courses.find((c) => c.id === courseId);
       this.from('results').insert({
         id: `r_${Date.now()}_${Math.random().toString(36).substring(7)}`,
         enrollmentId,
@@ -288,7 +305,7 @@ class MockDB {
         totalScore: null,
         grade: null,
         status: 'Draft',
-        lecturerId: 'u3',
+        lecturerId: course?.lecturerId || '',
         lastUpdated: new Date().toISOString(),
       });
     });
@@ -298,18 +315,81 @@ class MockDB {
     return calculateLetterGrade(total);
   }
 
+  /**
+   * Writes a sheet. Drafts may be partial; a submission may not.
+   *
+   * This is the authority for the "no blank report reaches the Chief Examiner"
+   * rule, so the check lives here rather than in a button's `disabled`. Every
+   * route in (the toolbar, the CSV import's apply-and-submit, anything added
+   * later) goes through it.
+   */
   saveCourseScores(
     courseId: string,
     scores: Record<string, { ca: string; exam: string }>,
     lecturerId: string,
     status: 'Draft' | 'Submitted' = 'Draft'
-  ) {
+  ): SaveCourseScoresResult {
     const enrollments = this.from('enrollments').selectWhere((e) => e.courseId === courseId);
     const existingResults = this.from('results').select();
+
+    if (status === 'Submitted') {
+      // Nothing enrolled means nothing to submit. Checked before the loop
+      // because an empty roster has no "incomplete" rows to trip the test below.
+      if (enrollments.length === 0) {
+        return {
+          ok: false,
+          written: 0,
+          missingCount: 0,
+          totalEnrolled: 0,
+          reason: 'This course has no enrolled candidates, so there is nothing to submit.',
+        };
+      }
+
+      let incomplete = 0;
+      let outOfRange = 0;
+      enrollments.forEach((e) => {
+        const entry = scores[e.id];
+        if (!entry) {
+          incomplete++;
+          return;
+        }
+        const ca = parseFloat(entry.ca);
+        const exam = parseFloat(entry.exam);
+        if (isNaN(ca) || isNaN(exam)) {
+          incomplete++;
+          return;
+        }
+        if (ca < 0 || ca > CA_MAX || exam < 0 || exam > EXAM_MAX) outOfRange++;
+      });
+
+      if (incomplete > 0 || outOfRange > 0) {
+        const parts: string[] = [];
+        if (incomplete > 0) {
+          parts.push(
+            `${incomplete} of ${enrollments.length} candidates still have no CA or Exam score`
+          );
+        }
+        if (outOfRange > 0) {
+          parts.push(
+            `${outOfRange} ${outOfRange === 1 ? 'score is' : 'scores are'} outside the permitted range (CA 0-${CA_MAX}, Exam 0-${EXAM_MAX})`
+          );
+        }
+        return {
+          ok: false,
+          written: 0,
+          missingCount: incomplete,
+          totalEnrolled: enrollments.length,
+          reason: `This sheet cannot be submitted for moderation: ${parts.join('; ')}.`,
+        };
+      }
+    }
+
+    let written = 0;
 
     enrollments.forEach((e) => {
       const studentScore = scores[e.id];
       if (!studentScore) return;
+      written++;
 
       const caVal =
         studentScore.ca !== '' && studentScore.ca !== undefined
@@ -349,6 +429,8 @@ class MockDB {
         });
       }
     });
+
+    return { ok: true, written, missingCount: 0, totalEnrolled: enrollments.length };
   }
 
   getModerationLogs(courseId?: string): ModerationLog[] {

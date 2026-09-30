@@ -1,4 +1,7 @@
-export { LecturerCourseList } from './LecturerCourseList';
+export { LecturerCourseSwitcher } from './LecturerCourseSwitcher';
+export { LecturerCourseArchive } from './LecturerCourseArchive';
+export { LecturerTabHeader } from './LecturerTabHeader';
+export * from './lecturerTabs';
 export { LecturerGradingTab } from './LecturerGradingTab';
 export { LecturerClassListTab } from './LecturerClassListTab';
 export { LecturerAnalyticsTab } from './LecturerAnalyticsTab';
@@ -6,6 +9,5 @@ export { LecturerCsvUploadModal } from './LecturerCsvUploadModal';
 export { LecturerAttendanceModal } from './LecturerAttendanceModal';
 export { LecturerCohortCards } from './LecturerCohortCards';
 export { LecturerCohortRoster } from './LecturerCohortRoster';
-export { LecturerBatchFillModal } from './LecturerBatchFillModal';
 export { LecturerPrintableGradeSheet } from './LecturerPrintableGradeSheet';
 export { CsvPreviewTable } from './CsvPreviewTable';

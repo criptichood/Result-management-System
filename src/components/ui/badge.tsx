@@ -20,7 +20,7 @@ function Badge({ className, variant = "default", children, ...props }: BadgeProp
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-[11px] font-bold uppercase tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2",
+        "inline-flex items-center rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2",
         variants[variant],
         className
       )}
