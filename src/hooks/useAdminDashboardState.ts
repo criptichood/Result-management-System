@@ -13,13 +13,7 @@ export function useAdminDashboardState() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [results, setResults] = useState<Result[]>([]);
-  const [settings, setSettings] = useState({
-    lecturerViewEmail: false,
-    lecturerViewPhone: false,
-    courseRegistrationOpen: true,
-    currentSession: '2025/2026',
-    currentSemester: 1 as 1 | 2,
-  });
+  const [settings, setSettings] = useState(() => db.getSettings());
 
   const [notification, setNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
 
@@ -89,6 +83,10 @@ export function useAdminDashboardState() {
     if (user) {
       reloadData();
     }
+    const unsubscribe = db.subscribe(() => {
+      reloadData();
+    });
+    return () => unsubscribe();
   }, [user]);
 
   const handleSettingChange = (key: keyof typeof settings, value?: any) => {

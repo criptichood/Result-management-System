@@ -82,7 +82,7 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({
                 Matric: {user.matricNumber || 'N/A'}
               </span>
               <span className="text-emerald-300 text-xs font-semibold">
-                • {settings?.currentSession || '2024/2025'} Session (Sem {settings?.currentSemester || 1})
+                • {settings?.currentSession || '2025/2026'} Session (Sem {settings?.currentSemester || 1})
               </span>
             </div>
 

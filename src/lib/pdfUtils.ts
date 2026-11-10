@@ -166,6 +166,13 @@ export function generateOfficialResultPdf(
       y = 20;
     }
 
+    const isSingleSemester = scopeLabel !== 'All_Semesters';
+    const scopeTotalPoints = items.reduce(
+      (sum, item) => sum + getGradePoint(item.result?.grade) * item.units,
+      0
+    );
+    const scopeGpa = totalUnitsRegistered > 0 ? scopeTotalPoints / totalUnitsRegistered : 0;
+
     pdf.setFillColor(240, 253, 244); // emerald-50
     pdf.setDrawColor(187, 247, 208); // emerald-200
     pdf.roundedRect(15, y, pageWidth - 30, 18, 2, 2, 'FD');
@@ -173,14 +180,26 @@ export function generateOfficialResultPdf(
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(9);
     pdf.setTextColor(6, 78, 59);
-    pdf.text('CUMULATIVE ACADEMIC SUMMARY', 20, y + 6);
+    pdf.text(
+      isSingleSemester ? 'SEMESTER & CUMULATIVE ACADEMIC SUMMARY' : 'CUMULATIVE ACADEMIC SUMMARY',
+      20,
+      y + 6
+    );
 
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(51, 65, 85);
-    pdf.text(`Total Units Registered: ${totalUnitsRegistered}`, 20, y + 13);
-    pdf.text(`Total Units Passed: ${totalUnitsPassed}`, 75, y + 13);
-    pdf.text(`Cumulative CGPA: ${cumulativeCgpa.toFixed(2)}`, 135, y + 13);
+
+    if (isSingleSemester) {
+      pdf.text(`Registered Units: ${totalUnitsRegistered}`, 20, y + 13);
+      pdf.text(`Passed: ${totalUnitsPassed}`, 65, y + 13);
+      pdf.text(`Semester GPA: ${scopeGpa.toFixed(2)}`, 108, y + 13);
+      pdf.text(`Cumulative CGPA: ${cumulativeCgpa.toFixed(2)}`, 152, y + 13);
+    } else {
+      pdf.text(`Total Units Registered: ${totalUnitsRegistered}`, 20, y + 13);
+      pdf.text(`Total Units Passed: ${totalUnitsPassed}`, 75, y + 13);
+      pdf.text(`Cumulative CGPA: ${cumulativeCgpa.toFixed(2)}`, 135, y + 13);
+    }
 
     y += 24;
 

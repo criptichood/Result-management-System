@@ -34,7 +34,7 @@ export const SenateRatificationDesk: React.FC<SenateRatificationDeskProps> = ({
   enrollments,
   results,
   users,
-  session = '2024/2025',
+  session = '2025/2026',
   onRefreshData,
   showToast,
 }) => {

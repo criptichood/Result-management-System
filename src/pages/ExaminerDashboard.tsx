@@ -32,10 +32,10 @@ export const ExaminerDashboard = () => {
   const [settings, setSettings] = useState<any>(() => db.getSettings());
   const [selectedSession, setSelectedSession] = useState<string>(() => {
     const s = db.getSettings();
-    return s.currentSession || '2024/2025';
+    return s.currentSession || '2025/2026';
   });
   const [selectedSemester, setSelectedSemester] = useState<number | 'ALL'>('ALL');
-  const [availableSessions, setAvailableSessions] = useState<string[]>(['2024/2025', '2023/2024', '2022/2023']);
+  const [availableSessions, setAvailableSessions] = useState<string[]>(['2025/2026', '2024/2025', '2023/2024', '2022/2023']);
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'pending';
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,7 +79,7 @@ export const ExaminerDashboard = () => {
     const sortedSessions = Array.from(sessionSet).sort().reverse();
     setAvailableSessions(sortedSessions);
 
-    const activeSession = selectedSession || appSettings.currentSession || '2024/2025';
+    const activeSession = selectedSession || appSettings.currentSession || '2025/2026';
 
     const students = allUsers.filter(
       (u) => u.role === 'Student' && u.department === user.department

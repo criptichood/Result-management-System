@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -98,6 +98,57 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
       : '0.00';
 
   const cgpaNum = parseFloat(computedCgpa);
+
+  // Group academic records by session and semester
+  const semesterGroups = useMemo(() => {
+    const groups: {
+      key: string;
+      session: string;
+      semester: number;
+      items: typeof academicRecords;
+      tcr: number;
+      tce: number;
+      tqp: number;
+      gpa: string;
+    }[] = [];
+
+    const groupMap = new Map<string, typeof groups[0]>();
+
+    academicRecords.forEach((item) => {
+      const sess = item.enrollment.academicYear || '2025/2026';
+      const sem = item.enrollment.semester || item.course?.semester || 1;
+      const key = `${sess} • Semester ${sem}`;
+
+      if (!groupMap.has(key)) {
+        const grp = {
+          key,
+          session: sess,
+          semester: sem,
+          items: [],
+          tcr: 0,
+          tce: 0,
+          tqp: 0,
+          gpa: '0.00',
+        };
+        groupMap.set(key, grp);
+        groups.push(grp);
+      }
+
+      const grp = groupMap.get(key)!;
+      grp.items.push(item);
+      grp.tcr += item.creditUnits;
+      if (item.grade !== '-' && item.grade !== 'F') {
+        grp.tce += item.creditUnits;
+      }
+      grp.tqp += item.qualityPoints;
+    });
+
+    groups.forEach((grp) => {
+      grp.gpa = grp.tcr > 0 ? (grp.tqp / grp.tcr).toFixed(2) : '0.00';
+    });
+
+    return groups;
+  }, [academicRecords]);
 
   // Determine Nigerian Degree Standing
   let degreeStanding = student.degreeClass || 'Clear Standing';
@@ -310,94 +361,117 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left">
-                  <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
-                    <tr>
-                      <th className="py-2.5 px-3">Course</th>
-                      <th className="py-2.5 px-3">Type</th>
-                      <th className="py-2.5 px-2 text-center">Units</th>
-                      <th className="py-2.5 px-2 text-center">CA (40)</th>
-                      <th className="py-2.5 px-2 text-center">Exam (60)</th>
-                      <th className="py-2.5 px-2 text-center">Total</th>
-                      <th className="py-2.5 px-2 text-center">Grade</th>
-                      <th className="py-2.5 px-2 text-center">GP</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {academicRecords.map((item) => (
-                      <tr
-                        key={item.enrollment.id}
-                        className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
-                      >
-                        <td className="py-2.5 px-3">
-                          <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
-                            {item.course?.code || 'CRS'}
-                          </span>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
-                            {item.course?.title || 'Course Title'}
-                          </p>
-                        </td>
-                        <td className="py-2.5 px-3">
-                          {item.isCore ? (
-                            <Badge
-                              variant="secondary"
-                              className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] py-0 px-2 font-semibold"
-                            >
-                              Core
-                            </Badge>
-                          ) : (
-                            <Badge
-                              variant="secondary"
-                              className="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-[10px] py-0 px-2 font-semibold"
-                            >
-                              Borrowed ({item.course?.department || 'Service'})
-                            </Badge>
-                          )}
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-semibold">
-                          {item.creditUnits}
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-mono">
-                          {item.result?.caScore !== undefined ? item.result.caScore : '-'}
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-mono">
-                          {item.result?.examScore !== undefined ? item.result.examScore : '-'}
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-bold font-mono text-slate-900 dark:text-slate-100">
-                          {item.result?.totalScore !== undefined ? item.result.totalScore : '-'}
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-bold">
-                          <span
-                            className={
-                              item.grade === 'A'
-                                ? 'text-emerald-600 dark:text-emerald-400'
-                                : item.grade === 'E'
-                                ? 'text-orange-600 dark:text-orange-400'
-                                : item.grade === 'F'
-                                ? 'text-rose-600 dark:text-rose-400'
-                                : 'text-slate-800 dark:text-slate-200'
-                            }
+            <div className="space-y-4">
+              {semesterGroups.map((grp) => (
+                <div key={grp.key} className="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xs">
+                  <div className="bg-slate-100 dark:bg-slate-800/90 px-4 py-2.5 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
+                    <span className="font-bold text-xs uppercase tracking-wide text-slate-800 dark:text-slate-100">
+                      {grp.key}
+                    </span>
+                    <div className="flex items-center gap-3 text-xs font-mono">
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Units: <strong className="text-slate-800 dark:text-slate-200">{grp.tcr}</strong>
+                      </span>
+                      <span className="text-slate-500 dark:text-slate-400">
+                        TQP: <strong className="text-slate-800 dark:text-slate-200">{grp.tqp}</strong>
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold">
+                        GPA: {grp.gpa}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-left">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                          <th className="py-2.5 px-3">Course</th>
+                          <th className="py-2.5 px-3">Type</th>
+                          <th className="py-2.5 px-2 text-center">Units</th>
+                          <th className="py-2.5 px-2 text-center">CA (40)</th>
+                          <th className="py-2.5 px-2 text-center">Exam (60)</th>
+                          <th className="py-2.5 px-2 text-center">Total</th>
+                          <th className="py-2.5 px-2 text-center">Grade</th>
+                          <th className="py-2.5 px-2 text-center">GP</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {grp.items.map((item) => (
+                          <tr
+                            key={item.enrollment.id}
+                            className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
                           >
-                            {item.grade}
-                          </span>
-                        </td>
-                        <td className="py-2.5 px-2 text-center font-mono text-slate-600 dark:text-slate-400">
-                          {item.gradePoint}
-                        </td>
-                      </tr>
-                    ))}
-                    {academicRecords.length === 0 && (
-                      <tr>
-                        <td colSpan={8} className="py-8 text-center text-slate-400 text-xs">
-                          No course enrollment records registered for this candidate.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                            <td className="py-2.5 px-3">
+                              <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+                                {item.course?.code || 'CRS'}
+                              </span>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                                {item.course?.title || 'Course Title'}
+                              </p>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              {item.isCore ? (
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] py-0 px-2 font-semibold"
+                                >
+                                  Core
+                                </Badge>
+                              ) : (
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-[10px] py-0 px-2 font-semibold"
+                                >
+                                  Borrowed ({item.course?.department || 'Service'})
+                                </Badge>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-semibold">
+                              {item.creditUnits}
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-mono">
+                              {item.result?.caScore !== undefined ? item.result.caScore : '-'}
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-mono">
+                              {item.result?.examScore !== undefined ? item.result.examScore : '-'}
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-bold font-mono text-slate-900 dark:text-slate-100">
+                              {item.result?.totalScore !== undefined ? item.result.totalScore : '-'}
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-bold">
+                              <span
+                                className={
+                                  item.grade === 'A'
+                                    ? 'text-emerald-600 dark:text-emerald-400'
+                                    : item.grade === 'B'
+                                    ? 'text-teal-600 dark:text-teal-400'
+                                    : item.grade === 'C'
+                                    ? 'text-blue-600 dark:text-blue-400'
+                                    : item.grade === 'D'
+                                    ? 'text-amber-600 dark:text-amber-400'
+                                    : item.grade === 'E'
+                                    ? 'text-orange-600 dark:text-orange-400'
+                                    : 'text-rose-600 dark:text-rose-400'
+                                }
+                              >
+                                {item.grade}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-2 text-center font-mono text-slate-600 dark:text-slate-400">
+                              {item.gradePoint}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
+
+              {semesterGroups.length === 0 && (
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-8 text-center text-slate-400 text-xs">
+                  No course enrollment records registered for this candidate.
+                </div>
+              )}
             </div>
           </div>
         </div>

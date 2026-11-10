@@ -6,6 +6,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { User, Course, Enrollment, Result } from '../../types';
 import { StudentProfileModal } from './StudentProfileModal';
+import { getGradePoint, getDegreeClassification } from '../../lib/academicUtils';
 import {
   Search,
   ChevronRight,
@@ -55,6 +56,76 @@ export const DepartmentStudentsTable: React.FC<DepartmentStudentsTableProps> = (
     [deptStudents]
   );
 
+  // Precompute academic performance metrics (CGPA, latest GPA, TCR, TCE) for every departmental student
+  const studentMetricsMap = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        tcr: number;
+        tce: number;
+        twp: number;
+        cgpa: number;
+        latestGpa: number;
+        standing: string;
+      }
+    >();
+
+    deptStudents.forEach((student) => {
+      const studentEnrs = enrollments.filter((e) => e.studentId === student.id);
+      let tcr = 0;
+      let tce = 0;
+      let twp = 0;
+
+      const semMap = new Map<string, { points: number; units: number }>();
+
+      studentEnrs.forEach((enr) => {
+        const res = results.find((r) => r.enrollmentId === enr.id);
+        const course = courses.find((c) => c.id === enr.courseId);
+        if (!course) return;
+
+        const units = course.creditUnits || 0;
+        if (res && res.grade && res.grade !== '-') {
+          tcr += units;
+          const gp = getGradePoint(res.grade);
+          const pts = units * gp;
+          twp += pts;
+          if (res.grade !== 'F' && (res.totalScore ?? 0) >= 40) {
+            tce += units;
+          }
+
+          const semKey = `${enr.academicYear || ''}_${enr.semester || course.semester || 1}`;
+          const currentSem = semMap.get(semKey) || { points: 0, units: 0 };
+          currentSem.points += pts;
+          currentSem.units += units;
+          semMap.set(semKey, currentSem);
+        }
+      });
+
+      const computedCgpa = tcr > 0 ? parseFloat((twp / tcr).toFixed(2)) : (student.finalCgpa || 0);
+
+      let latestGpa = 0;
+      if (semMap.size > 0) {
+        const lastSem = Array.from(semMap.values())[semMap.size - 1];
+        if (lastSem && lastSem.units > 0) {
+          latestGpa = parseFloat((lastSem.points / lastSem.units).toFixed(2));
+        }
+      }
+
+      const classification = getDegreeClassification(computedCgpa);
+
+      map.set(student.id, {
+        tcr,
+        tce,
+        twp,
+        cgpa: computedCgpa,
+        latestGpa,
+        standing: student.isGraduated ? (student.degreeClass || classification.label) : classification.label,
+      });
+    });
+
+    return map;
+  }, [deptStudents, enrollments, results, courses]);
+
   const filteredStudents = useMemo(() => {
     return deptStudents
       .filter((student) => {
@@ -95,13 +166,13 @@ export const DepartmentStudentsTable: React.FC<DepartmentStudentsTableProps> = (
           return aLevel - bLevel;
         }
         if (sortBy === 'cgpa') {
-          const aCgpa = a.finalCgpa || 0;
-          const bCgpa = b.finalCgpa || 0;
+          const aCgpa = studentMetricsMap.get(a.id)?.cgpa || a.finalCgpa || 0;
+          const bCgpa = studentMetricsMap.get(b.id)?.cgpa || b.finalCgpa || 0;
           return bCgpa - aCgpa;
         }
         return 0;
       });
-  }, [deptStudents, statusFilter, levelFilter, searchQuery, sortBy]);
+  }, [deptStudents, statusFilter, levelFilter, searchQuery, sortBy, studentMetricsMap]);
 
   return (
     <Card className="shadow-2xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
@@ -275,11 +346,11 @@ export const DepartmentStudentsTable: React.FC<DepartmentStudentsTableProps> = (
               <div className="flex items-center justify-between pt-1 text-xs border-t border-slate-100 dark:border-slate-800">
                 <div>
                   <span className="text-slate-600 dark:text-slate-300 font-medium">
-                    {student.degreeClass || (student.isGraduated ? 'Graduated' : 'In Good Standing')}
+                    {studentMetricsMap.get(student.id)?.standing || student.degreeClass || (student.isGraduated ? 'Graduated' : 'In Good Standing')}
                   </span>
-                  {student.finalCgpa !== undefined && (
+                  {studentMetricsMap.get(student.id)?.cgpa !== undefined && (
                     <span className="ml-1 text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold">
-                      ({student.finalCgpa.toFixed(2)} CGPA)
+                      ({studentMetricsMap.get(student.id)!.cgpa.toFixed(2)} CGPA)
                     </span>
                   )}
                 </div>
@@ -403,17 +474,17 @@ export const DepartmentStudentsTable: React.FC<DepartmentStudentsTableProps> = (
                         </div>
                       </TableCell>
 
-                      {/* Academic Standing */}
+                      {/* Academic Standing & CGPA */}
                       <TableCell className="py-3 px-3">
                         <div className="text-xs">
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">
-                            {student.degreeClass || (student.isGraduated ? 'Graduated' : 'Good Standing')}
+                          <div className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                            {studentMetricsMap.get(student.id)?.cgpa !== undefined
+                              ? `${studentMetricsMap.get(student.id)!.cgpa.toFixed(2)} CGPA`
+                              : 'Pending'}
+                          </div>
+                          <span className="font-medium text-slate-600 dark:text-slate-400 text-[11px]">
+                            {studentMetricsMap.get(student.id)?.standing || student.degreeClass || (student.isGraduated ? 'Graduated' : 'Good Standing')}
                           </span>
-                          {student.finalCgpa !== undefined && (
-                            <span className="ml-1 text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold">
-                              ({student.finalCgpa.toFixed(2)})
-                            </span>
-                          )}
                         </div>
                       </TableCell>
 
@@ -463,7 +534,26 @@ export const DepartmentStudentsTable: React.FC<DepartmentStudentsTableProps> = (
                                 <span className="text-slate-400">Enrolled Courses:</span> {studentEnrollments.length} Courses
                               </p>
                               <p className="text-slate-600 dark:text-slate-300">
-                                <span className="text-slate-400">Cumulative CGPA:</span> {student.finalCgpa ? `${student.finalCgpa.toFixed(2)} / 5.00` : 'In Progress'}
+                                <span className="text-slate-400">Cumulative CGPA:</span>{' '}
+                                <strong className="font-mono text-emerald-700 dark:text-emerald-400">
+                                  {studentMetricsMap.get(student.id)?.cgpa !== undefined
+                                    ? `${studentMetricsMap.get(student.id)!.cgpa.toFixed(2)} / 5.00`
+                                    : 'Pending'}
+                                </strong>
+                              </p>
+                              {studentMetricsMap.get(student.id)?.latestGpa !== undefined && studentMetricsMap.get(student.id)!.latestGpa > 0 && (
+                                <p className="text-slate-600 dark:text-slate-300">
+                                  <span className="text-slate-400">Recent Semester GPA:</span>{' '}
+                                  <strong className="font-mono text-slate-800 dark:text-slate-200">
+                                    {studentMetricsMap.get(student.id)!.latestGpa.toFixed(2)}
+                                  </strong>
+                                </p>
+                              )}
+                              <p className="text-slate-600 dark:text-slate-300">
+                                <span className="text-slate-400">Credit Progression:</span>{' '}
+                                {studentMetricsMap.get(student.id)
+                                  ? `${studentMetricsMap.get(student.id)!.tce} Earned / ${studentMetricsMap.get(student.id)!.tcr} Registered`
+                                  : 'N/A'}
                               </p>
                             </div>
 

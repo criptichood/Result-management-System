@@ -358,12 +358,22 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
               })}
             </div>
 
-            {/* Overall Cumulative Summary Box */}
+            {/* Overall Cumulative / Semester Summary Box */}
             <div className="mt-8 bg-emerald-50/60 border border-emerald-200 rounded-lg p-4 text-xs space-y-2">
               <h3 className="font-bold uppercase tracking-wider text-[#064e3b] text-[11px]">
-                Cumulative Academic Performance Record
+                {selectedScope === 'all'
+                  ? 'Cumulative Academic Performance Record'
+                  : `Academic Performance Summary — ${selectedScope}`}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                {selectedScope !== 'all' && semesterGroups[selectedScope] && (
+                  <div>
+                    <span className="text-slate-500 block text-[10px] uppercase">Semester GPA</span>
+                    <span className="text-base sm:text-lg font-bold text-emerald-700">
+                      {calculateSemesterStats(semesterGroups[selectedScope].items).gpa.toFixed(2)} / 5.00
+                    </span>
+                  </div>
+                )}
                 <div>
                   <span className="text-slate-500 block text-[10px] uppercase">Cumulative CGPA</span>
                   <span className="text-base sm:text-lg font-bold text-[#064e3b]">{cumulativeCgpa.toFixed(2)} / 5.00</span>
@@ -376,10 +386,12 @@ export const OfficialResultSlipModal: React.FC<OfficialResultSlipModalProps> = (
                   <span className="text-slate-500 block text-[10px] uppercase">Academic Standing</span>
                   <span className="text-xs sm:text-sm font-bold text-emerald-700">Good Standing</span>
                 </div>
-                <div>
-                  <span className="text-slate-500 block text-[10px] uppercase">Total Semesters</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-800">{semesterKeys.length}</span>
-                </div>
+                {selectedScope === 'all' && (
+                  <div>
+                    <span className="text-slate-500 block text-[10px] uppercase">Total Semesters</span>
+                    <span className="text-xs sm:text-sm font-bold text-slate-800">{semesterKeys.length}</span>
+                  </div>
+                )}
               </div>
             </div>
 

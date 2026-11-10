@@ -1,4 +1,4 @@
-import { Course, Department, Enrollment, Result, User } from '../types';
+import { Course, Department, Enrollment, Result, ResultStatus, User } from '../types';
 
 export const mockUsers: User[] = [
   // Institutional Executives & Academic Governance Officers
@@ -24,52 +24,68 @@ export const mockUsers: User[] = [
   { id: 'u_math3', name: 'Dr. Aisha Mohammed (Lecturer II)', email: 'aisha.mohammed@fuaz.edu.ng', role: 'Lecturer', college: 'Science', department: 'Mathematics', staffId: 'LEC012' },
 
   // =========================================================================
-  // 100 LEVEL UNDERGRADUATES (12 Students, 2024/2025 Cohort)
+  // 100 LEVEL UNDERGRADUATES (12 Students, 2025/2026 Cohort - Freshmen)
   // =========================================================================
-  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/001', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
-  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/002', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
-  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/003', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
-  { id: 'u100_4', name: 'Abdullahi Shehu', email: 'abdullahi.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/004', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 555 1234', address: 'Block B, Male Hostel' },
-  { id: 'u100_5', name: 'Joy Emmanuel', email: 'joy.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/005', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 998 7766', address: 'Block C, Female Hostel' },
-  { id: 'u100_6', name: 'Usman Farouk', email: 'usman.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 816 443 2211', address: 'Block A, Male Hostel' },
-  { id: 'u100_7', name: 'Halima Sani', email: 'halima.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 809 112 8899', address: 'Block D, Female Hostel' },
-  { id: 'u100_8', name: 'Daniel Kalu', email: 'daniel.k@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 805 776 5544', address: 'Block B, Male Hostel' },
-  { id: 'u100_9', name: 'Maryam Bello', email: 'maryam.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/009', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 813 665 4433', address: 'Block C, Female Hostel' },
-  { id: 'u100_10', name: 'Ibrahim Lawal', email: 'ibrahim.l@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/010', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 808 332 1199', address: 'Off-campus, Zuru Town' },
-  { id: 'u100_11', name: 'Chisom Eze', email: 'chisom.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/011', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 818 221 4455', address: 'Block D, Female Hostel' },
-  { id: 'u100_12', name: 'Kabiru Yahaya', email: 'kabiru.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/012', level: 100, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 889 0011', address: 'Block A, Male Hostel' },
+  { id: 'u101', name: 'Abubakar Sadiq', email: 'abubakar.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/001', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 803 771 2233', address: 'Block B, Male Hostel' },
+  { id: 'u102', name: 'Khadija Usman', email: 'khadija.u@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/002', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 814 882 3344', address: 'Block C, Female Hostel' },
+  { id: 'u103', name: 'Chinedu Eze', email: 'chinedu.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/003', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 806 993 4455', address: 'Block A, Male Hostel' },
+  { id: 'u104', name: 'Amina Bello', email: 'amina.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/004', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 809 114 5566', address: 'Block D, Female Hostel' },
+  { id: 'u105', name: 'Jerry Okpara', email: 'jerry.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/005', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 802 225 6677', address: 'Block B, Male Hostel' },
+  { id: 'u106', name: 'Zainab Lawal', email: 'zainab.l@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/006', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 818 336 7788', address: 'Block C, Female Hostel' },
+  { id: 'u107', name: 'Victor Danjuma', email: 'victor.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/007', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 805 447 8899', address: 'Off-campus, Zuru Town' },
+  { id: 'u108', name: 'Faith Adams', email: 'faith.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/008', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 813 558 9900', address: 'Block D, Female Hostel' },
+  { id: 'u109', name: 'Haruna Aliyu', email: 'haruna.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/009', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 808 669 0011', address: 'Block A, Male Hostel' },
+  { id: 'u110', name: 'Rahmatu Ibrahim', email: 'rahmatu.i@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/010', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 816 770 1122', address: 'Block C, Female Hostel' },
+  { id: 'u111', name: 'Samuel David', email: 'samuel.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/011', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 803 881 2233', address: 'Block B, Male Hostel' },
+  { id: 'u112', name: 'Mustapha Garba', email: 'mustapha.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2025/02/03/012', level: 100, isGraduated: false, entryYear: '2025/2026', phoneNumber: '+234 812 992 3344', address: 'Off-campus, Zuru Town' },
 
   // =========================================================================
-  // 200 LEVEL UNDERGRADUATES (12 Students, 2023/2024 Cohort)
+  // 200 LEVEL UNDERGRADUATES (12 Students, 2024/2025 Cohort)
   // =========================================================================
-  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/001', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
-  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/002', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/003', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
-  { id: 'u200_4', name: 'Hauwa Idris', email: 'hauwa.i@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 803 221 8877', address: 'Block C, Female Hostel' },
-  { id: 'u200_5', name: 'Victor Sunday', email: 'victor.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 814 887 6655', address: 'Block B, Male Hostel' },
-  { id: 'u200_6', name: 'Aminu Dangana', email: 'aminu.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/006', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 806 554 3322', address: 'Block A, Male Hostel' },
-  { id: 'u200_7', name: 'Racheal Adeleke', email: 'racheal.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/007', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 667 8899', address: 'Block D, Female Hostel' },
-  { id: 'u200_8', name: 'Abubakar Gwadabe', email: 'abubakar.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/008', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 332 5544', address: 'Block B, Male Hostel' },
-  { id: 'u200_9', name: 'Deborah Yakubu', email: 'deborah.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 813 776 2211', address: 'Block C, Female Hostel' },
-  { id: 'u200_10', name: 'Solomon Bassey', email: 'solomon.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/010', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 805 119 4433', address: 'Off-campus, Zuru Town' },
-  { id: 'u200_11', name: 'Bilkisu Mohammed', email: 'bilkisu.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/011', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 990 1122', address: 'Block D, Female Hostel' },
-  { id: 'u200_12', name: 'Godwin Peters', email: 'godwin.p@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/012', level: 200, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 443 6677', address: 'Block A, Male Hostel' },
+  { id: 'u10', name: 'Fatima Aliyu', email: 'fatima.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/001', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 112 3344', emergencyContact: '+234 802 445 5667 (Mother)', address: 'Block C, Female Hostel' },
+  { id: 'u11', name: 'Musa Garba', email: 'musa.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/002', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 814 223 3445', emergencyContact: '+234 813 556 6778 (Uncle)', address: 'Block A, Male Hostel' },
+  { id: 'u12', name: 'Blessing Okon', email: 'blessing.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/003', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 806 334 4556', emergencyContact: '+234 807 667 7889 (Guardian)', address: 'Block D, Female Hostel' },
+  { id: 'u100_4', name: 'Abdullahi Shehu', email: 'abdullahi.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/004', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 803 555 1234', address: 'Block B, Male Hostel' },
+  { id: 'u100_5', name: 'Joy Emmanuel', email: 'joy.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/005', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 998 7766', address: 'Block C, Female Hostel' },
+  { id: 'u100_6', name: 'Usman Farouk', email: 'usman.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/006', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 816 443 2211', address: 'Block A, Male Hostel' },
+  { id: 'u100_7', name: 'Halima Sani', email: 'halima.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/007', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 809 112 8899', address: 'Block D, Female Hostel' },
+  { id: 'u100_8', name: 'Daniel Kalu', email: 'daniel.k@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/008', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 805 776 5544', address: 'Block B, Male Hostel' },
+  { id: 'u100_9', name: 'Maryam Bello', email: 'maryam.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/009', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 813 665 4433', address: 'Block C, Female Hostel' },
+  { id: 'u100_10', name: 'Ibrahim Lawal', email: 'ibrahim.l@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/010', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 808 332 1199', address: 'Off-campus, Zuru Town' },
+  { id: 'u100_11', name: 'Chisom Eze', email: 'chisom.e@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/011', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 818 221 4455', address: 'Block D, Female Hostel' },
+  { id: 'u100_12', name: 'Kabiru Yahaya', email: 'kabiru.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2024/02/03/012', level: 200, isGraduated: false, entryYear: '2024/2025', phoneNumber: '+234 802 889 0011', address: 'Block A, Male Hostel' },
 
   // =========================================================================
-  // 300 LEVEL UNDERGRADUATES (12 Students, 2022/2023 Cohort)
+  // 300 LEVEL UNDERGRADUATES (12 Students, 2023/2024 Cohort)
   // =========================================================================
-  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/001', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
-  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/002', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
-  { id: 'u300_3', name: 'Samuel Adebayo', email: 'samuel.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 814 332 5566', address: 'Block A, Male Hostel' },
-  { id: 'u300_4', name: 'Khadijah Ahmed', email: 'khadijah.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/004', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 803 778 9900', address: 'Block D, Female Hostel' },
-  { id: 'u300_5', name: 'Chukwudi Nnamdi', email: 'chukwudi.n@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/005', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 816 887 1122', address: 'Block B, Male Hostel' },
-  { id: 'u300_6', name: 'Nafisat Aliyu', email: 'nafisat.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/006', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 809 665 4433', address: 'Block C, Female Hostel' },
-  { id: 'u300_7', name: 'Olamide Fashola', email: 'olamide.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/007', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 221 9988', address: 'Off-campus, Zuru Town' },
-  { id: 'u300_8', name: 'Haruna Jibril', email: 'haruna.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/008', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 813 445 7766', address: 'Block A, Male Hostel' },
-  { id: 'u300_9', name: 'Esther John', email: 'esther.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/009', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 119 3344', address: 'Block D, Female Hostel' },
-  { id: 'u300_10', name: 'Sadiq Tanko', email: 'sadiq.t@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 818 776 5544', address: 'Block B, Male Hostel' },
-  { id: 'u300_11', name: 'Chidiebere Okeke', email: 'chidiebere.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/011', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 808 554 2211', address: 'Block A, Male Hostel' },
-  { id: 'u300_12', name: 'Patrick Ogbonna', email: 'patrick.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/012', level: 300, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 806 998 1122', address: 'Off-campus, Zuru Town' },
+  { id: 'u8', name: 'Zainab Ali', email: 'zainab@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/001', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 816 555 6666', emergencyContact: '+234 803 777 8888 (Sister)', address: 'Block D, Female Hostel' },
+  { id: 'u9', name: 'Emeka Uzo', email: 'emeka@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/002', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 999 0000', emergencyContact: '+234 810 123 4567 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u13', name: 'Tunde Bakare', email: 'tunde.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/003', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 445 5667', emergencyContact: '+234 819 778 8990 (Father)', address: 'Off-campus, Zuru Town' },
+  { id: 'u200_4', name: 'Hauwa Idris', email: 'hauwa.i@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/004', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 803 221 8877', address: 'Block C, Female Hostel' },
+  { id: 'u200_5', name: 'Victor Sunday', email: 'victor.s@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/005', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 814 887 6655', address: 'Block B, Male Hostel' },
+  { id: 'u200_6', name: 'Aminu Dangana', email: 'aminu.d@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/006', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 806 554 3322', address: 'Block A, Male Hostel' },
+  { id: 'u200_7', name: 'Racheal Adeleke', email: 'racheal.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/007', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 667 8899', address: 'Block D, Female Hostel' },
+  { id: 'u200_8', name: 'Abubakar Gwadabe', email: 'abubakar.g@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/008', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 809 332 5544', address: 'Block B, Male Hostel' },
+  { id: 'u200_9', name: 'Deborah Yakubu', email: 'deborah.y@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/009', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 813 776 2211', address: 'Block C, Female Hostel' },
+  { id: 'u200_10', name: 'Solomon Bassey', email: 'solomon.b@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/010', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 805 119 4433', address: 'Off-campus, Zuru Town' },
+  { id: 'u200_11', name: 'Bilkisu Mohammed', email: 'bilkisu.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/011', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 818 990 1122', address: 'Block D, Female Hostel' },
+  { id: 'u200_12', name: 'Godwin Peters', email: 'godwin.p@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2023/02/03/012', level: 300, isGraduated: false, entryYear: '2023/2024', phoneNumber: '+234 802 443 6677', address: 'Block A, Male Hostel' },
+
+  // =========================================================================
+  // 400 LEVEL UNDERGRADUATES (12 Students, 2022/2023 Cohort)
+  // =========================================================================
+  { id: 'u7', name: 'David Ojo', email: 'david@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/001', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 111 2222', emergencyContact: '+234 802 333 4444 (Brother)', address: 'Block B, Male Hostel' },
+  { id: 'u14', name: 'Aisha Mohammed', email: 'aisha.m@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/002', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 556 6778', emergencyContact: '+234 803 889 9001 (Sister)', address: 'Block C, Female Hostel' },
+  { id: 'u300_3', name: 'Samuel Adebayo', email: 'samuel.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/003', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 814 332 5566', address: 'Block A, Male Hostel' },
+  { id: 'u300_4', name: 'Khadijah Ahmed', email: 'khadijah.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/004', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 803 778 9900', address: 'Block D, Female Hostel' },
+  { id: 'u300_5', name: 'Chukwudi Nnamdi', email: 'chukwudi.n@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/005', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 816 887 1122', address: 'Block B, Male Hostel' },
+  { id: 'u300_6', name: 'Nafisat Aliyu', email: 'nafisat.a@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/006', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 809 665 4433', address: 'Block C, Female Hostel' },
+  { id: 'u300_7', name: 'Olamide Fashola', email: 'olamide.f@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/007', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 805 221 9988', address: 'Off-campus, Zuru Town' },
+  { id: 'u300_8', name: 'Haruna Jibril', email: 'haruna.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/008', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 813 445 7766', address: 'Block A, Male Hostel' },
+  { id: 'u300_9', name: 'Esther John', email: 'esther.j@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/009', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 802 119 3344', address: 'Block D, Female Hostel' },
+  { id: 'u300_10', name: 'Sadiq Tanko', email: 'sadiq.t@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/010', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 818 776 5544', address: 'Block B, Male Hostel' },
+  { id: 'u300_11', name: 'Chidiebere Okeke', email: 'chidiebere.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/011', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 808 554 2211', address: 'Block A, Male Hostel' },
+  { id: 'u300_12', name: 'Patrick Ogbonna', email: 'patrick.o@student.fuaz.edu.ng', role: 'Student', college: 'Science', department: 'Computer Science', matricNumber: 'UG/2022/02/03/012', level: 400, isGraduated: false, entryYear: '2022/2023', phoneNumber: '+234 806 998 1122', address: 'Off-campus, Zuru Town' },
 
   // =========================================================================
   // 400 LEVEL UNDERGRADUATES (12 Students, 2021/2022 Cohort)
@@ -205,49 +221,63 @@ interface CohortDefinition {
 }
 
 const cohorts: CohortDefinition[] = [
-  // 100 Level (2024/2025 Entry)
-  { studentId: 'u10', level: 100, entryYear: '2024/2025', standing: 'first_class' },
-  { studentId: 'u11', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
-  { studentId: 'u12', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
-  { studentId: 'u100_4', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
-  { studentId: 'u100_5', level: 100, entryYear: '2024/2025', standing: 'first_class' },
-  { studentId: 'u100_6', level: 100, entryYear: '2024/2025', standing: 'second_lower' },
-  { studentId: 'u100_7', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
-  { studentId: 'u100_8', level: 100, entryYear: '2024/2025', standing: 'second_lower' },
-  { studentId: 'u100_9', level: 100, entryYear: '2024/2025', standing: 'first_class' },
-  { studentId: 'u100_10', level: 100, entryYear: '2024/2025', standing: 'second_upper' },
-  { studentId: 'u100_11', level: 100, entryYear: '2024/2025', standing: 'third_class' },
-  { studentId: 'u100_12', level: 100, entryYear: '2024/2025', standing: 'probation' },
+  // 100 Level (2025/2026 Entry - Freshmen)
+  { studentId: 'u101', level: 100, entryYear: '2025/2026', standing: 'first_class' },
+  { studentId: 'u102', level: 100, entryYear: '2025/2026', standing: 'second_upper' },
+  { studentId: 'u103', level: 100, entryYear: '2025/2026', standing: 'second_upper' },
+  { studentId: 'u104', level: 100, entryYear: '2025/2026', standing: 'second_upper' },
+  { studentId: 'u105', level: 100, entryYear: '2025/2026', standing: 'first_class' },
+  { studentId: 'u106', level: 100, entryYear: '2025/2026', standing: 'second_lower' },
+  { studentId: 'u107', level: 100, entryYear: '2025/2026', standing: 'second_upper' },
+  { studentId: 'u108', level: 100, entryYear: '2025/2026', standing: 'second_lower' },
+  { studentId: 'u109', level: 100, entryYear: '2025/2026', standing: 'first_class' },
+  { studentId: 'u110', level: 100, entryYear: '2025/2026', standing: 'second_upper' },
+  { studentId: 'u111', level: 100, entryYear: '2025/2026', standing: 'third_class' },
+  { studentId: 'u112', level: 100, entryYear: '2025/2026', standing: 'probation' },
 
-  // 200 Level (2023/2024 Entry)
-  { studentId: 'u8', level: 200, entryYear: '2023/2024', standing: 'first_class' },
-  { studentId: 'u9', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
-  { studentId: 'u13', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
-  { studentId: 'u200_4', level: 200, entryYear: '2023/2024', standing: 'first_class' },
-  { studentId: 'u200_5', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
-  { studentId: 'u200_6', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
-  { studentId: 'u200_7', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
-  { studentId: 'u200_8', level: 200, entryYear: '2023/2024', standing: 'second_lower' },
-  { studentId: 'u200_9', level: 200, entryYear: '2023/2024', standing: 'first_class' },
-  { studentId: 'u200_10', level: 200, entryYear: '2023/2024', standing: 'second_upper' },
-  { studentId: 'u200_11', level: 200, entryYear: '2023/2024', standing: 'third_class' },
-  { studentId: 'u200_12', level: 200, entryYear: '2023/2024', standing: 'probation' },
+  // 200 Level (2024/2025 Entry)
+  { studentId: 'u10', level: 200, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u11', level: 200, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u12', level: 200, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_4', level: 200, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_5', level: 200, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u100_6', level: 200, entryYear: '2024/2025', standing: 'second_lower' },
+  { studentId: 'u100_7', level: 200, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_8', level: 200, entryYear: '2024/2025', standing: 'second_lower' },
+  { studentId: 'u100_9', level: 200, entryYear: '2024/2025', standing: 'first_class' },
+  { studentId: 'u100_10', level: 200, entryYear: '2024/2025', standing: 'second_upper' },
+  { studentId: 'u100_11', level: 200, entryYear: '2024/2025', standing: 'third_class' },
+  { studentId: 'u100_12', level: 200, entryYear: '2024/2025', standing: 'probation' },
 
-  // 300 Level (2022/2023 Entry)
-  { studentId: 'u7', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
-  { studentId: 'u14', level: 300, entryYear: '2022/2023', standing: 'first_class' },
-  { studentId: 'u300_3', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
-  { studentId: 'u300_4', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
-  { studentId: 'u300_5', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
-  { studentId: 'u300_6', level: 300, entryYear: '2022/2023', standing: 'first_class' },
-  { studentId: 'u300_7', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
-  { studentId: 'u300_8', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
-  { studentId: 'u300_9', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
-  { studentId: 'u300_10', level: 300, entryYear: '2022/2023', standing: 'third_class' },
-  { studentId: 'u300_11', level: 300, entryYear: '2022/2023', standing: 'second_lower' },
-  { studentId: 'u300_12', level: 300, entryYear: '2022/2023', standing: 'second_upper' },
+  // 300 Level (2023/2024 Entry)
+  { studentId: 'u8', level: 300, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u9', level: 300, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u13', level: 300, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_4', level: 300, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u200_5', level: 300, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_6', level: 300, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_7', level: 300, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_8', level: 300, entryYear: '2023/2024', standing: 'second_lower' },
+  { studentId: 'u200_9', level: 300, entryYear: '2023/2024', standing: 'first_class' },
+  { studentId: 'u200_10', level: 300, entryYear: '2023/2024', standing: 'second_upper' },
+  { studentId: 'u200_11', level: 300, entryYear: '2023/2024', standing: 'third_class' },
+  { studentId: 'u200_12', level: 300, entryYear: '2023/2024', standing: 'probation' },
 
-  // 400 Level (2021/2022 Entry)
+  // 400 Level (2022/2023 Entry)
+  { studentId: 'u7', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u14', level: 400, entryYear: '2022/2023', standing: 'first_class' },
+  { studentId: 'u300_3', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_4', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_5', level: 400, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_6', level: 400, entryYear: '2022/2023', standing: 'first_class' },
+  { studentId: 'u300_7', level: 400, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_8', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_9', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+  { studentId: 'u300_10', level: 400, entryYear: '2022/2023', standing: 'third_class' },
+  { studentId: 'u300_11', level: 400, entryYear: '2022/2023', standing: 'second_lower' },
+  { studentId: 'u300_12', level: 400, entryYear: '2022/2023', standing: 'second_upper' },
+
+  // 400 Level (2021/2022 Entry - Completed 400L in 2024/2025)
   { studentId: 'u5', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
   { studentId: 'u19', level: 400, entryYear: '2021/2022', standing: 'second_upper' },
   { studentId: 'u20', level: 400, entryYear: '2021/2022', standing: 'first_class' },
@@ -262,35 +292,46 @@ const cohorts: CohortDefinition[] = [
   { studentId: 'u400_12', level: 400, entryYear: '2021/2022', standing: 'probation' },
 ];
 
-function getScoreForStanding(standing: AcademicStanding, seed: number): { ca: number; exam: number } {
-  const mod = (seed % 7) - 3; // -3 to +3 jitter
-  switch (standing) {
-    case 'first_class': {
-      const ca = Math.min(38, Math.max(30, 34 + mod));
-      const exam = Math.min(58, Math.max(42, 48 + mod));
-      return { ca, exam };
-    }
-    case 'second_upper': {
-      const ca = Math.min(34, Math.max(26, 30 + mod));
-      const exam = Math.min(48, Math.max(34, 38 + mod));
-      return { ca, exam };
-    }
-    case 'second_lower': {
-      const ca = Math.min(28, Math.max(20, 24 + mod));
-      const exam = Math.min(40, Math.max(28, 32 + mod));
-      return { ca, exam };
-    }
-    case 'third_class': {
-      const ca = Math.min(22, Math.max(16, 18 + mod));
-      const exam = Math.min(32, Math.max(22, 26 + mod));
-      return { ca, exam };
-    }
-    case 'probation': {
-      const ca = Math.min(18, Math.max(8, 12 + mod));
-      const exam = Math.min(24, Math.max(10, 16 + mod));
-      return { ca, exam };
-    }
+const STANDING_SCORE_PROFILES: Record<AcademicStanding, number[]> = {
+  // First class: primarily A's (70-88), alternated with realistic B's (64-68) so CGPA is ~4.55-4.88
+  first_class: [76, 82, 66, 74, 88, 64, 78, 85, 68, 72, 81, 75],
+  // Second upper: healthy mix of B's (60-68), A's (70-76), and occasional C's (56-58) for CGPA ~3.80-4.30
+  second_upper: [65, 74, 62, 68, 56, 71, 64, 67, 58, 76, 63, 66],
+  // Second lower: predominantly C's (50-58) and B's (61-65), with occasional D's (47-48) for CGPA ~2.80-3.30
+  second_lower: [54, 62, 52, 57, 47, 65, 53, 58, 61, 55, 48, 56],
+  // Third class: D's (45-49), E's (40-44), and C's (50-54) for CGPA ~1.60-2.20
+  third_class: [47, 52, 44, 48, 42, 54, 46, 43, 49, 41, 46, 38],
+  // Probation: F's (<40), E's (40-44), and occasional D's (45-47) for CGPA ~0.65-1.15
+  probation: [35, 42, 28, 46, 31, 38, 44, 25, 41, 34, 47, 22],
+};
+
+function splitScore(targetTotal: number, jitter: number): { ca: number; exam: number } {
+  let ca = Math.round(targetTotal * 0.38) + (jitter % 3) - 1;
+  ca = Math.max(0, Math.min(40, ca));
+  let exam = targetTotal - ca;
+  if (exam > 60) {
+    const diff = exam - 60;
+    exam = 60;
+    ca = Math.min(40, ca + diff);
   }
+  if (exam < 0) {
+    exam = 0;
+  }
+  return { ca, exam };
+}
+
+function getScoreForStanding(
+  standing: AcademicStanding,
+  studentIdx: number,
+  courseIdx: number,
+  level: number,
+  semester: number
+): { ca: number; exam: number } {
+  const profile = STANDING_SCORE_PROFILES[standing];
+  const cycle = Math.abs(studentIdx * 7 + courseIdx * 5 + Math.floor(level / 100) * 3 + semester * 2) % profile.length;
+  const targetTotal = profile[cycle];
+  const jitter = Math.abs(studentIdx + courseIdx + Math.floor(level / 100));
+  return splitScore(targetTotal, jitter);
 }
 
 // Generate comprehensive enrollments and results
@@ -298,12 +339,21 @@ function generateAcademicRecords() {
   const generatedEnrollments: Enrollment[] = [];
   const generatedResults: Result[] = [];
 
-  const sessionMap: Record<number, Record<number, string>> = {
-    100: { 1: '2024/2025', 2: '2024/2025' },
-    200: { 1: '2023/2024', 2: '2023/2024' },
-    300: { 1: '2022/2023', 2: '2022/2023' },
-    400: { 1: '2021/2022', 2: '2021/2022' },
-  };
+  // Key courses submitted in the live session (2025/2026 Semester 1) for Examiner & Senate moderation
+  const SUBMITTED_COURSES_2025 = new Set([
+    'c_csc111', 'c_mth111',
+    'c_csc211', 'c_csc214',
+    'c_csc311', 'c_csc315',
+    'c_csc411', 'c_csc414',
+  ]);
+
+  // Courses currently in draft by lecturer in 2025/2026 Semester 1
+  const DRAFT_COURSES_2025 = new Set([
+    'c_chm111', 'c_gst111',
+    'c_csc212', 'c_csc213',
+    'c_csc312', 'c_csc313', 'c_csc314',
+    'c_csc412', 'c_csc415', 'c_csc418',
+  ]);
 
   cohorts.forEach((cohort, studentIdx) => {
     // Determine which academic levels this student has completed / is enrolled in
@@ -322,11 +372,14 @@ function generateAcademicRecords() {
       const lvlCourses = mockCourses.filter((c) => c.level === lvl);
 
       lvlCourses.forEach((course, courseIdx) => {
-        // If 400L active 2024/2025 2nd semester courses, skip or make pending draft
-        const isCurrentActiveSession = academicSession === '2024/2025';
-        const isCurrentSecondSemester = isCurrentActiveSession && course.semester === 2;
+        const isCurrentActiveSession = academicSession === '2025/2026';
 
-        const enrollmentId = `enr_${cohort.studentId}_${course.id}`;
+        // In live session 2025/2026, only 1st semester is active; 2nd semester has not begun yet
+        if (isCurrentActiveSession && course.semester === 2) {
+          return;
+        }
+
+        const enrollmentId = `enr_${cohort.studentId}_${course.id}_${academicSession.replace('/', '_')}`;
         generatedEnrollments.push({
           id: enrollmentId,
           studentId: cohort.studentId,
@@ -335,32 +388,71 @@ function generateAcademicRecords() {
           academicYear: academicSession,
         });
 
-        // Generate results for 1st semester or completed sessions
-        if (!isCurrentSecondSemester) {
-          const { ca, exam } = getScoreForStanding(cohort.standing, studentIdx * 11 + courseIdx * 7);
-          const total = ca + exam;
-          const grade = getNucGrade(total);
+        const { ca, exam } = getScoreForStanding(cohort.standing, studentIdx, courseIdx, lvl, course.semester);
+        const total = ca + exam;
+        const grade = getNucGrade(total);
 
-          // Active 2024/2025 1st semester courses have Submitted / Pending status for moderation
-          let status: 'Published' | 'Submitted' = 'Published';
-          if (isCurrentActiveSession && course.semester === 1) {
+        // Status rule:
+        // - All sessions up to and including 2024/2025 (both Sem 1 and Sem 2) are fully marked and 'Published'
+        // - Current live session 2025/2026 Sem 1 has 'Submitted' (for moderation) or 'Draft'
+        let status: ResultStatus = 'Published';
+        if (isCurrentActiveSession) {
+          if (SUBMITTED_COURSES_2025.has(course.id)) {
             status = 'Submitted';
+          } else if (DRAFT_COURSES_2025.has(course.id)) {
+            status = 'Draft';
+          } else {
+            status = 'Draft';
           }
-
-          generatedResults.push({
-            id: `res_${cohort.studentId}_${course.id}`,
-            enrollmentId,
-            caScore: ca,
-            examScore: exam,
-            totalScore: total,
-            grade,
-            status,
-            lecturerId: course.lecturerId || '',
-            lastUpdated: new Date(Date.now() - (400 - lvl) * 86400000 * 90).toISOString(),
-          });
         }
+
+        generatedResults.push({
+          id: `res_${cohort.studentId}_${course.id}_${academicSession.replace('/', '_')}`,
+          enrollmentId,
+          caScore: ca,
+          examScore: exam,
+          totalScore: total,
+          grade,
+          status,
+          lecturerId: course.lecturerId || '',
+          lastUpdated: isCurrentActiveSession
+            ? new Date().toISOString()
+            : new Date(Date.now() - (400 - lvl + (course.semester === 1 ? 1 : 0)) * 86400000 * 90).toISOString(),
+        });
       });
     });
+
+    // For Jeremiah Dantani (u5), also add 400L Semester 1 active courses for 2025/2026
+    if (cohort.studentId === 'u5') {
+      const active400Courses = mockCourses.filter((c) => c.level === 400 && c.semester === 1);
+      active400Courses.forEach((course, courseIdx) => {
+        const enrollmentId = `enr_u5_${course.id}_2025_2026`;
+        generatedEnrollments.push({
+          id: enrollmentId,
+          studentId: 'u5',
+          courseId: course.id,
+          semester: 1,
+          academicYear: '2025/2026',
+        });
+
+        const { ca, exam } = getScoreForStanding('second_upper', studentIdx, courseIdx, 400, 1);
+        const total = ca + exam;
+        const grade = getNucGrade(total);
+        const status: ResultStatus = SUBMITTED_COURSES_2025.has(course.id) ? 'Submitted' : 'Draft';
+
+        generatedResults.push({
+          id: `res_u5_${course.id}_2025_2026`,
+          enrollmentId,
+          caScore: ca,
+          examScore: exam,
+          totalScore: total,
+          grade,
+          status,
+          lecturerId: course.lecturerId || '',
+          lastUpdated: new Date().toISOString(),
+        });
+      });
+    }
   });
 
   // Add graduated alumni records
@@ -379,7 +471,7 @@ function generateAcademicRecords() {
       const lvlCourses = mockCourses.filter((c) => c.level === lvl);
 
       lvlCourses.forEach((course, cIdx) => {
-        const enrId = `enr_${alumnus.id}_${course.id}`;
+        const enrId = `enr_${alumnus.id}_${course.id}_${sess.replace('/', '_')}`;
         generatedEnrollments.push({
           id: enrId,
           studentId: alumnus.id,
@@ -388,12 +480,12 @@ function generateAcademicRecords() {
           academicYear: sess,
         });
 
-        const { ca, exam } = getScoreForStanding(alumnus.standing, aIdx * 13 + cIdx * 5);
+        const { ca, exam } = getScoreForStanding(alumnus.standing, aIdx, cIdx, lvl, course.semester);
         const total = ca + exam;
         const grade = getNucGrade(total);
 
         generatedResults.push({
-          id: `res_${alumnus.id}_${course.id}`,
+          id: `res_${alumnus.id}_${course.id}_${sess.replace('/', '_')}`,
           enrollmentId: enrId,
           caScore: ca,
           examScore: exam,

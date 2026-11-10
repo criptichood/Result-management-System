@@ -37,7 +37,7 @@ export const CourseResultModal: React.FC<CourseResultModalProps> = ({
   course,
   lecturer,
   examiner = { id: 'u2', name: 'Dr. Aliyu Mohammed', email: 'examiner@fuaz.edu.ng', role: 'Chief Examiner' },
-  session = '2024/2025',
+  session = '2025/2026',
   onApprove,
   onReject,
   onRefresh,

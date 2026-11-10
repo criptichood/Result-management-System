@@ -43,7 +43,7 @@ export const DepartmentLecturerAllocationModal: React.FC<DepartmentLecturerAlloc
   courses = [],
   lecturers = [],
   enrollments = [],
-  activeSession = '2024/2025',
+  activeSession = '2025/2026',
 }) => {
   const [selectedSemester, setSelectedSemester] = useState<number | 'ALL'>('ALL');
   const [selectedLevel, setSelectedLevel] = useState<number | 'ALL'>('ALL');

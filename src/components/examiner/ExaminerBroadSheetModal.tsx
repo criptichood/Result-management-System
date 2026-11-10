@@ -103,6 +103,28 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
     const gpa = tcr > 0 ? (tqp / tcr).toFixed(2) : '0.00';
     const gpaNum = parseFloat(gpa);
 
+    // Cumulative calculations across all levels/semesters for this student
+    const studentAllEnrollments = enrollments.filter((e) => e.studentId === student.id);
+    let ccr = 0; // Cumulative Credits Registered
+    let cce = 0; // Cumulative Credits Earned
+    let cqp = 0; // Cumulative Quality Points
+
+    studentAllEnrollments.forEach((e) => {
+      const c = db.from('courses').selectById(e.courseId);
+      const res = results.find((r) => r.enrollmentId === e.id);
+      if (c && res && res.grade && res.grade !== '-') {
+        const units = c.creditUnits || 0;
+        ccr += units;
+        const gp = getGradePoint(res.grade);
+        cqp += units * gp;
+        if (res.grade !== 'F' && (res.totalScore ?? 0) >= 40) {
+          cce += units;
+        }
+      }
+    });
+
+    const cgpa = ccr > 0 ? (cqp / ccr).toFixed(2) : gpa;
+
     let standing = 'Clear Standing';
     let standingVariant: 'success' | 'warning' | 'destructive' | 'outline' = 'success';
 
@@ -134,6 +156,10 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
       tce,
       tqp,
       gpa,
+      ccr,
+      cce,
+      cqp,
+      cgpa,
       standing,
       standingVariant,
     };
@@ -153,6 +179,9 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
       'TCE',
       'TQP',
       'GPA',
+      'CCR',
+      'CCE',
+      'CGPA',
       'Senate Remarks',
     ];
 
@@ -165,6 +194,9 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
       r.tce,
       r.tqp,
       r.gpa,
+      r.ccr,
+      r.cce,
+      r.cgpa,
       `"${r.standing}"`,
     ]);
 
@@ -308,8 +340,11 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
                     <th className="p-2 border-r border-slate-300 text-center w-12">TCR</th>
                     <th className="p-2 border-r border-slate-300 text-center w-12">TCE</th>
                     <th className="p-2 border-r border-slate-300 text-center w-12">TQP</th>
-                    <th className="p-2 border-r border-slate-300 text-center w-16 font-bold bg-emerald-50">
+                    <th className="p-2 border-r border-slate-300 text-center w-14 font-bold bg-emerald-50 text-emerald-900">
                       GPA
+                    </th>
+                    <th className="p-2 border-r border-slate-300 text-center w-14 font-bold bg-teal-50 text-teal-900">
+                      CGPA
                     </th>
                     <th className="p-2 text-center w-36">Senate Remarks</th>
                   </tr>
@@ -351,6 +386,9 @@ export const ExaminerBroadSheetModal: React.FC<ExaminerBroadSheetModalProps> = (
                       </td>
                       <td className="p-2 text-center border-r border-slate-300 font-mono font-black text-emerald-800 bg-emerald-50/60">
                         {row.gpa}
+                      </td>
+                      <td className="p-2 text-center border-r border-slate-300 font-mono font-black text-teal-800 bg-teal-50/60">
+                        {row.cgpa}
                       </td>
                       <td className="p-2 text-center">
                         <Badge variant={row.standingVariant} className="text-[10px] py-0 px-2 font-semibold">

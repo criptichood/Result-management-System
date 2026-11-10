@@ -2,11 +2,9 @@ import { Course, Department, Enrollment, GradeDispute, ModerationLog, Result, Us
 import { mockCourses, mockDepartments, mockEnrollments, mockResults, mockUsers } from './mockData';
 
 // Bump to invalidate existing localStorage when seed data changes materially.
-// v19: teaching load rebalanced to <=2 courses per lecturer per semester, and
-// all CS/Math courses given an explicit owning lecturer. loadAndMigrateDBState
-// only *back-fills missing* courses, so without a bump a returning browser
-// would keep the old course->lecturer mappings and see the old workload.
-export const DB_KEY = 'fuaz_srms_db_v19';
+// v22: Academic session synchronized to 2025/2026 across all administration,
+// examiner, lecturer, and student subsystems. Settings migration enforces 2025/2026.
+export const DB_KEY = 'fuaz_srms_db_v22';
 
 export interface DBState {
   users: User[];
@@ -70,7 +68,7 @@ export function createInitialDBState(): DBState {
       lecturerViewEmail: false,
       lecturerViewPhone: false,
       courseRegistrationOpen: true,
-      currentSession: '2024/2025',
+      currentSession: '2025/2026',
       currentSemester: 1,
     },
   };
@@ -176,6 +174,19 @@ export function loadAndMigrateDBState(): DBState {
             createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
           },
         ];
+      }
+
+      if (!parsed.settings) {
+        parsed.settings = {
+          lecturerViewEmail: false,
+          lecturerViewPhone: false,
+          courseRegistrationOpen: true,
+          currentSession: '2025/2026',
+          currentSemester: 1,
+        };
+      } else if (!parsed.settings.currentSession || parsed.settings.currentSession === '2024/2025') {
+        parsed.settings.currentSession = '2025/2026';
+        parsed.settings.currentSemester = 1;
       }
 
       return parsed;
